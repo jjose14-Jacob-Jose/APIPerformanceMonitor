@@ -1,0 +1,53 @@
+/*************** START: Response tables.*/
+table {
+    border-collapse: collapse;
+    width: 100%;
+    border: 1px solid #ddd;
+    font-size: 16px;
+}
+
+/* Style table headers */
+th {
+    background-color: #f2f2f2;
+    text-align: left;
+    padding: 8px;
+    border: 1px solid #ddd;
+}
+
+/* Style table cells */
+td {
+    padding: 8px;
+    border: 1px solid #ddd;
+}
+
+/* Highlight table rows on hover */
+tr:hover {
+    background-color: #f5f5f5;
+}
+
+/* Style the filter input elements */
+input[type="text"] {
+    width: 100%;
+    padding: 5px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Style the "No data available" message */
+#divTableResults:empty::before {
+    content: "No data available";
+    font-weight: bold;
+    padding: 8px;
+    display: block;
+}
+
+/* Hide empty rows */
+tr[style*="display: none;"] {
+    display: none;
+}
+
+/*************** START: Response table headings.*/
+.divBodyResponsesAllAPICalls {
+    font-size: 20px;
+}

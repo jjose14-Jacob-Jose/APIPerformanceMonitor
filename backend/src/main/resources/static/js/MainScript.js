@@ -1,14 +1,19 @@
 const DELAY_REDIRECTION_TO_HOME_FROM_ERROR_IN_MILLISECONDS = 5000;
 const URL_GET_ALL_API_CALLS = "/getAPICalls";
-const HTML_ID_DIV_RESPONSE_FROM_ALL_API_CALLS = "divBodyResponseAllAPICalls";
+const URL_POST_API_CALL = "/apiCall";
+const HTML_ID_DIV_RESPONSE_FROM_ALL_API_CALLS = "divBodyResponsesAllAPICallsTable";
 const HTML_ID_TABLE_RESPONSE_FROM_ALL_API_CALLS = "tableResponseAllAPICalls";
+const MSG_FAIL = "Failed.";
+const HTML_ID_TEXTAREA_API_CALL_MESSAGE = "textAreaMessage";
+const HTML_ID_BUTTON_API_CALL_POST_DATA = "btnPostApiCall";
+const STRING_EMPTY = '';
 
 /**
- * 'sendbutton' in index.html
+ * Event-listener for 'Send POST Request' button.
  */
 document.addEventListener("DOMContentLoaded", function () {
-    const messageTextArea = document.getElementById("messageTextArea");
-    const sendButton = document.getElementById("sendButton");
+    const messageTextArea = document.getElementById(HTML_ID_TEXTAREA_API_CALL_MESSAGE);
+    const sendButton = document.getElementById(HTML_ID_BUTTON_API_CALL_POST_DATA);
 
     sendButton.addEventListener("click", function () {
         const message = messageTextArea.value;
@@ -22,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function () {
             message: message
         };
 
-        fetch('http://localhost:8080/main/apiCall', {
+        fetch(URL_POST_API_CALL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -31,10 +36,11 @@ document.addEventListener("DOMContentLoaded", function () {
         })
             .then(response => {
                 if (response.ok) {
-                    messageTextArea.value = ''; // Clear the textarea
-                    alert('POST request sent successfully!');
+                    messageTextArea.value = STRING_EMPTY; // Clear the textarea
+                    // Fetching and rendering the table.
+                    main();
                 } else {
-                    alert('Failed to send POST request.');
+                    alert(MSG_FAIL);
                 }
             })
             .catch(error => {
@@ -60,13 +66,11 @@ function redirectToHomePage() {
  * @param {string} idDiv - ID of HTML div where the table is to be rendered.
  * @param {string} idHtmlTable - ID of HTML table that will be created.
  */
-// Function to display JSON data as a table on the specified div with filtering
-// Function to display JSON data as a table on the specified div with filtering
 function displayJSONAsTableOnDiv(jsonData, idDiv, idHtmlTable) {
     const container = document.getElementById(idDiv);
 
     // Clear existing content in the container
-    container.innerHTML = '';
+    // container.innerHTML = '';
 
     if (jsonData.length === 0) {
         // Handle the case when there is no data to display
@@ -127,6 +131,28 @@ function displayJSONAsTableOnDiv(jsonData, idDiv, idHtmlTable) {
 }
 
 /**
+ * Clears a div and deletes all tables inside it.
+ * @param idDiv : ID of the HTML div.
+ */
+function clearDivAndDeleteTables(idDiv) {
+    try {
+        const div = document.getElementById(idDiv);
+        const tables = div.getElementsByTagName('table');
+        // Remove each table individually
+        while (tables.length > 0) {
+            const table = tables[0];
+            table.remove();
+        }
+        // Clear the div content
+        div.innerHTML = '';
+    } catch (error) {
+        // Handle any potential errors here
+        console.error('clearDivAndDeleteTables('+idDiv+'): ', error);
+    }
+}
+
+
+/**
  *  Adding text-field filters to HTML table's header.
  * @param idHtmlTable : ID of HTML table.
  * @param columnKey
@@ -159,17 +185,33 @@ function filterTable(idHtmlTable, columnKey, filterText, keys) { // Pass keys as
 }
 
 
-function fetchDataAndDisplayTable() {
+/**
+ * Requests a URL and renders the responses on an HTML table with filters.
+ * @param url : URL to which request is made.
+ * @param idDiv : ID of HTML div where the table is to be rendered.
+ * @param idHtmlTable : ID of the HTML table generated to display JSON response.
+ */
+function fetchDataAndDisplayTable(url, idDiv, idHtmlTable) {
+    clearDivAndDeleteTables(idDiv);
     // Fetch the JSON data from your REST API
-    fetch(URL_GET_ALL_API_CALLS)
+    fetch(url)
         .then(response => response.json())
         .then(responseJSONData => {
             // Call a function to display the JSON data as a table
-            displayJSONAsTableOnDiv(responseJSONData, HTML_ID_DIV_RESPONSE_FROM_ALL_API_CALLS);
+            displayJSONAsTableOnDiv(responseJSONData, idDiv, idHtmlTable);
         })
-        .catch(error => console.error('Error fetching data:', error));
+        .catch(error => console.error('Error while fetching data from '+url+' Error: ', error));
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-    fetchDataAndDisplayTable();
-});
+/**
+ * Methods are run when the HTML method is loaded.
+ *
+ */
+function main() {
+    fetchDataAndDisplayTable(URL_GET_ALL_API_CALLS, HTML_ID_DIV_RESPONSE_FROM_ALL_API_CALLS, HTML_ID_TABLE_RESPONSE_FROM_ALL_API_CALLS);
+}
+
+/**
+ * Specify functions to be executed when the documented is loaded.
+ */
+document.addEventListener('DOMContentLoaded', main);

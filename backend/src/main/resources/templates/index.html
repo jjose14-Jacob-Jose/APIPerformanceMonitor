@@ -13,20 +13,23 @@
         <div id="divBodyHeader">
             <h2>Application Performance Monitor</h2>
         </div>
-
         <hr class="hr">
-
         <div id="divBodyRequestToAPI">
+            <hr class="hr">
             <fieldset>
                 <legend>Send message to DB</legend>
                 <label for="textAreaMessage">Message:</label>
                 <textarea id="textAreaMessage" rows="4" cols="50"></textarea>
-                <button id="sendButton">Send POST Request</button>
+                <button id="btnPostApiCall">Send POST Request</button>
             </fieldset>
         </div>
-
-        <div id="divBodyResponseAllAPICalls">
-
+        <hr class="hr">
+        <div id="divBodyResponses">
+            <div id="divBodyResponsesAllAPICalls">
+                API Calls
+                <div id="divBodyResponsesAllAPICallsTable"></div>
+            </div>
+            <hr class="hr">
         </div>
     </main>
     <footer>

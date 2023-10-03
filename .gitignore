@@ -62,4 +62,4 @@ build/
 # ****** END: From start.spring.io (project template) ******
 
 # Ignoring project files.
-miscellaneous/Clipboard.txt
+#miscellaneous/Clipboard.txt

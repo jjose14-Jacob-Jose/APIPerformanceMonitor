@@ -1,6 +1,7 @@
 package com.jacob.apm.controllers;
 
 import com.jacob.apm.constants.MainConstants;
+import com.jacob.apm.models.APICall;
 import com.jacob.apm.models.RequestToAPICall;
 import com.jacob.apm.services.MainService;
 import com.jacob.apm.utilities.APMLogger;
@@ -9,22 +10,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.List;
+
 @RestController
 public class MainController {
 
     @Autowired
     MainService mainService;
-
-//    Return index.html
-    public String index() {
-        try {
-            APMLogger.logMethodEntry("index()");
-            return "index";
-        } catch (Exception exception) {
-            APMLogger.logError("index()", exception);
-            return "error";
-        }
-    }
 
 //    Method to be pinged by request-pinging service to ensure the server does not hibernate.
     @GetMapping("/status")
@@ -44,8 +36,18 @@ public class MainController {
             response = MainConstants.MSG_SUCCESS;
         else
             response = MainConstants.MSG_FAILURE;
-
+        APMLogger.logMethodExit("processAPICall()");
         return ResponseEntity.ok(response);
+    }
+
+//    Return list of all entries.
+    @GetMapping(value = "/getAPICalls", produces = "application/json")
+    public ResponseEntity<List<APICall>> getAPICalls() {
+        APMLogger.logMethodEntry("getAPICalls()");
+        List<APICall> listAPICalls = mainService.getAPICallsList();
+
+        APMLogger.logMethodExit("getAPICalls()");
+        return ResponseEntity.ok(listAPICalls);
     }
 
     @ExceptionHandler(Exception.class)

@@ -61,5 +61,5 @@ build/
 
 # ****** END: From start.spring.io (project template) ******
 
-# Ignoring .mvn folder that came with template
-# .mvn
+# Ignoring project files.
+miscellaneous/Clipboard.txt

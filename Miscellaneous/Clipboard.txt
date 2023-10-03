@@ -1,0 +1,51 @@
+src/main/java/com/jacob/apm/controllers/MainController.java:
+'@RestController
+public class MainController {
+
+    public String index() {
+        try {
+            APMLogger.logMethodEntry("index()");
+            return "index";
+        } catch (Exception exception) {
+            APMLogger.logError("index()", exception);
+            return "error";
+        }
+    }
+}'
+src/main/resources/templates/index.html:
+'<!DOCTYPE html>
+ <html lang="en">
+ <head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>API Performance Monitor</title>
+     <script src="/js/MainScript.js"></script>
+     <link rel="stylesheet" href="/css/MainStyles.css">
+ </head>
+
+ <body>
+     <main>
+         <div id="divBodyHeader">
+             <h2>Application Performance Monitor</h2>
+         </div>
+
+         <hr class="hr">
+
+         <div id="divBodyRequestToDB">
+             <fieldset>
+                 <legend>Send message to DB</legend>
+                 <label for="textAreaMessage">Message:</label>
+                 <textarea id="textAreaMessage" rows="4" cols="50"></textarea>
+                 <button id="sendButton">Send POST Request</button>
+             </fieldset>
+         </div>
+
+         <div id="divBodyResponseFromDB">
+
+         </div>
+     </main>
+     <footer>
+     </footer>
+ </body>
+ </html>'
+When I go to

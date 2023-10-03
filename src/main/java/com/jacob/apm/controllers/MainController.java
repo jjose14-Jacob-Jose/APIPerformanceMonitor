@@ -7,13 +7,24 @@ import com.jacob.apm.utilities.APMLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 @RestController
-@RequestMapping("/main")
 public class MainController {
 
     @Autowired
     MainService mainService;
+
+//    Return index.html
+    public String index() {
+        try {
+            APMLogger.logMethodEntry("index()");
+            return "index";
+        } catch (Exception exception) {
+            APMLogger.logError("index()", exception);
+            return "error";
+        }
+    }
 
 //    Method to be pinged by request-pinging service to ensure the server does not hibernate.
     @GetMapping("/status")
@@ -36,5 +47,21 @@ public class MainController {
 
         return ResponseEntity.ok(response);
     }
+
+    @ExceptionHandler(Exception.class)
+    public ModelAndView handleException(Exception exception) {
+        try {
+            APMLogger.logMethodEntry("handleException() " + exception.toString());
+            ModelAndView modelAndView = new ModelAndView();
+            modelAndView.setViewName("error"); // Set the view name to your error page (e.g., "error.html")
+            modelAndView.addObject("exceptionMessage", exception.toString()); // Specify attributes you want to pass to the error page.
+            return modelAndView;
+
+        } catch (Exception exceptionLocal) {
+            APMLogger.logError("ERROR - EditionController - @ExceptionHandler(Exception.class) - handleException( " + exception.toString() + ")", exception);
+            return null;
+        }
+    }
+
 
 }

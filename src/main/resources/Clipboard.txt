@@ -1,0 +1,32 @@
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class APMLogger {
+    private static final Logger logger = LoggerFactory.getLogger(APMLogger.class.getName());
+
+    // To be called when entering a method.
+    public static void logMethodEntry(String message) {
+        String callerClassName = getCallerClassName();
+        logger.info("Class: " + callerClassName + " - " + message + MainConstants.MSG_DELIMITER_MESSAGE_TO_MESSAGE + MainConstants.MSG_REQUEST_RECEIVED);
+    }
+
+    // To be called just before exiting a method.
+    public static void logMethodExit(String message) {
+        String callerClassName = getCallerClassName();
+        logger.info("Class: " + callerClassName + " - " + message + MainConstants.MSG_DELIMITER_MESSAGE_TO_MESSAGE + MainConstants.MSG_SUCCESS);
+    }
+
+    public static void logError(String message, Throwable throwable) {
+        String callerClassName = getCallerClassName();
+        logger.error("Class: " + callerClassName + " - " + message + MainConstants.MSG_DELIMITER_MESSAGE_TO_MESSAGE + MainConstants.MSG_FAILURE, throwable);
+    }
+
+    // Helper method to get the caller's class name.
+    private static String getCallerClassName() {
+        StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+        if (stackTraceElements.length > 3) {
+            return stackTraceElements[3].getClassName();
+        }
+        return "Unknown";
+    }
+}

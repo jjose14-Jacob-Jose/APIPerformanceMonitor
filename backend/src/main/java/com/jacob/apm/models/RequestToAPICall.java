@@ -9,4 +9,5 @@ import lombok.ToString;
 @ToString
 public class RequestToAPICall {
     private String message;
+    private String caller;
 }

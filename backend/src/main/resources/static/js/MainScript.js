@@ -5,26 +5,38 @@ const HTML_ID_DIV_RESPONSE_FROM_ALL_API_CALLS = "divBodyResponsesAllAPICallsTabl
 const HTML_ID_TABLE_RESPONSE_FROM_ALL_API_CALLS = "tableResponseAllAPICalls";
 const MSG_FAIL = "Failed.";
 const HTML_ID_TEXTAREA_API_CALL_MESSAGE = "textAreaMessage";
+const HTML_ID_TEXT_API_CALL_APPLICATION_NAME = "textApplicationName";
 const HTML_ID_BUTTON_API_CALL_POST_DATA = "btnPostApiCall";
 const STRING_EMPTY = '';
+const JSON_REQUEST_API_CALL_PARAMETER_MESSAGE = 'message';
+const JSON_REQUEST_API_CALL_PARAMETER_CALLER = 'caller';
 
 /**
  * Event-listener for 'Send POST Request' button.
  */
 document.addEventListener("DOMContentLoaded", function () {
-    const messageTextArea = document.getElementById(HTML_ID_TEXTAREA_API_CALL_MESSAGE);
+    const textAreaMessage = document.getElementById(HTML_ID_TEXTAREA_API_CALL_MESSAGE);
+    const textApplicationName = document.getElementById(HTML_ID_TEXT_API_CALL_APPLICATION_NAME);
     const sendButton = document.getElementById(HTML_ID_BUTTON_API_CALL_POST_DATA);
 
     sendButton.addEventListener("click", function () {
-        const message = messageTextArea.value;
+        const message = textAreaMessage.value;
+        const caller = textApplicationName.value;
 
         if (message.trim() === "") {
-            alert("Textarea is empty. Please enter a message.");
+            alert("Message is empty. Please enter a message.");
+            return;
+        }
+
+        if (caller.trim() === "") {
+            alert("Caller is empty. Please enter a caller name.");
             return;
         }
 
         const requestData = {
-            message: message
+            [JSON_REQUEST_API_CALL_PARAMETER_MESSAGE]: message,
+            [JSON_REQUEST_API_CALL_PARAMETER_CALLER]: caller
+
         };
 
         fetch(URL_POST_API_CALL, {
@@ -36,7 +48,8 @@ document.addEventListener("DOMContentLoaded", function () {
         })
             .then(response => {
                 if (response.ok) {
-                    messageTextArea.value = STRING_EMPTY; // Clear the textarea
+                    textAreaMessage.value = STRING_EMPTY; // Clear the textarea
+                    textApplicationName.value = STRING_EMPTY; // Clear the textarea
                     // Fetching and rendering the table.
                     main();
                 } else {

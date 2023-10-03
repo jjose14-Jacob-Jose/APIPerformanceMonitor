@@ -12,12 +12,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "api_calls")
 public class APICall {
 
-//    Following arguments represent the columns on the table 'incoming_requests'.
+//    Following arguments represent the columns on the table 'api_calls'.
 //    Data type of the arguments will be same as that in the table.
-
     @Id
-    private String id; // Use a String id for MongoDB
+    private String database_id; //
     private String message;
-    private String timeStampSystem;
+    private String caller;
+    private String timeStampSystemUTC;
 
 }

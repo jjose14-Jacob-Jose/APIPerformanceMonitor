@@ -1,5 +1,14 @@
+/*************** START: Table form to make API Logs.*/
+.tableUserInput textarea {
+    height: 1em;
+}
+
+.tableHeading {
+    color: red;
+}
+
 /*************** START: Response tables.*/
-table {
+.tableResponse table {
     border-collapse: collapse;
     width: 100%;
     border: 1px solid #ddd;
@@ -7,7 +16,7 @@ table {
 }
 
 /* Style table headers */
-th {
+.tableResponse th {
     background-color: #f2f2f2;
     text-align: left;
     padding: 8px;
@@ -15,18 +24,18 @@ th {
 }
 
 /* Style table cells */
-td {
+.tableResponse td {
     padding: 8px;
     border: 1px solid #ddd;
 }
 
 /* Highlight table rows on hover */
-tr:hover {
+.tableResponse tr:hover {
     background-color: #f5f5f5;
 }
 
 /* Style the filter input elements */
-input[type="text"] {
+.tableResponse input[type="text"] {
     width: 100%;
     padding: 5px;
     box-sizing: border-box;
@@ -43,7 +52,7 @@ input[type="text"] {
 }
 
 /* Hide empty rows */
-tr[style*="display: none;"] {
+.tableResponse tr[style*="display: none;"] {
     display: none;
 }
 
@@ -51,3 +60,4 @@ tr[style*="display: none;"] {
 .divBodyResponsesAllAPICalls {
     font-size: 20px;
 }
+

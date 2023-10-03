@@ -10,20 +10,22 @@
 
 <body>
     <main>
-        <div id="divBodyHeader">
+        <div id="divBodyHeader" >
             <h2>Application Performance Monitor</h2>
         </div>
-        <hr class="hr">
         <div id="divBodyRequestToAPI">
             <hr class="hr">
-            <fieldset>
-                <legend>Send message to DB</legend>
-                <label for="textAreaMessage">Message:</label>
-                <textarea id="textAreaMessage" rows="4" cols="50"></textarea>
-                <label for="textApplicationName">Application Name:</label>
-                <input type="text" id="textApplicationName">
-                <button id="btnPostApiCall">Send POST Request</button>
-            </fieldset>
+
+            <table class="tableUserInput" id="tableMakeAPILogs" >
+                <tr>
+                    <td class="tableHeading">Make API Logs</td>
+                    <td><label for="textAreaMessage">Message:</label></td>
+                    <td><textarea id="textAreaMessage"></textarea></td>
+                    <td><label for="textApplicationName">Application Name:</label></td>
+                    <td><input type="text" id="textApplicationName"></td>
+                    <td><button id="btnPostApiCall">Send POST Request</button></td>
+            </table>
+
         </div>
         <hr class="hr">
         <div id="divBodyResponses">

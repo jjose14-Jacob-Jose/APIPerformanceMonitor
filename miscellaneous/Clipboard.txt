@@ -1,1 +1,23 @@
-Post content here.
+HTML:'
+<table id="tableMakeAPILogs" >
+<tr>
+    <td>Make API Logs</td>
+</tr>
+<tr>
+    <td><label for="textAreaMessage">Message:</label></td>
+    <td><textarea id="textAreaMessage"></textarea></td>
+</tr>
+<tr>
+    <td><label for="textApplicationName">Application Name:</label></td>
+    <td><input type="text" id="textApplicationName"></td>
+</tr>
+<tr>
+    <td colspan="2"><button id="btnPostApiCall">Send POST Request</button></td>
+</tr>'
+
+CSS: '
+.tableUserInput textarea {
+    height: 1em;
+}'
+
+Text area's height is not one.

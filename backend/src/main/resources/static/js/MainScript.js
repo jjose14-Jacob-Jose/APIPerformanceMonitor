@@ -3,6 +3,7 @@ const URL_GET_ALL_API_CALLS = "/getAPICalls";
 const URL_POST_API_CALL = "/apiCall";
 const HTML_ID_DIV_RESPONSE_FROM_ALL_API_CALLS = "divBodyResponsesAllAPICallsTable";
 const HTML_ID_TABLE_RESPONSE_FROM_ALL_API_CALLS = "tableResponseAllAPICalls";
+const CSS_CLASS_TABLE_RESPONSE = "tableResponse";
 const MSG_FAIL = "Failed.";
 const HTML_ID_TEXTAREA_API_CALL_MESSAGE = "textAreaMessage";
 const HTML_ID_TEXT_API_CALL_APPLICATION_NAME = "textApplicationName";
@@ -79,7 +80,7 @@ function redirectToHomePage() {
  * @param {string} idDiv - ID of HTML div where the table is to be rendered.
  * @param {string} idHtmlTable - ID of HTML table that will be created.
  */
-function displayJSONAsTableOnDiv(jsonData, idDiv, idHtmlTable) {
+function displayJSONAsTableOnDiv(jsonData, idDiv, idHtmlTable, cssClassHTMLTable) {
     const container = document.getElementById(idDiv);
 
     // Clear existing content in the container
@@ -94,6 +95,7 @@ function displayJSONAsTableOnDiv(jsonData, idDiv, idHtmlTable) {
     // Create a table element
     const table = document.createElement('table');
     table.setAttribute('id', idHtmlTable);
+    table.setAttribute('class', cssClassHTMLTable);
 
     // Create an array of unique keys from the JSON objects
     const keys = Array.from(new Set(jsonData.flatMap(item => Object.keys(item))));
@@ -204,14 +206,14 @@ function filterTable(idHtmlTable, columnKey, filterText, keys) { // Pass keys as
  * @param idDiv : ID of HTML div where the table is to be rendered.
  * @param idHtmlTable : ID of the HTML table generated to display JSON response.
  */
-function fetchDataAndDisplayTable(url, idDiv, idHtmlTable) {
+function fetchDataAndDisplayTable(url, idDiv, idHtmlTable, cssClassHTMLTable) {
     clearDivAndDeleteTables(idDiv);
     // Fetch the JSON data from your REST API
     fetch(url)
         .then(response => response.json())
         .then(responseJSONData => {
             // Call a function to display the JSON data as a table
-            displayJSONAsTableOnDiv(responseJSONData, idDiv, idHtmlTable);
+            displayJSONAsTableOnDiv(responseJSONData, idDiv, idHtmlTable, cssClassHTMLTable);
         })
         .catch(error => console.error('Error while fetching data from '+url+' Error: ', error));
 }
@@ -221,7 +223,7 @@ function fetchDataAndDisplayTable(url, idDiv, idHtmlTable) {
  *
  */
 function main() {
-    fetchDataAndDisplayTable(URL_GET_ALL_API_CALLS, HTML_ID_DIV_RESPONSE_FROM_ALL_API_CALLS, HTML_ID_TABLE_RESPONSE_FROM_ALL_API_CALLS);
+    fetchDataAndDisplayTable(URL_GET_ALL_API_CALLS, HTML_ID_DIV_RESPONSE_FROM_ALL_API_CALLS, HTML_ID_TABLE_RESPONSE_FROM_ALL_API_CALLS, CSS_CLASS_TABLE_RESPONSE);
 }
 
 /**

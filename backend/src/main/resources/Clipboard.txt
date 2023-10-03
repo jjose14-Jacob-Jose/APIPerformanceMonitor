@@ -1,1 +1,1 @@
-The JS method you gave me assumes that HTML already has a table with id 'jsonTable'. I, however, have div 'divTableResults'. I want the div to be empty when the table has no rows. The div should show table only when table has rows. What change do I have to do on your method?
+Paste contents for easy formatting here.

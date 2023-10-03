@@ -1,6 +1,7 @@
 const DELAY_REDIRECTION_TO_HOME_FROM_ERROR_IN_MILLISECONDS = 5000;
 const URL_GET_ALL_API_CALLS = "/getAPICalls";
-const DIV_RESPONSE_FROM_ALL_API_CALLS = "divBodyResponseAllAPICalls";
+const HTML_ID_DIV_RESPONSE_FROM_ALL_API_CALLS = "divBodyResponseAllAPICalls";
+const HTML_ID_TABLE_RESPONSE_FROM_ALL_API_CALLS = "tableResponseAllAPICalls";
 
 /**
  * 'sendbutton' in index.html
@@ -55,11 +56,14 @@ function redirectToHomePage() {
 /**
  * Display JSON as a table on the specified div.
  * Table headers are dynamically created.
- * @param jsonData : Response from API.
- * @param divId : HTML div where the table is to be rendered.
+ * @param {Array} jsonData - Response from API.
+ * @param {string} idDiv - ID of HTML div where the table is to be rendered.
+ * @param {string} idHtmlTable - ID of HTML table that will be created.
  */
-function displayJSONAsTableOnDiv(jsonData, divId) {
-    const container = document.getElementById(divId);
+// Function to display JSON data as a table on the specified div with filtering
+// Function to display JSON data as a table on the specified div with filtering
+function displayJSONAsTableOnDiv(jsonData, idDiv, idHtmlTable) {
+    const container = document.getElementById(idDiv);
 
     // Clear existing content in the container
     container.innerHTML = '';
@@ -72,17 +76,34 @@ function displayJSONAsTableOnDiv(jsonData, divId) {
 
     // Create a table element
     const table = document.createElement('table');
-    table.setAttribute('id', 'jsonTable');
+    table.setAttribute('id', idHtmlTable);
 
     // Create an array of unique keys from the JSON objects
     const keys = Array.from(new Set(jsonData.flatMap(item => Object.keys(item))));
 
-    // Create table headers based on the unique keys
+    // Create an array to store filter input elements
+    const filterInputs = [];
+
+    // Create table headers based on the unique keys and add filtering inputs
     const thead = document.createElement('thead');
     const headerRow = document.createElement('tr');
     keys.forEach(key => {
         const headerCell = document.createElement('th');
         headerCell.textContent = key;
+
+        // Create an input element for filtering
+        const filterInput = document.createElement('input');
+        filterInput.type = 'text';
+        filterInput.placeholder = `Filter ${key}`;
+
+        // Attach an input event listener for filtering
+        filterInput.addEventListener('input', () => {
+            filterTable(idHtmlTable, key, filterInput.value, keys); // Pass keys as a parameter
+        });
+
+        headerCell.appendChild(filterInput);
+        filterInputs.push({ key, input: filterInput });
+
         headerRow.appendChild(headerCell);
     });
     thead.appendChild(headerRow);
@@ -105,13 +126,46 @@ function displayJSONAsTableOnDiv(jsonData, divId) {
     container.appendChild(table);
 }
 
+/**
+ *  Adding text-field filters to HTML table's header.
+ * @param idHtmlTable : ID of HTML table.
+ * @param columnKey
+ * @param filterText : Text for filtering data.
+ * @param keys
+ */
+function filterTable(idHtmlTable, columnKey, filterText, keys) { // Pass keys as a parameter
+    const table = document.getElementById(idHtmlTable);
+    const tbody = table.querySelector('tbody');
+    const rows = tbody.getElementsByTagName('tr');
+
+    for (let i = 0; i < rows.length; i++) {
+        const row = rows[i];
+        const cell = row.querySelector(`td:nth-child(${keys.indexOf(columnKey) + 1})`);
+
+        if (cell) {
+            const cellText = cell.textContent;
+            try {
+                if (cellText.includes(filterText)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            } catch (error) {
+                // Handle any errors here
+                console.error('Error:', error);
+            }
+        }
+    }
+}
+
+
 function fetchDataAndDisplayTable() {
     // Fetch the JSON data from your REST API
     fetch(URL_GET_ALL_API_CALLS)
         .then(response => response.json())
         .then(responseJSONData => {
             // Call a function to display the JSON data as a table
-            displayJSONAsTableOnDiv(responseJSONData, DIV_RESPONSE_FROM_ALL_API_CALLS);
+            displayJSONAsTableOnDiv(responseJSONData, HTML_ID_DIV_RESPONSE_FROM_ALL_API_CALLS);
         })
         .catch(error => console.error('Error fetching data:', error));
 }

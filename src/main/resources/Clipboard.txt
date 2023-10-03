@@ -1,1 +1,0 @@
-I want to assign null value to a Java variable. Is it possible to have a variable with value null as a constant file and then assign to those variables whos value has to be null?

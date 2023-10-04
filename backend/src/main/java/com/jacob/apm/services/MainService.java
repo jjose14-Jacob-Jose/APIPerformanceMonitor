@@ -2,7 +2,6 @@ package com.jacob.apm.services;
 
 import com.jacob.apm.constants.MainConstants;
 import com.jacob.apm.models.APICall;
-import com.jacob.apm.models.RequestToAPICall;
 import com.jacob.apm.repositories.IncomingRequestsRepository;
 import com.jacob.apm.utilities.APISystemTime;
 import com.jacob.apm.utilities.APMLogger;
@@ -21,22 +20,19 @@ public class MainService {
 
     /**
      *  Saves record to database.
-     * @param requestToAPICall: contains parameters to be saved to databse.
+     * @param apiCall: contains parameters to be saved to database.
      * @return boolean based on success of operation.
      */
-    public boolean saveToDatabaseAPICall(RequestToAPICall requestToAPICall) {
+    public boolean saveToDatabaseAPICall(APICall apiCall) {
         String methodNameForLogger = "saveToDatabaseAPICall()";
         APMLogger.logMethodEntry(methodNameForLogger);
 
-//        Mapping arguments to Database model.
-        APICall APICall = new APICall();
-        APICall.setCallerMessage(requestToAPICall.getCallerMessage());
-        APICall.setCallerName(requestToAPICall.getCallerName());
-        APICall.setCallTimeStampUTC(APISystemTime.getInstantTimeAsString());
+        if(apiCall.getCallTimestampUTC() == null)
+            apiCall.setCallTimestampUTC(APISystemTime.getInstantTimeAsString());
 
         try {
     //      Saving to database.
-            incomingRequestsRepository.save(APICall);
+            incomingRequestsRepository.save(apiCall);
             APMLogger.logMethodExit(methodNameForLogger);
             return MainConstants.FLAG_SUCCESS;
 
@@ -77,7 +73,7 @@ public class MainService {
         List<APICall> listAPICallsFromDB = null;
 
         try {
-            listAPICallsFromDB = incomingRequestsRepository.findByCallTimeStampUTCBetween(dateStart, dateEnd);
+            listAPICallsFromDB = incomingRequestsRepository.findByCallTimestampUTCBetween(dateStart, dateEnd);
         } catch (Exception exception) {
             APMLogger.logError(methodNameForLogger, exception);
         }

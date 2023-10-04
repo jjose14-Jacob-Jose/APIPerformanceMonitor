@@ -9,5 +9,5 @@ import java.util.List;
 
 @Repository
 public interface IncomingRequestsRepository extends MongoRepository<APICall, String> {
-    List<APICall> findByCallTimeStampUTCBetween(Date dateStart, Date dateEnd);
+    List<APICall> findByCallTimestampUTCBetween(Date dateStart, Date dateEnd);
 }

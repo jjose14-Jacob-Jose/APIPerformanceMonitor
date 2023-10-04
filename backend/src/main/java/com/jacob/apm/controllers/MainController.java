@@ -3,7 +3,6 @@ package com.jacob.apm.controllers;
 import com.jacob.apm.constants.MainConstants;
 import com.jacob.apm.models.APICall;
 import com.jacob.apm.models.RequestForDateRange;
-import com.jacob.apm.models.RequestToAPICall;
 import com.jacob.apm.services.MainService;
 import com.jacob.apm.utilities.APMLogger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,10 +27,10 @@ public class MainController {
 
 //    Receiving incoming requests from other APIs.
     @PostMapping(value = "/apiCall", produces = "application/json")
-    public ResponseEntity<String> processAPICall(@RequestBody RequestToAPICall requestToAPICall) {
+    public ResponseEntity<String> processAPICall(@RequestBody APICall apiCall) {
         APMLogger.logMethodEntry("processAPICall()");
 
-        boolean isOperationASuccess = mainService.saveToDatabaseAPICall(requestToAPICall);
+        boolean isOperationASuccess = mainService.saveToDatabaseAPICall(apiCall);
         String response;
         if (isOperationASuccess)
             response = MainConstants.MSG_SUCCESS;

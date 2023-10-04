@@ -21,10 +21,14 @@
                     <td class="tableHeading">Make API Logs</td>
                 </tr>
                 <tr>
+                    <td><label for="textCallId">Call ID:</label></td>
+                    <td><input type="text" id="textCallId"></td>
                     <td><label for="textAreaMessage">Message:</label></td>
                     <td><textarea id="textAreaMessage"></textarea></td>
                     <td><label for="textApplicationName">Application Name:</label></td>
                     <td><input type="text" id="textApplicationName"></td>
+                    <td><label for="dateTimeLocalCallTimestamp">Timestamp</label></td>
+                    <td><input type="datetime-local" id="dateTimeLocalCallTimestamp"></td>
                     <td><button id="btnPostApiCall" onclick="makeAPILog()">Send POST Request</button></td>
                 </tr>
                 <tr>

@@ -7,37 +7,60 @@ const HTML_ID_DIV_RESPONSE_FROM_ALL_API_CALLS = "divBodyResponsesAllAPICallsTabl
 const HTML_ID_TABLE_RESPONSE_FROM_ALL_API_CALLS = "tableResponseAllAPICalls";
 const CSS_CLASS_TABLE_RESPONSE = "tableResponse";
 const MSG_FAIL = "Failed.";
+const HTML_ID_TEXT_API_CALL_ID = "textCallId";
 const HTML_ID_TEXTAREA_API_CALL_MESSAGE = "textAreaMessage";
 const HTML_ID_TEXT_API_CALL_APPLICATION_NAME = "textApplicationName";
-const HTML_ID_BUTTON_API_CALL_POST_DATA = "btnPostApiCall";
+const HTML_ID_DATETIME_API_CALL_TIMESTAMP = "dateTimeLocalCallTimestamp";
 const STRING_EMPTY = '';
+const JSON_REQUEST_API_CALL_PARAMETER_ID = 'callId';
 const JSON_REQUEST_API_CALL_PARAMETER_MESSAGE = 'callerMessage';
 const JSON_REQUEST_API_CALL_PARAMETER_CALLER = 'callerName';
+const JSON_REQUEST_API_CALL_PARAMETER_TIMESTAMP = 'callTimestampUTC';
 const HTML_TEXT_RANGE_START = 'Start';
 const HTML_TEXT_RANGE_END = 'End';
+
+
+function stringIsEmpty(string) {
+    if (string.trim() === STRING_EMPTY) {
+        return true;
+    } else {
+        return false;
+    }
+
+}
 
 /**
  * Event-listener for 'Send POST Request' button.
  */
 function makeAPILog() {
+    const id = document.getElementById(HTML_ID_TEXT_API_CALL_ID).value;
     const message = document.getElementById(HTML_ID_TEXTAREA_API_CALL_MESSAGE).value;
     const caller = document.getElementById(HTML_ID_TEXT_API_CALL_APPLICATION_NAME).value;
+    const timestamp = document.getElementById(HTML_ID_DATETIME_API_CALL_TIMESTAMP).value;
 
-    if (message.trim() === "") {
+    if (stringIsEmpty(message)) {
         alert("Message is empty. Please enter a message.");
         return;
     }
-
-    if (caller.trim() === "") {
-        alert("Caller is empty. Please enter a caller name.");
+    if (stringIsEmpty(caller)) {
+        alert("Caller name is empty. Please enter a caller name.");
         return;
     }
 
     const requestData = {
         [JSON_REQUEST_API_CALL_PARAMETER_MESSAGE]: message,
         [JSON_REQUEST_API_CALL_PARAMETER_CALLER]: caller
-
     };
+
+    if (!(stringIsEmpty(id)) ) {
+        requestData[JSON_REQUEST_API_CALL_PARAMETER_ID] = id;
+    }
+
+    console.log("timestamp: " + timestamp);
+
+    if (!(stringIsEmpty(timestamp)) ) {
+        requestData[JSON_REQUEST_API_CALL_PARAMETER_TIMESTAMP] = timestamp;
+    }
 
     fetch(URL_POST_API_CALL, {
         method: 'POST',
@@ -48,8 +71,9 @@ function makeAPILog() {
     })
         .then(response => {
             if (response.ok) {
-                textAreaMessage.value = STRING_EMPTY; // Clear the textarea
-                textApplicationName.value = STRING_EMPTY; // Clear the textarea
+                id.value = STRING_EMPTY; // Clear the textarea
+                message.value = STRING_EMPTY; // Clear the textarea
+                caller.value = STRING_EMPTY; // Clear the textarea
                 // Fetching and rendering the table.
                 main();
             } else {

@@ -20,6 +20,6 @@ public class APICall {
     private String callId; //
     private String callerMessage;
     private String callerName;
-    private String callTimeStampUTC;
+    private String callTimestampUTC;
 
 }

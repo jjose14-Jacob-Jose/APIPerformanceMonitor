@@ -15,9 +15,9 @@ public class APICall {
 //    Following arguments represent the columns on the table 'api_calls'.
 //    Data type of the arguments will be same as that in the table.
     @Id
-    private String database_id; //
-    private String message;
-    private String caller;
-    private String timeStampSystemUTC;
+    private String callId; //
+    private String callerMessage;
+    private String callerName;
+    private String callTimeStampUTC;
 
 }

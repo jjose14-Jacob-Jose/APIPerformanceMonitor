@@ -8,6 +8,6 @@ import lombok.ToString;
 @Setter
 @ToString
 public class RequestToAPICall {
-    private String message;
-    private String caller;
+    private String callerMessage;
+    private String callerName;
 }

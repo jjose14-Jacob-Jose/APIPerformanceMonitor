@@ -9,60 +9,56 @@ const HTML_ID_TEXTAREA_API_CALL_MESSAGE = "textAreaMessage";
 const HTML_ID_TEXT_API_CALL_APPLICATION_NAME = "textApplicationName";
 const HTML_ID_BUTTON_API_CALL_POST_DATA = "btnPostApiCall";
 const STRING_EMPTY = '';
-const JSON_REQUEST_API_CALL_PARAMETER_MESSAGE = 'message';
-const JSON_REQUEST_API_CALL_PARAMETER_CALLER = 'caller';
+const JSON_REQUEST_API_CALL_PARAMETER_MESSAGE = 'callerMessage';
+const JSON_REQUEST_API_CALL_PARAMETER_CALLER = 'callerName';
+const HTML_TEXT_RANGE_START = 'Start';
+const HTML_TEXT_RANGE_END = 'End';
 
 /**
  * Event-listener for 'Send POST Request' button.
  */
-document.addEventListener("DOMContentLoaded", function () {
-    const textAreaMessage = document.getElementById(HTML_ID_TEXTAREA_API_CALL_MESSAGE);
-    const textApplicationName = document.getElementById(HTML_ID_TEXT_API_CALL_APPLICATION_NAME);
-    const sendButton = document.getElementById(HTML_ID_BUTTON_API_CALL_POST_DATA);
+function makeAPILog() {
+    const message = document.getElementById(HTML_ID_TEXTAREA_API_CALL_MESSAGE).value;
+    const caller = document.getElementById(HTML_ID_TEXT_API_CALL_APPLICATION_NAME).value;
 
-    sendButton.addEventListener("click", function () {
-        const message = textAreaMessage.value;
-        const caller = textApplicationName.value;
+    if (message.trim() === "") {
+        alert("Message is empty. Please enter a message.");
+        return;
+    }
 
-        if (message.trim() === "") {
-            alert("Message is empty. Please enter a message.");
-            return;
-        }
+    if (caller.trim() === "") {
+        alert("Caller is empty. Please enter a caller name.");
+        return;
+    }
 
-        if (caller.trim() === "") {
-            alert("Caller is empty. Please enter a caller name.");
-            return;
-        }
+    const requestData = {
+        [JSON_REQUEST_API_CALL_PARAMETER_MESSAGE]: message,
+        [JSON_REQUEST_API_CALL_PARAMETER_CALLER]: caller
 
-        const requestData = {
-            [JSON_REQUEST_API_CALL_PARAMETER_MESSAGE]: message,
-            [JSON_REQUEST_API_CALL_PARAMETER_CALLER]: caller
+    };
 
-        };
-
-        fetch(URL_POST_API_CALL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(requestData)
+    fetch(URL_POST_API_CALL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestData)
+    })
+        .then(response => {
+            if (response.ok) {
+                textAreaMessage.value = STRING_EMPTY; // Clear the textarea
+                textApplicationName.value = STRING_EMPTY; // Clear the textarea
+                // Fetching and rendering the table.
+                main();
+            } else {
+                alert(MSG_FAIL);
+            }
         })
-            .then(response => {
-                if (response.ok) {
-                    textAreaMessage.value = STRING_EMPTY; // Clear the textarea
-                    textApplicationName.value = STRING_EMPTY; // Clear the textarea
-                    // Fetching and rendering the table.
-                    main();
-                } else {
-                    alert(MSG_FAIL);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred while sending the POST request.');
-            });
-    });
-});
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while sending the POST request.');
+        });
+}
 
 /**
  * Redirect to 'index.html' from 'error.html'
@@ -105,6 +101,7 @@ function displayJSONAsTableOnDiv(jsonData, idDiv, idHtmlTable, cssClassHTMLTable
 
     // Create table headers based on the unique keys and add filtering inputs
     const thead = document.createElement('thead');
+
     const headerRow = document.createElement('tr');
     keys.forEach(key => {
         const headerCell = document.createElement('th');
@@ -165,7 +162,6 @@ function clearDivAndDeleteTables(idDiv) {
         console.error('clearDivAndDeleteTables('+idDiv+'): ', error);
     }
 }
-
 
 /**
  *  Adding text-field filters to HTML table's header.
@@ -230,3 +226,33 @@ function main() {
  * Specify functions to be executed when the documented is loaded.
  */
 document.addEventListener('DOMContentLoaded', main);
+
+/**
+ * Convert the date range to ISO format.
+ *
+ */
+function formatDateRangeToISOFormat() {
+    // Get the datetime-local input values
+    const startDateInput = document.getElementById('dateTimeLocalAPICallsStart');
+    const endDateInput = document.getElementById('dateTimeLocalAPICallsEnd');
+
+    // Check if both inputs have valid values
+    if (startDateInput.value && endDateInput.value) {
+        // Convert JavaScript Date objects to timestamps (milliseconds since Unix epoch)
+        const startTimestamp = new Date(startDateInput.value).toISOString();
+        const endTimestamp = new Date(endDate.value).toISOString();
+
+    } else {
+        // Handle the case when one or both inputs are empty
+        printAsAlert('Enter starting and ending range.');
+    }
+}
+
+/**
+ *  Show an Alert.
+ * @param message : string to be shown on Alert window.
+ */
+function printAsAlert(message) {
+    alert(message);
+}
+

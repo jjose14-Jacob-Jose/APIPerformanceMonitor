@@ -19,11 +19,21 @@
             <table class="tableUserInput" id="tableMakeAPILogs" >
                 <tr>
                     <td class="tableHeading">Make API Logs</td>
+                </tr>
+                <tr>
                     <td><label for="textAreaMessage">Message:</label></td>
                     <td><textarea id="textAreaMessage"></textarea></td>
                     <td><label for="textApplicationName">Application Name:</label></td>
                     <td><input type="text" id="textApplicationName"></td>
-                    <td><button id="btnPostApiCall">Send POST Request</button></td>
+                    <td><button id="btnPostApiCall" onclick="makeAPILog()">Send POST Request</button></td>
+                </tr>
+                <tr>
+                    <td><label for="dateTimeLocalAPICallsStart">Start Date</label></td>
+                    <td><input type="datetime-local" id="dateTimeLocalAPICallsStart"></td>
+                    <td><label for="dateTimeLocalAPICallsEnd">End Date</label></td>
+                    <td><input type="datetime-local" id="dateTimeLocalAPICallsEnd"></td>
+                    <td><button id="btnApplyDateRange" onclick="formatDateRangeToISOFormat()">Filter Dates</button></td>
+                </tr>
             </table>
 
         </div>

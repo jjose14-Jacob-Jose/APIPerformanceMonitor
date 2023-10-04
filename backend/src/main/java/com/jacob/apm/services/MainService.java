@@ -28,9 +28,9 @@ public class MainService {
 
 //        Mapping arguments to Database model.
         APICall APICall = new APICall();
-        APICall.setMessage(requestToAPICall.getMessage());
-        APICall.setCaller(requestToAPICall.getCaller());
-        APICall.setTimeStampSystemUTC(APISystemTime.getInstantTimeAsString());
+        APICall.setCallerMessage(requestToAPICall.getCallerMessage());
+        APICall.setCallerName(requestToAPICall.getCallerName());
+        APICall.setCallTimeStampUTC(APISystemTime.getInstantTimeAsString());
 
         try {
     //      Saving to database.

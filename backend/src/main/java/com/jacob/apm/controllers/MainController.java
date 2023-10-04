@@ -2,6 +2,7 @@ package com.jacob.apm.controllers;
 
 import com.jacob.apm.constants.MainConstants;
 import com.jacob.apm.models.APICall;
+import com.jacob.apm.models.RequestForDateRange;
 import com.jacob.apm.models.RequestToAPICall;
 import com.jacob.apm.services.MainService;
 import com.jacob.apm.utilities.APMLogger;
@@ -41,12 +42,23 @@ public class MainController {
     }
 
 //    Return list of all entries.
-    @GetMapping(value = "/getAPICalls", produces = "application/json")
+    @PostMapping(value = "/getAPICalls", produces = "application/json")
     public ResponseEntity<List<APICall>> getAPICalls() {
         APMLogger.logMethodEntry("getAPICalls()");
         List<APICall> listAPICalls = mainService.getAPICallsList();
 
         APMLogger.logMethodExit("getAPICalls()");
+        return ResponseEntity.ok(listAPICalls);
+    }
+
+    @PostMapping(value = "/getAPICalls/range", produces = "application/json")
+    public ResponseEntity<List<APICall>> getAPICallsInRange(@RequestBody RequestForDateRange requestForDateRange) {
+        String methodNameForLogger = "getAPICallsInRange()";
+        APMLogger.logMethodEntry(methodNameForLogger);
+
+        List<APICall> listAPICalls = mainService.getAPICallsList(requestForDateRange.getDateStart(), requestForDateRange.getDateEnd());
+
+        APMLogger.logMethodExit(methodNameForLogger);
         return ResponseEntity.ok(listAPICalls);
     }
 

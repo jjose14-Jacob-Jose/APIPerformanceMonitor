@@ -1,5 +1,7 @@
 const DELAY_REDIRECTION_TO_HOME_FROM_ERROR_IN_MILLISECONDS = 5000;
-const URL_GET_ALL_API_CALLS = "/getAPICalls";
+const URL_GET_API_CALLS_ALL = "/getAPICalls";
+const URL_GET_API_CALLS_ALL_HTTP_METHOD = "POST";
+const URL_GET_API_CALLS_WITHIN_RANGE  = "/getAPICalls/range";
 const URL_POST_API_CALL = "/apiCall";
 const HTML_ID_DIV_RESPONSE_FROM_ALL_API_CALLS = "divBodyResponsesAllAPICallsTable";
 const HTML_ID_TABLE_RESPONSE_FROM_ALL_API_CALLS = "tableResponseAllAPICalls";
@@ -195,37 +197,46 @@ function filterTable(idHtmlTable, columnKey, filterText, keys) { // Pass keys as
     }
 }
 
-
 /**
- * Requests a URL and renders the responses on an HTML table with filters.
- * @param url : URL to which request is made.
- * @param idDiv : ID of HTML div where the table is to be rendered.
- * @param idHtmlTable : ID of the HTML table generated to display JSON response.
+ *  Make a POST request and return JSON
+ * @param url
+ * @param data
+ * @param successCallback
+ * @param errorCallback
  */
-function fetchDataAndDisplayTable(url, idDiv, idHtmlTable, cssClassHTMLTable) {
-    clearDivAndDeleteTables(idDiv);
-    // Fetch the JSON data from your REST API
-    fetch(url)
+function getPostData(url, jsonDataInRequestBody, successCallback, errorCallback) {
+    fetch(url, {
+        method: 'POST', // Specify the HTTP method as POST
+        headers: {
+            'Content-Type': 'application/json', // Set the content type if you are sending JSON data
+        },
+        body: JSON.stringify(jsonDataInRequestBody), // Include the request body if needed
+    })
         .then(response => response.json())
         .then(responseJSONData => {
-            // Call a function to display the JSON data as a table
-            displayJSONAsTableOnDiv(responseJSONData, idDiv, idHtmlTable, cssClassHTMLTable);
+            // Call the successCallback function with the response data
+            successCallback(responseJSONData);
         })
-        .catch(error => console.error('Error while fetching data from '+url+' Error: ', error));
+        .catch(error => {
+            // Call the errorCallback function with the error
+            errorCallback(error);
+            console.error('Error while making a POST request to ' + url + ' Error: ', error);
+        });
 }
 
-/**
- * Methods are run when the HTML method is loaded.
- *
- */
-function main() {
-    fetchDataAndDisplayTable(URL_GET_ALL_API_CALLS, HTML_ID_DIV_RESPONSE_FROM_ALL_API_CALLS, HTML_ID_TABLE_RESPONSE_FROM_ALL_API_CALLS, CSS_CLASS_TABLE_RESPONSE);
+function fetchDataAndDisplayTable(url, idDiv, idTable, cssClassForTable ) {
+    clearDivAndDeleteTables(idDiv);
+    // Fetch the JSON data from your REST API using POST.
+    getPostData(url, null,
+        responseJSONData => {
+            displayJSONAsTableOnDiv(responseJSONData, idDiv, idTable, cssClassForTable)
+        },
+        error => {
+            console.error('Error while making a POST request to ' + url + ' Error: ', error);
+        }
+    );
 }
 
-/**
- * Specify functions to be executed when the documented is loaded.
- */
-document.addEventListener('DOMContentLoaded', main);
 
 /**
  * Convert the date range to ISO format.
@@ -256,3 +267,15 @@ function printAsAlert(message) {
     alert(message);
 }
 
+/**
+ * Methods are run when the HTML method is loaded.
+ *
+ */
+function main() {
+    fetchDataAndDisplayTable(URL_GET_API_CALLS_ALL, HTML_ID_DIV_RESPONSE_FROM_ALL_API_CALLS, HTML_ID_TABLE_RESPONSE_FROM_ALL_API_CALLS, CSS_CLASS_TABLE_RESPONSE);
+}
+
+/**
+ * Specify functions to be executed when the documented is loaded.
+ */
+document.addEventListener('DOMContentLoaded', main);

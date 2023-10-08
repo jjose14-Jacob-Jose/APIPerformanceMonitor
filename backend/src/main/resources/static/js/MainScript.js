@@ -16,8 +16,8 @@ const JSON_REQUEST_API_CALL_PARAMETER_ID = 'callId';
 const JSON_REQUEST_API_CALL_PARAMETER_MESSAGE = 'callerMessage';
 const JSON_REQUEST_API_CALL_PARAMETER_CALLER = 'callerName';
 const JSON_REQUEST_API_CALL_PARAMETER_TIMESTAMP = 'callTimestampUTC';
-const HTML_TEXT_RANGE_START = 'Start';
-const HTML_TEXT_RANGE_END = 'End';
+const HTML_ID_DATETIME_RANGE_START = 'dateTimeAPICallsRangeStart';
+const HTML_ID_DATETIME_RANGE_END = 'dateTimeAPICallsRangeEnd';
 
 
 function stringIsEmpty(string) {
@@ -261,12 +261,11 @@ function fetchDataAndDisplayTable(url, idDiv, idTable, cssClassForTable ) {
     );
 }
 
-
 /**
  * Convert the date range to ISO format.
  *
  */
-function formatDateRangeToISOFormat() {
+function formatDateTimeRangeToISOFormat() {
     // Get the datetime-local input values
     const startDateInput = document.getElementById('dateTimeLocalAPICallsStart');
     const endDateInput = document.getElementById('dateTimeLocalAPICallsEnd');
@@ -289,6 +288,24 @@ function formatDateRangeToISOFormat() {
  */
 function printAsAlert(message) {
     alert(message);
+}
+
+/**
+ * Clear contents of the input fields to log a new API call.
+ */
+function btnPostApiCallClear() {
+    document.getElementById(HTML_ID_TEXT_API_CALL_ID).value = STRING_EMPTY;
+    document.getElementById(HTML_ID_TEXTAREA_API_CALL_MESSAGE).value = STRING_EMPTY;
+    document.getElementById(HTML_ID_TEXT_API_CALL_APPLICATION_NAME).value = STRING_EMPTY;
+    document.getElementById(HTML_ID_DATETIME_API_CALL_TIMESTAMP).value = STRING_EMPTY;
+}
+
+/**
+ * Clear date-time fields of range selection.
+ */
+function btnApplyDateTimeRangeClear() {
+    document.getElementById(HTML_ID_DATETIME_RANGE_START).value = STRING_EMPTY;
+    document.getElementById(HTML_ID_DATETIME_RANGE_END).value = STRING_EMPTY;
 }
 
 /**

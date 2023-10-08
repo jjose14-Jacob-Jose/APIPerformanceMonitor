@@ -44,7 +44,7 @@ public class MainController {
     @PostMapping(value = "/getAPICalls", produces = "application/json")
     public ResponseEntity<List<APICall>> getAPICalls() {
         APMLogger.logMethodEntry("getAPICalls()");
-        List<APICall> listAPICalls = mainService.getAPICallsList();
+        List<APICall> listAPICalls = mainService.getAPICallsAll();
 
         APMLogger.logMethodExit("getAPICalls()");
         return ResponseEntity.ok(listAPICalls);
@@ -55,7 +55,7 @@ public class MainController {
         String methodNameForLogger = "getAPICallsInRange()";
         APMLogger.logMethodEntry(methodNameForLogger);
 
-        List<APICall> listAPICalls = mainService.getAPICallsList(requestForDateRange.getDateStart(), requestForDateRange.getDateEnd());
+        List<APICall> listAPICalls = mainService.getAPICallsAll(requestForDateRange.getDateStart(), requestForDateRange.getDateEnd());
 
         APMLogger.logMethodExit(methodNameForLogger);
         return ResponseEntity.ok(listAPICalls);

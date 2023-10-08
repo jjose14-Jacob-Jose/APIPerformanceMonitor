@@ -8,7 +8,6 @@ import com.jacob.apm.utilities.APMLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 
@@ -46,7 +45,7 @@ public class MainService {
      * Get all rows.
      * @return : ArrayList containing all API logs.
      */
-    public List<APICall> getAPICallsList () {
+    public List<APICall> getAPICallsAll() {
         String methodNameForLogger = "getAPICallsList";
         APMLogger.logMethodEntry(methodNameForLogger);
 
@@ -66,7 +65,7 @@ public class MainService {
      * @param dateEnd : Timeframe end date (date, month, year, hour, and minutes).
      * @return : ArrayList containing all API calls within the range.
      */
-    public List<APICall> getAPICallsList (Date dateStart, Date dateEnd) {
+    public List<APICall> getAPICallsAll(Date dateStart, Date dateEnd) {
         String methodNameForLogger = "getAPICallsList";
         APMLogger.logMethodEntry(methodNameForLogger);
 

@@ -1,11 +1,11 @@
 const DELAY_REDIRECTION_TO_HOME_FROM_ERROR_IN_MILLISECONDS = 5000;
 const URL_GET_API_CALLS_ALL = "/getAPICalls";
 const URL_GET_API_CALLS_ALL_HTTP_METHOD = "POST";
-const URL_GET_API_CALLS_WITHIN_RANGE  = "/getAPICalls/range";
+const URL_GET_API_CALLS_WITHIN_DATE_TIME_RANGE  = "/getAPICalls/range";
 const URL_POST_API_CALL = "/apiCall";
 const HTML_ID_DIV_RESPONSE_FROM_ALL_API_CALLS = "divBodyResponsesAllAPICallsTable";
 const HTML_ID_TABLE_RESPONSE_FROM_ALL_API_CALLS = "tableResponseAllAPICalls";
-const CSS_CLASS_TABLE_RESPONSE = "tableResponse";
+const HTML_CSS_CLASS_TABLE_RESPONSE_FROM_ALL_API_CALLs = "tableResponse";
 const MSG_FAIL = "Failed.";
 const HTML_ID_TEXT_API_CALL_ID = "textCallId";
 const HTML_ID_TEXTAREA_API_CALL_MESSAGE = "textAreaMessage";
@@ -228,13 +228,14 @@ function filterTable(idHtmlTable, columnKey, filterText, keys) { // Pass keys as
  * @param successCallback
  * @param errorCallback
  */
-function getPostData(url, jsonDataInRequestBody, successCallback, errorCallback) {
+function getPostData(url, jsonDataInRequestBodyAsString, successCallback, errorCallback) {
     fetch(url, {
         method: 'POST', // Specify the HTTP method as POST
         headers: {
             'Content-Type': 'application/json', // Set the content type if you are sending JSON data
         },
-        body: JSON.stringify(jsonDataInRequestBody), // Include the request body if needed
+        // body: JSON.stringify(jsonDataInRequestBodyAsString), // Include the request body if needed
+        body: jsonDataInRequestBodyAsString, // Include the request body if needed
     })
         .then(response => response.json())
         .then(responseJSONData => {
@@ -248,10 +249,10 @@ function getPostData(url, jsonDataInRequestBody, successCallback, errorCallback)
         });
 }
 
-function fetchDataAndDisplayTable(url, idDiv, idTable, cssClassForTable ) {
+function fetchDataAndDisplayTableUsingPOST(url, idDiv, idTable, cssClassForTable, jsonDataInRequestBody ) {
     clearDivAndDeleteTables(idDiv);
     // Fetch the JSON data from your REST API using POST.
-    getPostData(url, null,
+    getPostData(url, jsonDataInRequestBody,
         responseJSONData => {
             displayJSONAsTableOnDiv(responseJSONData, idDiv, idTable, cssClassForTable)
         },
@@ -267,14 +268,27 @@ function fetchDataAndDisplayTable(url, idDiv, idTable, cssClassForTable ) {
  */
 function formatDateTimeRangeToISOFormat() {
     // Get the datetime-local input values
-    const startDateInput = document.getElementById('dateTimeLocalAPICallsStart');
-    const endDateInput = document.getElementById('dateTimeLocalAPICallsEnd');
+    const dateTimeRangeStartHTMLFormat = document.getElementById(HTML_ID_DATETIME_RANGE_START);
+    const dateTimeRangeEndHTMLFormat = document.getElementById(HTML_ID_DATETIME_RANGE_END);
 
     // Check if both inputs have valid values
-    if (startDateInput.value && endDateInput.value) {
+    if (dateTimeRangeStartHTMLFormat.value && dateTimeRangeEndHTMLFormat.value) {
         // Convert JavaScript Date objects to timestamps (milliseconds since Unix epoch)
-        const startTimestamp = new Date(startDateInput.value).toISOString();
-        const endTimestamp = new Date(endDate.value).toISOString();
+        const dateTimeRangeStartString = new Date(dateTimeRangeStartHTMLFormat.value).toISOString();
+        const dateTimeRangeEndString = new Date(dateTimeRangeEndHTMLFormat.value).toISOString();
+
+        // Creating JavaScript object.
+        // Name of object should be same as Model class in Java.
+        const RequestForDateRange = {
+            dateTimeRangeStartString : dateTimeRangeStartString,
+            dateTimeRangeEndString : dateTimeRangeEndString
+        };
+
+        // Converting JavaScript object to JSON.
+        const jsonForRequestBody = JSON.stringify(RequestForDateRange);
+
+        fetchDataAndDisplayTableUsingPOST(URL_GET_API_CALLS_WITHIN_DATE_TIME_RANGE, HTML_ID_DIV_RESPONSE_FROM_ALL_API_CALLS, HTML_ID_TABLE_RESPONSE_FROM_ALL_API_CALLS, HTML_CSS_CLASS_TABLE_RESPONSE_FROM_ALL_API_CALLs, jsonForRequestBody);
+
 
     } else {
         // Handle the case when one or both inputs are empty
@@ -298,6 +312,9 @@ function btnPostApiCallClear() {
     document.getElementById(HTML_ID_TEXTAREA_API_CALL_MESSAGE).value = STRING_EMPTY;
     document.getElementById(HTML_ID_TEXT_API_CALL_APPLICATION_NAME).value = STRING_EMPTY;
     document.getElementById(HTML_ID_DATETIME_API_CALL_TIMESTAMP).value = STRING_EMPTY;
+
+    // Calling 'main' to display the original table again.
+    main();
 }
 
 /**
@@ -306,6 +323,9 @@ function btnPostApiCallClear() {
 function btnApplyDateTimeRangeClear() {
     document.getElementById(HTML_ID_DATETIME_RANGE_START).value = STRING_EMPTY;
     document.getElementById(HTML_ID_DATETIME_RANGE_END).value = STRING_EMPTY;
+
+    // Calling 'main' to display the original table again.
+    main();
 }
 
 /**
@@ -313,7 +333,7 @@ function btnApplyDateTimeRangeClear() {
  *
  */
 function main() {
-    fetchDataAndDisplayTable(URL_GET_API_CALLS_ALL, HTML_ID_DIV_RESPONSE_FROM_ALL_API_CALLS, HTML_ID_TABLE_RESPONSE_FROM_ALL_API_CALLS, CSS_CLASS_TABLE_RESPONSE);
+    fetchDataAndDisplayTableUsingPOST(URL_GET_API_CALLS_ALL, HTML_ID_DIV_RESPONSE_FROM_ALL_API_CALLS, HTML_ID_TABLE_RESPONSE_FROM_ALL_API_CALLS, HTML_CSS_CLASS_TABLE_RESPONSE_FROM_ALL_API_CALLs);
 }
 
 /**

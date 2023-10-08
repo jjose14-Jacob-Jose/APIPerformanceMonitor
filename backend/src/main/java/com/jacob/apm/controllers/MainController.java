@@ -18,7 +18,10 @@ public class MainController {
     @Autowired
     MainService mainService;
 
-//    Method to be pinged by request-pinging service to ensure the server does not hibernate.
+    /**
+     * Method to check server availability.
+     * @return MainConstants.MSG_SUCCESS (String).
+     */
     @GetMapping("/status")
     public String status() {
         APMLogger.logMethodEntry("status()");
@@ -26,25 +29,28 @@ public class MainController {
     }
 
 //    Receiving incoming requests from other APIs.
+
+    /**
+     * Receiving and stores incoming API call logs.
+     * @param apiCall : Object of APICall containing details of the log.
+     * @return String response from Service clas.
+     */
     @PostMapping(value = "/apiCall", produces = "application/json")
     public ResponseEntity<String> processAPICall(@RequestBody APICall apiCall) {
         APMLogger.logMethodEntry("processAPICall()");
-
-        boolean isOperationASuccess = mainService.saveToDatabaseAPICall(apiCall);
-        String response;
-        if (isOperationASuccess)
-            response = MainConstants.MSG_SUCCESS;
-        else
-            response = MainConstants.MSG_FAILURE;
+        String operationStatus = mainService.saveToDatabaseAPICall(apiCall);
         APMLogger.logMethodExit("processAPICall()");
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(operationStatus);
     }
 
-//    Return list of all entries.
+    /**
+     * Returns list of all logs.
+     * @return List of type APICall.
+     */
     @PostMapping(value = "/getAPICalls", produces = "application/json")
     public ResponseEntity<List<APICall>> getAPICalls() {
         APMLogger.logMethodEntry("getAPICalls()");
-        List<APICall> listAPICalls = mainService.getAPICallsAll();
+        List<APICall> listAPICalls = mainService.getAPICallsList();
 
         APMLogger.logMethodExit("getAPICalls()");
         return ResponseEntity.ok(listAPICalls);
@@ -55,7 +61,7 @@ public class MainController {
         String methodNameForLogger = "getAPICallsInRange()";
         APMLogger.logMethodEntry(methodNameForLogger);
 
-        List<APICall> listAPICalls = mainService.getAPICallsAll(requestForDateRange.getDateStart(), requestForDateRange.getDateEnd());
+        List<APICall> listAPICalls = mainService.getAPICallsWithinRange(requestForDateRange.getDateTimeRangeStartString(), requestForDateRange.getDateTimeRangeEndString());
 
         APMLogger.logMethodExit(methodNameForLogger);
         return ResponseEntity.ok(listAPICalls);

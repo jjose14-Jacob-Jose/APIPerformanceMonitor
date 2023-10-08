@@ -22,7 +22,7 @@ public class MainService {
      * @param apiCall: contains parameters to be saved to database.
      * @return boolean based on success of operation.
      */
-    public boolean saveToDatabaseAPICall(APICall apiCall) {
+    public String saveToDatabaseAPICall(APICall apiCall) {
         String methodNameForLogger = "saveToDatabaseAPICall()";
         APMLogger.logMethodEntry(methodNameForLogger);
 
@@ -33,11 +33,11 @@ public class MainService {
     //      Saving to database.
             incomingRequestsRepository.save(apiCall);
             APMLogger.logMethodExit(methodNameForLogger);
-            return MainConstants.FLAG_SUCCESS;
+            return MainConstants.MSG_SUCCESS;
 
         } catch (Exception exception) {
             APMLogger.logError(methodNameForLogger, exception);
-            return MainConstants.FLAG_FAILURE;
+            return MainConstants.MSG_FAILURE;
         }
     }
 
@@ -45,7 +45,7 @@ public class MainService {
      * Get all rows.
      * @return : ArrayList containing all API logs.
      */
-    public List<APICall> getAPICallsAll() {
+    public List<APICall> getAPICallsList() {
         String methodNameForLogger = "getAPICallsList";
         APMLogger.logMethodEntry(methodNameForLogger);
 
@@ -61,18 +61,18 @@ public class MainService {
 
     /**
      * Return rows that are within the timeframe.
-     * @param dateStart : Timeframe start date (date, month, year, hour, and minutes).
-     * @param dateEnd : Timeframe end date (date, month, year, hour, and minutes).
+     * @param dateTimeRangeStartString : Timeframe start date (date, month, year, hour, and minutes).
+     * @param dateTimeRangeEndString : Timeframe end date (date, month, year, hour, and minutes).
      * @return : ArrayList containing all API calls within the range.
      */
-    public List<APICall> getAPICallsAll(Date dateStart, Date dateEnd) {
+    public List<APICall> getAPICallsWithinRange(String dateTimeRangeStartString, String dateTimeRangeEndString) {
         String methodNameForLogger = "getAPICallsList";
         APMLogger.logMethodEntry(methodNameForLogger);
 
         List<APICall> listAPICallsFromDB = null;
 
         try {
-            listAPICallsFromDB = incomingRequestsRepository.findByCallTimestampUTCBetween(dateStart, dateEnd);
+            listAPICallsFromDB = incomingRequestsRepository.findByCallTimestampUTCBetween(dateTimeRangeStartString, dateTimeRangeEndString);
         } catch (Exception exception) {
             APMLogger.logError(methodNameForLogger, exception);
         }

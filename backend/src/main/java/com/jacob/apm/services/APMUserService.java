@@ -2,17 +2,21 @@ package com.jacob.apm.services;
 
 import com.jacob.apm.constants.MainConstants;
 import com.jacob.apm.models.APMUser;
+import com.jacob.apm.models.UserInfoDetails;
 import com.jacob.apm.repositories.APMUserRepository;
 import com.jacob.apm.utilities.APISystemTime;
 import com.jacob.apm.utilities.APMLogger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Optional;
 
 @Service
-public class APMUserService {
+public class APMUserService implements UserDetailsService {
 
     @Autowired
     private APMUserRepository apmUserRepository;
@@ -45,6 +49,31 @@ public class APMUserService {
             return MainConstants.MSG_FAILURE;
         }
     }
+
+    public UserDetails loadUserByUsername(String username) {
+        String methodNameForLogger = "getAPMUserWithUserName()";
+        APMLogger.logMethodEntry(methodNameForLogger);
+
+
+        if (username == null || username.equalsIgnoreCase(MainConstants.STRING_EMPTY)) {
+            return null;
+        }
+
+        APMUser apmUserFromDB = null;
+        try {
+            Optional<APMUser> userDetailOptional = apmUserRepository.findByUserName(username);
+            if (userDetailOptional.isPresent()) {
+                APMUser apmUser = userDetailOptional.get();
+                // You should create a custom UserDetails implementation, e.g., UserInfoDetails,
+                // and map APMUser to UserDetails using a constructor or a converter.
+                return new UserInfoDetails(apmUser);
+            }
+        } catch (Exception exception) {
+            APMLogger.logError(methodNameForLogger, exception);
+        }
+        return null;
+    }
+
 
     /**
      * Check if there is a user with specified username.

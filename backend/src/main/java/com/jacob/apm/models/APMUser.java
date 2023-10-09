@@ -23,6 +23,7 @@ public class APMUser {
     private String passwordHash;
     private String nameFirst;
     private String nameLast;
+    private String roles;
 
     private String timestampRegistration;
     private int loginAttemptsFailed;

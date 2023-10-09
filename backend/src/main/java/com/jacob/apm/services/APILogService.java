@@ -2,7 +2,7 @@ package com.jacob.apm.services;
 
 import com.jacob.apm.constants.MainConstants;
 import com.jacob.apm.models.APICall;
-import com.jacob.apm.repositories.IncomingRequestsRepository;
+import com.jacob.apm.repositories.APILogRepository;
 import com.jacob.apm.utilities.APISystemTime;
 import com.jacob.apm.utilities.APMLogger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,7 @@ import java.util.List;
 public class APILogService {
 
     @Autowired
-    private IncomingRequestsRepository incomingRequestsRepository;
+    private APILogRepository incomingRequestsRepository;
 
     /**
      *  Saves record to database.

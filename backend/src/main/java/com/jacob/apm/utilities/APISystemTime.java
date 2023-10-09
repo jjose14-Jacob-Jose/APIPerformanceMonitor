@@ -12,4 +12,8 @@ public class APISystemTime {
         return Date.from(Instant.now());
     }
 
+    public static Instant getInstantTimeAsInstant () {
+        return Instant.now();
+    }
+
 }

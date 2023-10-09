@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="java -jar" type="JarApplication">
+    <option name="JAR_PATH" value="$PROJECT_DIR$/backend/target/apm-0.0.1-SNAPSHOT.jar" />
+    <option name="WORKING_DIRECTORY" value="D:\JacobProjects\APIPerformanceMonitor\backend" />
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+    <option name="ALTERNATIVE_JRE_PATH" value="20" />
+    <method v="2">
+      <option name="RunConfigurationTask" enabled="true" run_configuration_name="mvn clean install" run_configuration_type="MavenRunConfiguration" />
+    </method>
+  </configuration>
+</component>

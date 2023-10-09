@@ -1,2 +1,3 @@
-# APIUsageTracker
-API Usage Tracker. Application to track incoming requests coming to APIs that I have deployed on the cloud.
+# APIPerformanceMonitor
+API Performance Monitor. Application to monitor and analyzer the performance of APIs deployed. 
+This data is to be used to performance improvements. 

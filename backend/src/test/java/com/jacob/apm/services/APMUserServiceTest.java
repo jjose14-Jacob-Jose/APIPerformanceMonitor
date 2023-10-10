@@ -41,7 +41,7 @@ class APMUserServiceTest {
         apmUser1.setNameFirst("First");
         apmUser1.setNameLast("Last");
         apmUser1.setEmailID("first.last@email.com");
-        apmUser1.setPasswordHash("passwordHash");
+        apmUser1.setPassword("passwordHash");
         apmUser1.setTimestampRegistration(APISystemTime.getInstantTimeAsString());
         apmUser1.setLoginAttemptsFailed(0);
         listAPMUsers.add(apmUser1);
@@ -51,7 +51,7 @@ class APMUserServiceTest {
         apmUser2.setNameFirst("First2");
         apmUser2.setNameLast("Last2");
         apmUser2.setEmailID("first.last2@email.com");
-        apmUser2.setPasswordHash("passwordHash2");
+        apmUser2.setPassword("passwordHash2");
         apmUser2.setTimestampRegistration(APISystemTime.getInstantTimeAsString());
         apmUser2.setLoginAttemptsFailed(1);
         listAPMUsers.add(apmUser2);
@@ -97,6 +97,7 @@ class APMUserServiceTest {
         assertEquals(MainConstants.MSG_DUPLICATE_EMAIL_ID, result);
     }
 
+    @Test
     void testSaveUserWithDuplicateUsername() {
         APMUser newUser = new APMUser();
         newUser.setEmailID("usernameForTest");

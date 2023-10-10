@@ -7,8 +7,10 @@ import com.jacob.apm.repositories.APMUserRepository;
 import com.jacob.apm.utilities.APISystemTime;
 import com.jacob.apm.utilities.APMLogger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -20,6 +22,10 @@ public class APMUserService implements UserDetailsService {
 
     @Autowired
     private APMUserRepository apmUserRepository;
+
+    @Autowired
+    @Lazy
+    private PasswordEncoder encoder;
 
     /**
      * Save user to database.
@@ -39,6 +45,8 @@ public class APMUserService implements UserDetailsService {
 
 //        Setting user's registration time as UTC.
         apmUser.setTimestampRegistration(APISystemTime.getInstantTimeAsString());
+
+        apmUser.setPassword(encoder.encode(apmUser.getPassword()));
 
         try {
             apmUserRepository.save(apmUser);

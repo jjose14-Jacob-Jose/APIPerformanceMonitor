@@ -9,6 +9,8 @@ import com.jacob.apm.models.APMUser;
 import com.jacob.apm.models.AuthenticationRequest;
 import com.jacob.apm.services.APMUserService;
 import com.jacob.apm.services.JwtService;
+import com.jacob.apm.utilities.APMLogger;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,6 +18,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 @RestController
 @RequestMapping("/auth")
@@ -28,6 +31,20 @@ public class APMUserController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
+
+    @GetMapping("/login")
+    public ModelAndView login() {
+        try {
+            APMLogger.logMethodEntry("login()");
+            ModelAndView modelAndView = new ModelAndView();
+            modelAndView.setViewName("login"); // Set the view name to your error page (e.g., "error.html")
+            return modelAndView;
+
+        } catch (Exception exception) {
+            APMLogger.logError( "login()", exception);
+            return null;
+        }
+    }
 
     @GetMapping("/welcome")
     public String welcome() {
@@ -52,12 +69,18 @@ public class APMUserController {
     }
 
     @PostMapping("/generateToken")
-    public String authenticateAndGetToken(@RequestBody AuthenticationRequest authenticationRequest ) {
+    public String authenticateAndGetToken(@RequestBody AuthenticationRequest authenticationRequest, HttpServletResponse response) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword()));
         if (authentication.isAuthenticated()) {
-            return jwtService.generateToken(authenticationRequest.getUsername());
+            String token = jwtService.generateToken(authenticationRequest.getUsername());
+
+            response.setHeader("Authorization", "Bearer " + token);
+            response.setHeader("Set-Cookie", "Authorization=" + token + "; HttpOnly; Path=/");
+
+            return "Token generated successfully!";
         } else {
             throw new UsernameNotFoundException("invalid user request !");
         }
     }
+
 }

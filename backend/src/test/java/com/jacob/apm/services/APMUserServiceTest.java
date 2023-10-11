@@ -10,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -22,6 +23,9 @@ class APMUserServiceTest {
 
     @Mock
     private APMUserRepository apmUserRepository;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
     @InjectMocks
     private APMUserService apmUserService;
@@ -100,7 +104,7 @@ class APMUserServiceTest {
     @Test
     void testSaveUserWithDuplicateUsername() {
         APMUser newUser = new APMUser();
-        newUser.setEmailID("usernameForTest");
+        newUser.setUserName("usernameForTest");
 
         // Mock the behavior of apmUserRepository.findAPMUserByUserName to return an existing user
         Mockito.when(apmUserRepository.findAPMUserByUserName(newUser.getUserName()))
@@ -113,7 +117,7 @@ class APMUserServiceTest {
         Mockito.verify(apmUserRepository).findAPMUserByUserName(newUser.getUserName());
 
         // Assert the expected outcome of the test
-        assertEquals(MainConstants.MSG_DUPLICATE_EMAIL_ID, result);
+        assertEquals(MainConstants.MSG_DUPLICATE_USERNAME, result);
     }
 
     @Test

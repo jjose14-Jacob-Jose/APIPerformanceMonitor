@@ -7,7 +7,7 @@ function formSubmitLogin(event) {
         formDataJson[key] = value;
     });
 
-    fetch("/auth/login", {
+    fetch("/auth/generateToken", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -16,14 +16,33 @@ function formSubmitLogin(event) {
     })
         .then(response => {
             if (response.status === 200) {
-                // Redirect the user to the login page
-                window.location.href = '/main';
+                // Store the authorization token in a variable.
+                const token = response.headers.get('Authorization');
+
+                // Post to the main page.
+                postToMain(token);
             } else {
-                // The user is authenticated
-                // Render the HTML page
-                console.log(response.json());
                 window.location.href = '/error';
             }
         })
         .catch(error => console.error(error));
+}
+
+async function postToMain(token) {
+    const request = new Request('/auth/admin/adminProfile', {
+        method: 'GET',
+        headers: {
+            'Authorization': token,
+        },
+    });
+
+    const response = await fetch(request);
+
+    if (response.status === 200) {
+        const html = await response.text();
+        // Render the HTML response to the page.
+        document.querySelector("body").innerHTML = html;
+    } else {
+        // Handle the error.
+    }
 }

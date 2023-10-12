@@ -47,7 +47,7 @@ public class APMUserController {
     }
 
     @PostMapping("/login")
-    public ModelAndView login(@RequestBody AuthenticationRequest authenticationRequest, HttpServletResponse response) {
+    public void login(@RequestBody AuthenticationRequest authenticationRequest, HttpServletResponse response) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword()));
         if (authentication.isAuthenticated()) {
             String token = jwtService.generateToken(authenticationRequest.getUsername());
@@ -55,9 +55,9 @@ public class APMUserController {
             response.setHeader("Authorization", "Bearer " + token);
             response.setHeader("Set-Cookie", "Authorization=" + token + "; HttpOnly; Path=/");
 
-            ModelAndView modelAndView = new ModelAndView();
-            modelAndView.setViewName("main");
-            return modelAndView;
+//            ModelAndView modelAndView = new ModelAndView();
+//            modelAndView.setViewName("main");
+//            return modelAndView;
         } else {
             throw new UsernameNotFoundException("invalid user request !");
         }

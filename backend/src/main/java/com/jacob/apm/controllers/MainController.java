@@ -2,6 +2,7 @@ package com.jacob.apm.controllers;
 
 import com.jacob.apm.constants.MainConstants;
 import com.jacob.apm.utilities.APMLogger;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -17,6 +18,19 @@ public class MainController {
         APMLogger.logMethodEntry("status()");
         return MainConstants.MSG_SUCCESS;
     }
+
+    @GetMapping("/main")
+    public ModelAndView main() {
+        APMLogger.logMethodEntry("main()");
+        try {
+            ModelAndView modelAndView = new ModelAndView();
+            modelAndView.setViewName("main");
+            return modelAndView;
+        } catch (Exception exception) {
+            return handleException(exception);
+        }
+    }
+
 
     @ExceptionHandler(Exception.class)
     public ModelAndView handleException(Exception exception) {

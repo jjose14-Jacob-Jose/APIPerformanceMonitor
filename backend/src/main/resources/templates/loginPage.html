@@ -4,20 +4,20 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>API Performance Monitor</title>
-<!--        <script src="/js/MainScript.js"></script>-->
+        <script src="/js/Login.js"></script>
         <link rel="stylesheet" type="text/css" href="/css/LoginStyles.css">
     <body>
         <main>
             <h1>API Performance Monitor </h1>
             <h2>Login </h2>
-            <form action="/generateToken" method="POST">
+            <form action="/auth/login" method="POST" id="formLogin" >
                 <label for="username">Username:</label>
                 <input type="text" id="username" name="username" required><br>
 
                 <label for="password">Password:</label>
                 <input type="password" id="password" name="password" required><br>
 
-                <input type="submit" value="Login">
+                <input type="submit" value="Login" onclick="formSubmitLogin(event)">
             </form>
         </main>
         <footer>

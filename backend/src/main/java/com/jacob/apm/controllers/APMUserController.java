@@ -32,17 +32,34 @@ public class APMUserController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    @GetMapping("/login")
+    @GetMapping("/loginPage")
     public ModelAndView login() {
         try {
-            APMLogger.logMethodEntry("login()");
+            APMLogger.logMethodEntry("loginPage()");
             ModelAndView modelAndView = new ModelAndView();
-            modelAndView.setViewName("login"); // Set the view name to your error page (e.g., "error.html")
+            modelAndView.setViewName("loginPage"); // Set the view name to your error page (e.g., "error.html")
             return modelAndView;
 
         } catch (Exception exception) {
-            APMLogger.logError( "login()", exception);
+            APMLogger.logError( "loginPage()", exception);
             return null;
+        }
+    }
+
+    @PostMapping("/login")
+    public ModelAndView login(@RequestBody AuthenticationRequest authenticationRequest, HttpServletResponse response) {
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword()));
+        if (authentication.isAuthenticated()) {
+            String token = jwtService.generateToken(authenticationRequest.getUsername());
+
+            response.setHeader("Authorization", "Bearer " + token);
+            response.setHeader("Set-Cookie", "Authorization=" + token + "; HttpOnly; Path=/");
+
+            ModelAndView modelAndView = new ModelAndView();
+            modelAndView.setViewName("main");
+            return modelAndView;
+        } else {
+            throw new UsernameNotFoundException("invalid user request !");
         }
     }
 

@@ -29,7 +29,7 @@ function formSubmitLogin(event) {
 }
 
 async function postToMain(token) {
-    const request = new Request('/auth/admin/adminProfile', {
+    const request = new Request('/main', {
         method: 'GET',
         headers: {
             'Authorization': token,
@@ -40,9 +40,26 @@ async function postToMain(token) {
 
     if (response.status === 200) {
         const html = await response.text();
-        // Render the HTML response to the page.
-        document.querySelector("body").innerHTML = html;
+
+        // Create a new script element and set the src attribute to the path of the JS file.
+        const scriptElement = document.createElement('script');
+        scriptElement.src = '/js/MainScript.js';
+
+        // Append the script element to the body of the current page.
+        document.body.appendChild(scriptElement);
+
+        // Create a new link element and set the href attribute to the path of the CSS file.
+        const linkElement = document.createElement('link');
+        linkElement.href = '/css/MainStyles.css';
+        linkElement.rel = 'stylesheet';
+
+        // Append the link element to the head of the current page.
+        document.head.appendChild(linkElement);
+
+        // Set the innerHTML of the body element to the HTML response.
+        document.querySelector('body').innerHTML = html;
     } else {
         // Handle the error.
     }
 }
+

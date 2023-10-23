@@ -223,7 +223,8 @@ function getPostData(url, jsonDataInRequestBodyAsString, successCallback, errorC
     fetch(url, {
         method: 'POST', // Specify the HTTP method as POST
         headers: {
-            'Content-Type': 'application/json', // Set the content type if you are sending JSON data
+            'Content-Type': 'application/json',
+            'Authorization' : 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhNyIsImlhdCI6MTY5NzA5NDAwMCwiZXhwIjoxNjk4NTYyODAwfQ.29lv8S9_kITXLJ4xNK1J-4nq9OYwObypcuySig1zniU'// Set the content type if you are sending JSON data
         },
         // body: JSON.stringify(jsonDataInRequestBodyAsString), // Include the request body if needed
         body: jsonDataInRequestBodyAsString, // Include the request body if needed

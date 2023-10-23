@@ -50,13 +50,12 @@ public class SecurityConfig {
                                 "/auth/loginPage",
                                 "/auth/login",
                                 "/error",
-//                                "/main",
-                                "/apiCall/getAll",
                                 "/js/*",
                                 "/css/*").permitAll()
                         .requestMatchers("/auth/user/**").authenticated()
                         .requestMatchers("/auth/admin/**").authenticated()
                         .requestMatchers("/main").authenticated()
+                        .requestMatchers("/apiCall/getAll").authenticated()
                 )
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())

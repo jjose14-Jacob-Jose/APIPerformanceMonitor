@@ -48,6 +48,7 @@ public class SecurityConfig {
                                 "/status",
                                 "/login",
                                 "/auth/logout",
+                                "/apiCall/save",
                                 "/auth/addNewUser",
                                 "/error",
                                 "/js/*",
@@ -56,6 +57,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/auth/generateToken").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/processLogin").permitAll()
                         .requestMatchers(HttpMethod.POST, "/apiCall/getAll").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/apiCall/getAll/range").authenticated()
                         .requestMatchers("/auth/user/**").authenticated()
                         .requestMatchers("/auth/admin/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/home").authenticated()
@@ -69,7 +71,9 @@ public class SecurityConfig {
                 .csrf()
                 .ignoringRequestMatchers("/auth/generateToken")
                 .ignoringRequestMatchers("/auth/processLogin")
+                .ignoringRequestMatchers("/apiCall/save")
                 .ignoringRequestMatchers("/apiCall/getAll")
+                .ignoringRequestMatchers("/apiCall/getAll/range")
                 .and()
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())

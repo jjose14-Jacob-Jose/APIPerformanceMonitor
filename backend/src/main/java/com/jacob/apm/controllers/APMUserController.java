@@ -51,13 +51,8 @@ public class APMUserController {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword()));
         if (authentication.isAuthenticated()) {
             String token = jwtService.generateToken(authenticationRequest.getUsername());
-
             response.setHeader("Authorization", "Bearer " + token);
             response.setHeader("Set-Cookie", "Authorization=" + token + "; HttpOnly; Path=/");
-
-//            ModelAndView modelAndView = new ModelAndView();
-//            modelAndView.setViewName("main");
-//            return modelAndView;
         } else {
             throw new UsernameNotFoundException("invalid user request !");
         }

@@ -47,6 +47,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/status",
                                 "/login",
+                                "/auth/logout",
                                 "/auth/addNewUser",
                                 "/error",
                                 "/js/*",

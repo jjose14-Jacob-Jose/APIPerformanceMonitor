@@ -1,3 +1,30 @@
+/*************** START: Page heading.*/
+
+.divBodyHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.divBodyHeader h2 {
+    margin-left: 0;
+}
+
+.divBodyHeader #btnLogOut {
+    margin-right: 10%;
+    background-color: #ef7676; /* Red background color */
+    color: #FFFFFF; /* White text color */
+    padding: 10px 20px; /* Padding around the button text */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Cursor style on hover */
+}
+
+.divBodyHeader #btnLogOut:hover {
+    background-color: #D40000; /* Darker red background on hover */
+}
+
+
 /*************** START: Table form to make API Logs.*/
 .tableUserInput textarea {
     height: 1em;

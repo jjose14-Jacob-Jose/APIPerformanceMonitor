@@ -93,4 +93,16 @@ public class APMUserController {
         }
     }
 
+    @GetMapping("/logout")
+    public String logout(HttpServletResponse response) {
+
+        Cookie cookie = new Cookie(MainConstants.COOKIE_HEADER_AUTHORIZATION, MainConstants.STRING_EMPTY);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+
+        return "Logout successful";
+    }
+
 }

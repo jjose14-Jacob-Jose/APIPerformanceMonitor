@@ -327,6 +327,24 @@ function btnApplyDateTimeRangeClear() {
     main();
 }
 
+// Logout. Clear session.
+function logoutUser() {
+    fetch("/auth/logout", {
+        method: "GET"
+    })
+        .then(response => {
+            if (response.status === 200) {
+                // Redirect to your login or home page
+                window.location.href = "/login"; // Adjust the URL as needed
+            } else {
+                // Handle the error
+                console.error("Logout failed");
+            }
+        })
+        .catch(error => console.error(error));
+}
+
+
 /**
  * Methods are run when the HTML method is loaded.
  *

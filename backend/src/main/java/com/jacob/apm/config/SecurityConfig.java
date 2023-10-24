@@ -14,7 +14,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -49,24 +48,25 @@ public class SecurityConfig {
                                 "/auth/addNewUser",
                                 "/status",
                                 "/apiCall/getAll",
-                                "/auth/loginPage",
-                                "/auth/login",
+                                "login",
                                 "/error",
                                 "/js/*",
                                 "/css/*").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/generateToken").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/processLogin").permitAll()
                         .requestMatchers("/auth/user/**").authenticated()
                         .requestMatchers("/auth/admin/**").authenticated()
-                        .requestMatchers("/main").authenticated()
+                        .requestMatchers("/home").authenticated()
                 )
                 .formLogin((formLogin) ->
                         formLogin
-                                .loginPage("/auth/loginPage")
+                                .loginPage("/login")
                                 .defaultSuccessUrl("/status")
                                 .permitAll() // Allow unauthenticated users to access the login page
                 )
                 .csrf()
                 .ignoringRequestMatchers("/auth/generateToken")
+                .ignoringRequestMatchers("/auth/processLogin")
                 .and()
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())

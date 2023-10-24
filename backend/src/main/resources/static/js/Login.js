@@ -29,7 +29,7 @@ function formSubmitLogin(event) {
 }
 
 async function postToMain(token) {
-    const request = new Request('/main', {
+    const request = new Request('/home', {
         method: 'GET',
         headers: {
             'Authorization': token,

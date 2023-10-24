@@ -2,12 +2,11 @@ package com.jacob.apm.controllers;
 
 import com.jacob.apm.constants.MainConstants;
 import com.jacob.apm.utilities.APMLogger;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 @RestController
-public class MainController {
+public class HomeController {
 
     /**
      * Method to check server availability.
@@ -19,15 +18,29 @@ public class MainController {
         return MainConstants.MSG_SUCCESS;
     }
 
-    @GetMapping("/main")
-    public ModelAndView main() {
-        APMLogger.logMethodEntry("main()");
+    @GetMapping("/home")
+    public ModelAndView home() {
+        APMLogger.logMethodEntry("home()");
         try {
             ModelAndView modelAndView = new ModelAndView();
-            modelAndView.setViewName("main");
+            modelAndView.setViewName("home");
             return modelAndView;
         } catch (Exception exception) {
             return handleException(exception);
+        }
+    }
+
+    @GetMapping("/login")
+    public ModelAndView login() {
+        try {
+            APMLogger.logMethodEntry("login()");
+            ModelAndView modelAndView = new ModelAndView();
+            modelAndView.setViewName("login"); // Set the view name to your error page (e.g., "error.html")
+            return modelAndView;
+
+        } catch (Exception exception) {
+            APMLogger.logError( "loginPage()", exception);
+            return null;
         }
     }
 

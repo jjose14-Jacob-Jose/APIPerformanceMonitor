@@ -43,10 +43,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
+                .csrf().disable()
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers(
                                 "/status",
                                 "/login",
+                                "/",
                                 "/auth/logout",
                                 "/apiCall/save",
                                 "/auth/addNewUser",
@@ -58,8 +60,6 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/auth/processLogin").permitAll()
                         .requestMatchers(HttpMethod.POST, "/apiCall/getAll").authenticated()
                         .requestMatchers(HttpMethod.POST, "/apiCall/getAll/range").authenticated()
-                        .requestMatchers("/auth/user/**").authenticated()
-                        .requestMatchers("/auth/admin/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/home").authenticated()
                 )
                 .formLogin((formLogin) ->
@@ -68,13 +68,6 @@ public class SecurityConfig {
                                 .defaultSuccessUrl("/status")
                                 .permitAll() // Allow unauthenticated users to access the login page
                 )
-                .csrf()
-                .ignoringRequestMatchers("/auth/generateToken")
-                .ignoringRequestMatchers("/auth/processLogin")
-                .ignoringRequestMatchers("/apiCall/save")
-                .ignoringRequestMatchers("/apiCall/getAll")
-                .ignoringRequestMatchers("/apiCall/getAll/range")
-                .and()
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)

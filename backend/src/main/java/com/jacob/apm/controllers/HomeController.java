@@ -30,7 +30,7 @@ public class HomeController {
         }
     }
 
-    @GetMapping("/login")
+    @GetMapping({"/login", "/"})
     public ModelAndView login() {
         try {
             APMLogger.logMethodEntry("login()");

@@ -55,6 +55,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+                response.addHeader(MainConstants.COOKIE_HEADER_LOGIN_STATUS, MainConstants.COOKIE_HEADER_LOGIN_STATUS_MESSAGE_SUCCESS);
+            } else if (userDetails == null){
+                response.addHeader(MainConstants.COOKIE_HEADER_LOGIN_STATUS, MainConstants.COOKIE_HEADER_LOGIN_STATUS_MESSAGE_FAILED);
             }
         }
         filterChain.doFilter(request, response);

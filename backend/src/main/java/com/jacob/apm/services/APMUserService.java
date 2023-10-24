@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -62,12 +63,9 @@ public class APMUserService implements UserDetailsService {
         String methodNameForLogger = "getAPMUserWithUserName()";
         APMLogger.logMethodEntry(methodNameForLogger);
 
-
         if (username == null || username.equalsIgnoreCase(MainConstants.STRING_EMPTY)) {
             return null;
         }
-
-        APMUser apmUserFromDB = null;
         try {
             Optional<APMUser> userDetailOptional = apmUserRepository.findByUserName(username);
             if (userDetailOptional.isPresent()) {

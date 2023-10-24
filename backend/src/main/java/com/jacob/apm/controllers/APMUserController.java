@@ -53,6 +53,7 @@ public class APMUserController {
             String token = jwtService.generateToken(authenticationRequest.getUsername());
             response.setHeader("Authorization", "Bearer " + token);
             response.setHeader("Set-Cookie", "Authorization=" + token + "; HttpOnly; Path=/");
+            System.out.println("8888888888888888888888888888888888888888888888");
         } else {
             throw new UsernameNotFoundException("invalid user request !");
         }

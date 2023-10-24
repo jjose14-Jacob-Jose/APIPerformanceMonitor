@@ -10,6 +10,7 @@ import com.jacob.apm.services.APMUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -46,7 +47,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/auth/welcome",
                                 "/auth/addNewUser",
-                                "/auth/generateToken",
                                 "/status",
                                 "/apiCall/getAll",
                                 "/auth/loginPage",
@@ -54,11 +54,20 @@ public class SecurityConfig {
                                 "/error",
                                 "/js/*",
                                 "/css/*").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/generateToken").permitAll()
                         .requestMatchers("/auth/user/**").authenticated()
                         .requestMatchers("/auth/admin/**").authenticated()
                         .requestMatchers("/main").authenticated()
                 )
-                .formLogin(Customizer.withDefaults())
+                .formLogin((formLogin) ->
+                        formLogin
+                                .loginPage("/auth/loginPage")
+                                .defaultSuccessUrl("/status")
+                                .permitAll() // Allow unauthenticated users to access the login page
+                )
+                .csrf()
+                .ignoringRequestMatchers("/auth/generateToken")
+                .and()
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)

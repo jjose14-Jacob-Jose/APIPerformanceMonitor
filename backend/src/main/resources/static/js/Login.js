@@ -6,7 +6,6 @@ function formSubmitLogin(event) {
     formData.forEach((value, key) => {
         formDataJson[key] = value;
     });
-
     fetch("/auth/generateToken", {
         method: "POST",
         headers: {
@@ -18,7 +17,6 @@ function formSubmitLogin(event) {
             if (response.status === 200) {
                 // Store the authorization token in a variable.
                 const token = response.headers.get('Authorization');
-
                 // Post to the main page.
                 postToMain(token);
             } else {

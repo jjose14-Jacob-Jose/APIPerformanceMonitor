@@ -10,6 +10,7 @@ import com.jacob.apm.models.AuthenticationRequest;
 import com.jacob.apm.services.APMUserService;
 import com.jacob.apm.services.JwtService;
 import com.jacob.apm.utilities.APMLogger;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -39,14 +40,17 @@ public class APMUserController {
             String token = jwtService.generateToken(authenticationRequest.getUsername());
             response.setHeader("Authorization", "Bearer " + token);
             response.setHeader("Set-Cookie", "Authorization=" + token + "; HttpOnly; Path=/");
-        } else {
-            throw new UsernameNotFoundException("invalid user request !");
-        }
-    }
 
-    @GetMapping("/welcome")
-    public String welcome() {
-        return "Welcome this endpoint is not secure";
+            // Set the token as an HTTP-only cookie
+            Cookie cookie = new Cookie("Authorization", "Bearer " + token);
+            cookie.setHttpOnly(true);
+            cookie.setPath("/");
+
+            response.addCookie(cookie);
+
+        } else {
+            throw new UsernameNotFoundException("Username not found");
+        }
     }
 
     @PostMapping("/addNewUser")
@@ -72,8 +76,14 @@ public class APMUserController {
         if (authentication.isAuthenticated()) {
             String token = jwtService.generateToken(authenticationRequest.getUsername());
 
-            response.setHeader("Authorization", "Bearer " + token);
-            response.setHeader("Set-Cookie", "Authorization=" + token + "; HttpOnly; Path=/");
+            // Set the token as an HTTP-only cookie
+            Cookie cookie = new Cookie("Authorization", "Bearer" + token);
+            cookie.setHttpOnly(true);
+            cookie.setPath("/");
+
+            response.addCookie(cookie);
+//            response.setHeader("Authorization", "Bearer " + token);
+//            response.setHeader("Set-Cookie", "Authorization=" + token + "; HttpOnly; Path=/");
 
             return "Token generated successfully!";
         } else {

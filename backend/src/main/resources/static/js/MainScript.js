@@ -65,7 +65,7 @@ function makeAPILog() {
     fetch(URL_POST_API_CALL, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
         },
         body: JSON.stringify(requestData)
     })
@@ -84,6 +84,13 @@ function makeAPILog() {
             console.error('Error:', error);
             alert('An error occurred while sending the POST request.');
         });
+}
+
+// Function to get a cookie value by name
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
 }
 
 /**

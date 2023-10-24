@@ -44,16 +44,17 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/auth/welcome",
-                                "/auth/addNewUser",
+                        .requestMatchers(
                                 "/status",
-                                "/apiCall/getAll",
-                                "login",
+                                "/login",
+                                "/auth/addNewUser",
                                 "/error",
                                 "/js/*",
-                                "/css/*").permitAll()
+                                "/css/*"
+                        ).permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/generateToken").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/processLogin").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/apiCall/getAll").authenticated()
                         .requestMatchers("/auth/user/**").authenticated()
                         .requestMatchers("/auth/admin/**").authenticated()
                         .requestMatchers("/home").authenticated()
@@ -67,6 +68,7 @@ public class SecurityConfig {
                 .csrf()
                 .ignoringRequestMatchers("/auth/generateToken")
                 .ignoringRequestMatchers("/auth/processLogin")
+                .ignoringRequestMatchers("/apiCall/getAll")
                 .and()
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())

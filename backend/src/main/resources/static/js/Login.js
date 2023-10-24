@@ -32,8 +32,8 @@ async function postToMain() {
     const responseForHome = await fetch(requestForHome);
 
     if (responseForHome.status === 200) {
-        const html = await responseForHome.text();
-        document.getElementById("divMain").innerHTML = html;
+        window.location.href = "/home";
+
     } else {
         // Handle the error.
     }

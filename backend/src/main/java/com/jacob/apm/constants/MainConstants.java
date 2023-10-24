@@ -8,7 +8,7 @@ public class MainConstants {
     public static String MSG_DUPLICATE_USERNAME = "This username is already in use.";
     public static String STRING_EMPTY = "";
 
-    public static String MSG_INVALID_VALUE = "Invalid Value";
+    public static String COOKIE_HEADER_AUTHORIZATION = "Authorization";
     public static String MSG_DELIMITER_MESSAGE_TO_MESSAGE = " ";
     public static String MSG_ACCOUNT_LOCK_STATUS_UNLOCKED = "Account Unlocked";
     public static String MSG_ACCOUNT_LOCK_STATUS_LOCKED = "Account locked";

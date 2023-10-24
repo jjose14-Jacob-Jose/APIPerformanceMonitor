@@ -7,18 +7,21 @@
         <script src="/js/Login.js"></script>
         <link rel="stylesheet" type="text/css" href="/css/LoginStyles.css">
     <body>
+
         <main>
-            <h1>API Performance Monitor </h1>
-            <h2>Login </h2>
-            <form action="/auth/processLogin" method="POST" id="formLogin" >
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" required><br>
+            <div id="divMain">
+                <h1>API Performance Monitor </h1>
+                <h2>Login </h2>
+                <form action="/auth/processLogin" method="POST" id="formLogin" >
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required><br>
 
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required><br>
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required><br>
 
-                <input type="submit" value="Login" onclick="formSubmitLogin(event)">
-            </form>
+                    <input type="submit" value="Login" onclick="formSubmitLogin(event)">
+                </form>
+            </div>
         </main>
         <footer>
 

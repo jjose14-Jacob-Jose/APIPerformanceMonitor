@@ -5,11 +5,13 @@ package com.jacob.apm.controllers;
  * https://www.geeksforgeeks.org/spring-boot-3-0-jwt-authentication-with-spring-security-using-mysql-database/#
  */
 
+import com.jacob.apm.constants.MainConstants;
 import com.jacob.apm.models.APMUser;
 import com.jacob.apm.models.AuthenticationRequest;
 import com.jacob.apm.services.APMUserService;
 import com.jacob.apm.services.JwtService;
 import com.jacob.apm.utilities.APMLogger;
+import com.sun.tools.javac.Main;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,7 +79,7 @@ public class APMUserController {
             String token = jwtService.generateToken(authenticationRequest.getUsername());
 
             // Set the token as an HTTP-only cookie
-            Cookie cookie = new Cookie("Authorization", "Bearer" + token);
+            Cookie cookie = new Cookie(MainConstants.COOKIE_HEADER_AUTHORIZATION, token);
             cookie.setHttpOnly(true);
             cookie.setPath("/");
 

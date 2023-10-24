@@ -57,7 +57,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/apiCall/getAll").authenticated()
                         .requestMatchers("/auth/user/**").authenticated()
                         .requestMatchers("/auth/admin/**").authenticated()
-                        .requestMatchers("/home").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/home").authenticated()
                 )
                 .formLogin((formLogin) ->
                         formLogin

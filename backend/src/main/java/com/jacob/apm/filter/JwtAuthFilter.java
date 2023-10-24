@@ -1,9 +1,11 @@
 package com.jacob.apm.filter;
 
+import com.jacob.apm.constants.MainConstants;
 import com.jacob.apm.services.APMUserService;
 import com.jacob.apm.services.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +30,18 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String authHeader = request.getHeader("Authorization");
+        String authHeader = request.getHeader(MainConstants.COOKIE_HEADER_AUTHORIZATION);
+
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equalsIgnoreCase(MainConstants.COOKIE_HEADER_AUTHORIZATION)) {
+                    authHeader = "Bearer " + cookie.getValue();
+                    break;
+                }
+            }
+        }
+
         String token = null;
         String username = null;
         if (authHeader != null && authHeader.startsWith("Bearer ")) {

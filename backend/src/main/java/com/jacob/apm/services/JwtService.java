@@ -1,5 +1,8 @@
 package com.jacob.apm.services;
 
+import com.jacob.apm.constants.MainConstants;
+import com.jacob.apm.utilities.APISystemTime;
+import com.sun.tools.javac.Main;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -27,14 +30,9 @@ public class JwtService {
 
     private String createToken(Map<String, Object> claims, String userName) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy HH:mm");
-        Date issuedAt = null;
-        Date expiry = null;
-        try {
-            issuedAt = dateFormat.parse("12-Oct-2023 00:00");
-            expiry = dateFormat.parse("29-Oct-2023 00:00");
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        Date issuedAt = APISystemTime.getInstantTimeAsUTCDate();
+        Date expiry = new Date(issuedAt.getTime() + (MainConstants.JWT_TOKEN_VALIDITY_IN_HOURS * MainConstants.DURATION_MILLISECONDS_IN_ONE_HOUR));
+
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(userName)

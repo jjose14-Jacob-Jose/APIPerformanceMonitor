@@ -10,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -22,6 +23,9 @@ class APMUserServiceTest {
 
     @Mock
     private APMUserRepository apmUserRepository;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
     @InjectMocks
     private APMUserService apmUserService;
@@ -41,7 +45,7 @@ class APMUserServiceTest {
         apmUser1.setNameFirst("First");
         apmUser1.setNameLast("Last");
         apmUser1.setEmailID("first.last@email.com");
-        apmUser1.setPasswordHash("passwordHash");
+        apmUser1.setPassword("passwordHash");
         apmUser1.setTimestampRegistration(APISystemTime.getInstantTimeAsString());
         apmUser1.setLoginAttemptsFailed(0);
         listAPMUsers.add(apmUser1);
@@ -51,7 +55,7 @@ class APMUserServiceTest {
         apmUser2.setNameFirst("First2");
         apmUser2.setNameLast("Last2");
         apmUser2.setEmailID("first.last2@email.com");
-        apmUser2.setPasswordHash("passwordHash2");
+        apmUser2.setPassword("passwordHash2");
         apmUser2.setTimestampRegistration(APISystemTime.getInstantTimeAsString());
         apmUser2.setLoginAttemptsFailed(1);
         listAPMUsers.add(apmUser2);
@@ -97,9 +101,10 @@ class APMUserServiceTest {
         assertEquals(MainConstants.MSG_DUPLICATE_EMAIL_ID, result);
     }
 
+    @Test
     void testSaveUserWithDuplicateUsername() {
         APMUser newUser = new APMUser();
-        newUser.setEmailID("usernameForTest");
+        newUser.setUserName("usernameForTest");
 
         // Mock the behavior of apmUserRepository.findAPMUserByUserName to return an existing user
         Mockito.when(apmUserRepository.findAPMUserByUserName(newUser.getUserName()))
@@ -112,7 +117,7 @@ class APMUserServiceTest {
         Mockito.verify(apmUserRepository).findAPMUserByUserName(newUser.getUserName());
 
         // Assert the expected outcome of the test
-        assertEquals(MainConstants.MSG_DUPLICATE_EMAIL_ID, result);
+        assertEquals(MainConstants.MSG_DUPLICATE_USERNAME, result);
     }
 
     @Test

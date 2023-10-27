@@ -5,7 +5,6 @@
     <module name="apm" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="com.jacob.apm.ApiPerformanceMonitorApplication" />
     <method v="2">
-      <option name="RunConfigurationTask" enabled="true" run_configuration_name="mvn clean install" run_configuration_type="MavenRunConfiguration" />
       <option name="Make" enabled="true" />
     </method>
   </configuration>

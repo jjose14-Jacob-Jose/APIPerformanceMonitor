@@ -65,7 +65,7 @@ function makeAPILog() {
     fetch(URL_POST_API_CALL, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
         },
         body: JSON.stringify(requestData)
     })
@@ -86,13 +86,11 @@ function makeAPILog() {
         });
 }
 
-/**
- * Redirect to 'index.html' from 'error.html'
- */
-function redirectToHomePage() {
-    setTimeout(function() {
-        window.location.href = "/"; // Replace with your desired URL
-    }, DELAY_REDIRECTION_TO_HOME_FROM_ERROR_IN_MILLISECONDS); // 1000 milliseconds = 1 seconds
+// Function to get a cookie value by name
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
 }
 
 /**
@@ -232,7 +230,7 @@ function getPostData(url, jsonDataInRequestBodyAsString, successCallback, errorC
     fetch(url, {
         method: 'POST', // Specify the HTTP method as POST
         headers: {
-            'Content-Type': 'application/json', // Set the content type if you are sending JSON data
+            'Content-Type': 'application/json',
         },
         // body: JSON.stringify(jsonDataInRequestBodyAsString), // Include the request body if needed
         body: jsonDataInRequestBodyAsString, // Include the request body if needed
@@ -327,6 +325,24 @@ function btnApplyDateTimeRangeClear() {
     // Calling 'main' to display the original table again.
     main();
 }
+
+// Logout. Clear session.
+function logoutUser() {
+    fetch("/auth/logout", {
+        method: "GET"
+    })
+        .then(response => {
+            if (response.status === 200) {
+                // Redirect to your login or home page
+                window.location.href = "/login"; // Adjust the URL as needed
+            } else {
+                // Handle the error
+                console.error("Logout failed");
+            }
+        })
+        .catch(error => console.error(error));
+}
+
 
 /**
  * Methods are run when the HTML method is loaded.

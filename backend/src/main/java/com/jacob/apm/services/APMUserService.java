@@ -2,20 +2,31 @@ package com.jacob.apm.services;
 
 import com.jacob.apm.constants.MainConstants;
 import com.jacob.apm.models.APMUser;
+import com.jacob.apm.models.UserInfoDetails;
 import com.jacob.apm.repositories.APMUserRepository;
 import com.jacob.apm.utilities.APISystemTime;
 import com.jacob.apm.utilities.APMLogger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Optional;
 
 @Service
-public class APMUserService {
+public class APMUserService implements UserDetailsService {
 
     @Autowired
     private APMUserRepository apmUserRepository;
+
+    @Autowired
+    @Lazy
+    private PasswordEncoder encoder;
 
     /**
      * Save user to database.
@@ -36,6 +47,8 @@ public class APMUserService {
 //        Setting user's registration time as UTC.
         apmUser.setTimestampRegistration(APISystemTime.getInstantTimeAsString());
 
+        apmUser.setPassword(encoder.encode(apmUser.getPassword()));
+
         try {
             apmUserRepository.save(apmUser);
             APMLogger.logMethodExit(methodNameForLogger);
@@ -45,6 +58,28 @@ public class APMUserService {
             return MainConstants.MSG_FAILURE;
         }
     }
+
+    public UserDetails loadUserByUsername(String username) {
+        String methodNameForLogger = "getAPMUserWithUserName()";
+        APMLogger.logMethodEntry(methodNameForLogger);
+
+        if (username == null || username.equalsIgnoreCase(MainConstants.STRING_EMPTY)) {
+            return null;
+        }
+        try {
+            Optional<APMUser> userDetailOptional = apmUserRepository.findByUserName(username);
+            if (userDetailOptional.isPresent()) {
+                APMUser apmUser = userDetailOptional.get();
+                // You should create a custom UserDetails implementation, e.g., UserInfoDetails,
+                // and map APMUser to UserDetails using a constructor or a converter.
+                return new UserInfoDetails(apmUser);
+            }
+        } catch (Exception exception) {
+            APMLogger.logError(methodNameForLogger, exception);
+        }
+        return null;
+    }
+
 
     /**
      * Check if there is a user with specified username.

@@ -18,8 +18,6 @@ public class APILogController {
     @Autowired
     APILogService apiLogService;
 
-    //    Receiving incoming requests from other APIs.
-
     /**
      * Receiving and stores incoming API call logs.
      * @param apiCall : Object of APICall containing details of the log.

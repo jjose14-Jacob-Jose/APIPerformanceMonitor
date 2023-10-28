@@ -39,3 +39,18 @@ async function postToMain() {
     }
 }
 
+/**
+ * Sets site-key to Google reCaptcha.
+ */
+function setRecaptchaSiteKey() {
+    var googleReCaptcha = document.getElementById("googleReCaptcha");
+    googleReCaptcha.value = KEY_GOOGLE_RECAPTCHA_V2_SITE;
+}
+
+/**
+ * The methods inside are executed after the page has finished execution.
+ */
+document.addEventListener('DOMContentLoaded', function() {
+    setRecaptchaSiteKey();
+});
+

@@ -4,6 +4,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>API Performance Monitor</title>
+        <script src="/js/Constants.js"></script>
         <script src="/js/Login.js"></script>
         <link rel="stylesheet" type="text/css" href="/css/LoginStyles.css">
     <body>
@@ -19,6 +20,9 @@
                     <label for="password">Password:</label>
                     <input type="password" id="password" name="password" required><br>
 
+                    <input type="hidden" id="googleReCaptcha" name="googleReCaptcha">
+
+                    <div class="g-recaptcha" data-sitekey="" id="divRecaptcha"></div>
                     <input type="submit" value="Login" onclick="formSubmitLogin(event)">
                 </form>
             </div>

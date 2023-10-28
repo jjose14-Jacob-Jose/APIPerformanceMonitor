@@ -7,7 +7,6 @@ public class MainConstants {
     public static String MSG_DUPLICATE_EMAIL_ID = "This email ID is already in use.";
     public static String MSG_DUPLICATE_USERNAME = "This username is already in use.";
     public static String STRING_EMPTY = "";
-
     public static String COOKIE_HEADER_AUTHORIZATION = "Authorization";
     public static String COOKIE_HEADER_LOGIN_STATUS = "Login_Status";
     public static String COOKIE_HEADER_LOGIN_STATUS_MESSAGE_SUCCESS = "Login Success";
@@ -15,6 +14,10 @@ public class MainConstants {
     public static String MSG_DELIMITER_MESSAGE_TO_MESSAGE = " ";
     public static String MSG_ACCOUNT_LOCK_STATUS_UNLOCKED = "Account Unlocked";
     public static String MSG_ACCOUNT_LOCK_STATUS_LOCKED = "Account locked";
+
+    public static String URL_GOOGLE_RECAPTCHA_VERIFICATION = "https://www.google.com/recaptcha/api/siteverify";
+
+    public static String KEY_GOOGLE_RECAPTCHA_SERVER = "6Ld7UtcoAAAAAFyQxYv4CllgYpCH1-P0HOnxS-oL";
 
     public static int JWT_TOKEN_VALIDITY_IN_HOURS = 24;
 

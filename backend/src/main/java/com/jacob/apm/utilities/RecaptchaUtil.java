@@ -1,7 +1,7 @@
 package com.jacob.apm.utilities;
 
+import com.jacob.apm.constants.MainConstants;
 import com.jacob.apm.models.ReCaptchaResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -10,29 +10,31 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+
 public class RecaptchaUtil {
 
-    @Autowired
-    private RestTemplate restTemplate;
+    /**
+     * Method to validate Google reCaptcha.
+     * @param userResponse: Google reCaptcha secret from client.
+     * @return: MainConstants.FLAG_SUCCESS: If human users; MainConstants.FLAG_FAILURE: if a bot. 
+     */
+    public static boolean validateRecaptcha(String userResponse) {
+        RestTemplate restTemplate = new RestTemplate();
 
-    private boolean validateRecaptcha(String recaptchaResponse) {
-        // Use RestTemplate or other HTTP client to send a POST request to the Google reCAPTCHA verification endpoint
-        String url = "https://www.google.com/recaptcha/api/siteverify";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.add("secret", "YOUR_SECRET_KEY");
-        map.add("response", recaptchaResponse);
+        map.add("secret", MainConstants.KEY_GOOGLE_RECAPTCHA_SERVER);
+        map.add("response", userResponse);
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
 
-        ResponseEntity<ReCaptchaResponse> reCaptchaApiResponse = restTemplate.postForEntity(url, request, ReCaptchaResponse.class);
+        ResponseEntity<ReCaptchaResponse> reCaptchaApiResponse = restTemplate.postForEntity(MainConstants.URL_GOOGLE_RECAPTCHA_VERIFICATION, request, ReCaptchaResponse.class);
 
-        if (reCaptchaApiResponse.getBody() != null && reCaptchaApiResponse.getBody().isSuccess()) {
-            return true; // reCAPTCHA validation successful
+        if (reCaptchaApiResponse.getStatusCode().is2xxSuccessful() && reCaptchaApiResponse.getBody().isSuccess()) {
+            return MainConstants.FLAG_SUCCESS;
         }
-        return false; // reCAPTCHA validation failed
+        return MainConstants.FLAG_FAILURE;
     }
-
 }

@@ -11,6 +11,7 @@ import com.jacob.apm.models.AuthenticationRequest;
 import com.jacob.apm.services.APMUserService;
 import com.jacob.apm.services.JwtService;
 import com.jacob.apm.utilities.APMLogger;
+import com.jacob.apm.utilities.RecaptchaUtil;
 import com.sun.tools.javac.Main;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -62,6 +63,11 @@ public class APMUserController {
 
     @PostMapping("/generateToken")
     public String authenticateAndGetToken(@RequestBody AuthenticationRequest authenticationRequest, HttpServletResponse response) {
+
+//        Validate Google reCaptcha.
+        if(! (RecaptchaUtil.validateRecaptcha(authenticationRequest.getGoogleReCaptcha())))
+            throw new UsernameNotFoundException("Captcha not complete. ");
+
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword()));
         if (authentication.isAuthenticated()) {
             String token = jwtService.generateToken(authenticationRequest.getUsername());

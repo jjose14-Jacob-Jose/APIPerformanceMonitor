@@ -44,8 +44,6 @@ function makeAPILog() {
         requestData[JSON_REQUEST_API_CALL_PARAMETER_ID] = id;
     }
 
-    console.log("timestamp: " + timestamp);
-
     if (!(stringIsEmpty(timestamp)) ) {
         requestData[JSON_REQUEST_API_CALL_PARAMETER_TIMESTAMP] = timestamp;
     }
@@ -79,6 +77,8 @@ function makeAPILog() {
             console.error('Error:', error);
             alert('An error occurred while sending the POST request.');
         });
+
+    clearFormContents();
 }
 
 /**
@@ -309,14 +309,14 @@ function printAsAlert(message) {
 /**
  * Clear contents of the input fields to log a new API call.
  */
-function btnPostApiCallClear() {
+function clearFormContents() {
     document.getElementById(HTML_ID_TEXT_API_CALL_ID).value = STRING_EMPTY;
     document.getElementById(HTML_ID_TEXTAREA_API_CALL_MESSAGE).value = STRING_EMPTY;
     document.getElementById(HTML_ID_TEXT_API_CALL_APPLICATION_NAME).value = STRING_EMPTY;
     document.getElementById(HTML_ID_DATETIME_API_CALL_TIMESTAMP).value = STRING_EMPTY;
 
     // Calling 'main' to display the original table again.
-    main();
+    // main();
 }
 
 /**
@@ -346,7 +346,6 @@ function logoutUser() {
         })
         .catch(error => console.error(error));
 }
-
 
 /**
  * Methods are run when the HTML method is loaded.

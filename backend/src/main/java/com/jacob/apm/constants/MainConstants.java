@@ -13,8 +13,11 @@ public class MainConstants {
     public static String COOKIE_HEADER_LOGIN_STATUS_MESSAGE_FAILED = "Invalid credentials";
     public static String COOKIE_HEADER_USERNAME = "username";
     public static String MSG_DELIMITER_MESSAGE_TO_MESSAGE = " ";
+    public static String MSG_DELIMITER_USERNAME_TO_CALLER_NAME = ": ";
     public static String MSG_ACCOUNT_LOCK_STATUS_UNLOCKED = "Account Unlocked";
     public static String MSG_ACCOUNT_LOCK_STATUS_LOCKED = "Account locked";
+
+    public static String MSG_NULL_INPUT = "Input value is null(empty).";
     public static String URL_GOOGLE_RECAPTCHA_VERIFICATION = "https://www.google.com/recaptcha/api/siteverify";
 
     public static String KEY_GOOGLE_RECAPTCHA_SERVER = "6LcBzNYoAAAAAGpbkM0UzHd0HENtDSFFVZBqZyir";

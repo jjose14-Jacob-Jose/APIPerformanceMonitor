@@ -11,17 +11,24 @@ function stringIsEmpty(string) {
  * Event-listener for 'Send POST Request' button.
  */
 function makeAPILog() {
-    const id = document.getElementById(HTML_ID_TEXT_API_CALL_ID).value;
-    const message = document.getElementById(HTML_ID_TEXTAREA_API_CALL_MESSAGE).value;
-    const caller = document.getElementById(HTML_ID_TEXT_API_CALL_APPLICATION_NAME).value;
-    const timestamp = document.getElementById(HTML_ID_DATETIME_API_CALL_TIMESTAMP).value;
 
-    if (stringIsEmpty(message)) {
-        alert("Message is empty. Please enter a message.");
+    // Adding Google reCaptcha token.
+    let recaptchaToken = getReCaptchaToken();
+    if (recaptchaToken === MSG_FAIL) {
+        // Invalid Google reCaptcha.
+        printAsAlert(MSG_TOO_MANY_REQUESTS);
         return;
     }
-    if (stringIsEmpty(caller)) {
-        alert("Caller name is empty. Please enter a caller name.");
+    const callerMessage = document.getElementById(HTML_ID_TEXTAREA_API_CALL_MESSAGE).value;
+    const callerName = document.getElementById(HTML_ID_TEXT_API_CALL_APPLICATION_NAME).value;
+    const callerTimestamp = document.getElementById(HTML_ID_DATETIME_API_CALL_TIMESTAMP).value;
+
+    if (stringIsEmpty(callerMessage)) {
+        printAsAlert(MSG_INPUT_MESSAGE_EMPTY)
+        return;
+    }
+    if (stringIsEmpty(callerName)) {
+        printAsAlert(MSG_INPUT_Name_EMPTY)
         return;
     }
 
@@ -32,41 +39,31 @@ function makeAPILog() {
         printAsAlert(MSG_COOKIES_DISABLED_ALERT);
     }
 
-    usernameFromCookie = usernameFromCookie + DELIMITER_STRING_USERNAME_TO_CALLER_NAME + caller;
-
-
-    const requestData = {
-        [JSON_REQUEST_API_CALL_PARAMETER_CALLER_MESSAGE]: message,
-        [JSON_REQUEST_API_CALL_PARAMETER_CALLER_NAME]: usernameFromCookie
+    const apiCall = {
+        [JSON_REQUEST_KEY_API_CALL_CALLER_MESSAGE]: callerMessage,
+        [JSON_REQUEST_KEY_API_CALL_CALLER_NAME]: callerName,
+        [JSON_REQUEST_KEY_API_CALL_CALLER_TIMESTAMP_UTC]: callerTimestamp
     };
 
-    if (!(stringIsEmpty(id)) ) {
-        requestData[JSON_REQUEST_API_CALL_PARAMETER_ID] = id;
-    }
+    const apmUser = {
+        [JSON_REQUEST_KEY_GOOGLE_RECAPTCHA_TOKEN]: recaptchaToken,
+        [JSON_REQUEST_KEY_USERNAME]: usernameFromCookie, // You should replace this with the actual username
+        [JSON_REQUEST_KEY_API_CALL]: apiCall
+    };
 
-    if (!(stringIsEmpty(timestamp)) ) {
-        requestData[JSON_REQUEST_API_CALL_PARAMETER_TIMESTAMP] = timestamp;
-    }
 
-    // Adding Google reCaptcha token.
-    let recaptchaToken = getReCaptchaToken();
-    if (recaptchaToken === MSG_FAIL) {
-        return;
-    }
-    requestData['googleReCaptcha'] = recaptchaToken;
 
-    fetch(URL_POST_API_CALL, {
+    fetch(URL_POST_API_CALL_FROM_APM_DASHBOARD, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(requestData)
+        body: JSON.stringify(apmUser)
     })
         .then(response => {
             if (response.ok) {
-                id.value = STRING_EMPTY; // Clear the textarea
-                message.value = STRING_EMPTY; // Clear the textarea
-                caller.value = STRING_EMPTY; // Clear the textarea
+                callerMessage.value = STRING_EMPTY; // Clear the textarea
+                callerName.value = STRING_EMPTY; // Clear the textarea
                 // Fetching and rendering the table.
                 main();
             } else {
@@ -77,8 +74,6 @@ function makeAPILog() {
             console.error('Error:', error);
             alert('An error occurred while sending the POST request.');
         });
-
-    clearFormContents();
 }
 
 /**
@@ -309,7 +304,7 @@ function printAsAlert(message) {
 /**
  * Clear contents of the input fields to log a new API call.
  */
-function clearFormContents() {
+function btnPostApiCallClear() {
     document.getElementById(HTML_ID_TEXT_API_CALL_ID).value = STRING_EMPTY;
     document.getElementById(HTML_ID_TEXTAREA_API_CALL_MESSAGE).value = STRING_EMPTY;
     document.getElementById(HTML_ID_TEXT_API_CALL_APPLICATION_NAME).value = STRING_EMPTY;

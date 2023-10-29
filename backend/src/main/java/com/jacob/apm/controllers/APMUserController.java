@@ -36,31 +36,31 @@ public class APMUserController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    @PostMapping("/processLogin")
-    public void login(@RequestBody AuthenticationRequest authenticationRequest, HttpServletResponse response) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword()));
-        if (authentication.isAuthenticated()) {
-            String token = jwtService.generateToken(authenticationRequest.getUsername());
-            response.setHeader("Authorization", "Bearer " + token);
-            response.setHeader("Set-Cookie", "Authorization=" + token + "; HttpOnly; Path=/");
-
-            // Set the token as an HTTP-only cookie
-            Cookie cookieJwtToken = new Cookie("Authorization", "Bearer " + token);
-            cookieJwtToken.setHttpOnly(true);
-//            Make the cookie accessible in all pages.
-            cookieJwtToken.setPath("/");
-            response.addCookie(cookieJwtToken);
-
-            Cookie cookieUsername = new Cookie(MainConstants.COOKIE_HEADER_USERNAME, authenticationRequest.getUsername());
-            cookieUsername.setMaxAge(MainConstants.DURATION_MILLISECONDS_IN_ONE_HOUR);
-            cookieUsername.setPath("/");
-            response.addCookie(cookieUsername);
-
-
-        } else {
-            throw new UsernameNotFoundException("Username not found");
-        }
-    }
+//    @PostMapping("/processLogin")
+//    public void login(@RequestBody AuthenticationRequest authenticationRequest, HttpServletResponse response) {
+//        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword()));
+//        if (authentication.isAuthenticated()) {
+//            String token = jwtService.generateToken(authenticationRequest.getUsername());
+//            response.setHeader("Authorization", "Bearer " + token);
+//            response.setHeader("Set-Cookie", "Authorization=" + token + "; HttpOnly; Path=/");
+//
+//            // Set the token as an HTTP-only cookie
+//            Cookie cookieJwtToken = new Cookie("Authorization", "Bearer " + token);
+//            cookieJwtToken.setHttpOnly(true);
+////            Make the cookie accessible in all pages.
+//            cookieJwtToken.setPath("/");
+//            response.addCookie(cookieJwtToken);
+//
+//            Cookie cookieUsername = new Cookie(MainConstants.COOKIE_HEADER_USERNAME, authenticationRequest.getUsername());
+//            cookieUsername.setMaxAge(MainConstants.DURATION_MILLISECONDS_IN_ONE_HOUR);
+//            cookieUsername.setPath("/");
+//            response.addCookie(cookieUsername);
+//
+//
+//        } else {
+//            throw new UsernameNotFoundException("Username not found");
+//        }
+//    }
 
     @PostMapping("/addNewUser")
     public String addNewUser(@RequestBody APMUser apmUser) {
@@ -79,13 +79,15 @@ public class APMUserController {
             String token = jwtService.generateToken(authenticationRequest.getUsername());
 
             // Set the token as an HTTP-only cookie
-            Cookie cookie = new Cookie(MainConstants.COOKIE_HEADER_AUTHORIZATION, token);
-            cookie.setHttpOnly(true);
-            cookie.setPath("/");
+            Cookie cookieHttpOnly = new Cookie(MainConstants.COOKIE_HEADER_AUTHORIZATION, token);
+            cookieHttpOnly.setHttpOnly(true);
+            cookieHttpOnly.setPath("/");
+            response.addCookie(cookieHttpOnly);
 
-            response.addCookie(cookie);
-//            response.setHeader("Authorization", "Bearer " + token);
-//            response.setHeader("Set-Cookie", "Authorization=" + token + "; HttpOnly; Path=/");
+            Cookie cookieUsername = new Cookie(MainConstants.COOKIE_HEADER_USERNAME, authenticationRequest.getUsername());
+            cookieUsername.setMaxAge(MainConstants.DURATION_MILLISECONDS_IN_ONE_HOUR);
+            cookieUsername.setPath("/");
+            response.addCookie(cookieUsername);
 
             return "Token generated successfully!";
         } else {

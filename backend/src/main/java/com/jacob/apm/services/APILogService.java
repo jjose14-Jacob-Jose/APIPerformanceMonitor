@@ -27,6 +27,7 @@ public class APILogService {
 
         if(apiCall.getCallTimestampUTC() == null)
             apiCall.setCallTimestampUTC(APISystemTime.getInstantTimeAsString());
+        apiCall.setCallId(null);
 
         try {
     //      Saving to database.

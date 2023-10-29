@@ -31,7 +31,7 @@ public class JwtService {
     private String createToken(Map<String, Object> claims, String userName) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy HH:mm");
         Date issuedAt = APISystemTime.getInstantTimeAsUTCDate();
-        Date expiry = new Date(issuedAt.getTime() + (MainConstants.JWT_TOKEN_VALIDITY_IN_HOURS * MainConstants.DURATION_MILLISECONDS_IN_ONE_HOUR));
+        Date expiry = new Date(issuedAt.getTime() + ((long) MainConstants.JWT_TOKEN_VALIDITY_IN_HOURS * MainConstants.DURATION_MILLISECONDS_IN_ONE_HOUR));
 
         return Jwts.builder()
                 .setClaims(claims)

@@ -34,6 +34,10 @@
     color: red;
 }
 
+[disabled] {
+    cursor: not-allowed;
+}
+
 /*************** START: Response tables.*/
 .tableResponse table {
     border-collapse: collapse;

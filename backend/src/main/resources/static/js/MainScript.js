@@ -25,9 +25,19 @@ function makeAPILog() {
         return;
     }
 
+    // Append the APM user's username to the caller-name parameter.
+    let usernameFromCookie = getCookieValue(ID_BACKEND_COOKIE_USERNAME);
+    if (usernameFromCookie === STRING_EMPTY) {
+        usernameFromCookie = MSG_COOKIES_DISABLED_USERNAME;
+        printAsAlert(MSG_COOKIES_DISABLED_ALERT);
+    }
+
+    usernameFromCookie = usernameFromCookie + DELIMITER_STRING_USERNAME_TO_CALLER_NAME + caller;
+
+
     const requestData = {
-        [JSON_REQUEST_API_CALL_PARAMETER_MESSAGE]: message,
-        [JSON_REQUEST_API_CALL_PARAMETER_CALLER]: caller
+        [JSON_REQUEST_API_CALL_PARAMETER_CALLER_MESSAGE]: message,
+        [JSON_REQUEST_API_CALL_PARAMETER_CALLER_NAME]: usernameFromCookie
     };
 
     if (!(stringIsEmpty(id)) ) {
@@ -71,11 +81,20 @@ function makeAPILog() {
         });
 }
 
-// Function to get a cookie value by name
-function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
+/**
+ * Return value of a specific cookie.
+ * @param cookieName header-name of the cookie to be retrieved.
+ * @returns {STRING_EMPTY|string}
+ */
+function getCookieValue(cookieName) {
+    const cookies = document.cookie.split(';');
+    for (const cookie of cookies) {
+        const [name, value] = cookie.trim().split('=');
+        if (name === cookieName) {
+            return decodeURIComponent(value);
+        }
+    }
+    return STRING_EMPTY;
 }
 
 /**

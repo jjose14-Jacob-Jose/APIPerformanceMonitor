@@ -45,11 +45,17 @@ public class APMUserController {
             response.setHeader("Set-Cookie", "Authorization=" + token + "; HttpOnly; Path=/");
 
             // Set the token as an HTTP-only cookie
-            Cookie cookie = new Cookie("Authorization", "Bearer " + token);
-            cookie.setHttpOnly(true);
-            cookie.setPath("/");
+            Cookie cookieJwtToken = new Cookie("Authorization", "Bearer " + token);
+            cookieJwtToken.setHttpOnly(true);
+//            Make the cookie accessible in all pages.
+            cookieJwtToken.setPath("/");
+            response.addCookie(cookieJwtToken);
 
-            response.addCookie(cookie);
+            Cookie cookieUsername = new Cookie(MainConstants.COOKIE_HEADER_USERNAME, authenticationRequest.getUsername());
+            cookieUsername.setMaxAge(MainConstants.DURATION_MILLISECONDS_IN_ONE_HOUR);
+            cookieUsername.setPath("/");
+            response.addCookie(cookieUsername);
+
 
         } else {
             throw new UsernameNotFoundException("Username not found");

@@ -14,8 +14,11 @@ import com.jacob.apm.utilities.APMLogger;
 import com.jacob.apm.utilities.RecaptchaUtil;
 import com.sun.tools.javac.Main;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -35,32 +38,6 @@ public class APMUserController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
-
-//    @PostMapping("/processLogin")
-//    public void login(@RequestBody AuthenticationRequest authenticationRequest, HttpServletResponse response) {
-//        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword()));
-//        if (authentication.isAuthenticated()) {
-//            String token = jwtService.generateToken(authenticationRequest.getUsername());
-//            response.setHeader("Authorization", "Bearer " + token);
-//            response.setHeader("Set-Cookie", "Authorization=" + token + "; HttpOnly; Path=/");
-//
-//            // Set the token as an HTTP-only cookie
-//            Cookie cookieJwtToken = new Cookie("Authorization", "Bearer " + token);
-//            cookieJwtToken.setHttpOnly(true);
-////            Make the cookie accessible in all pages.
-//            cookieJwtToken.setPath("/");
-//            response.addCookie(cookieJwtToken);
-//
-//            Cookie cookieUsername = new Cookie(MainConstants.COOKIE_HEADER_USERNAME, authenticationRequest.getUsername());
-//            cookieUsername.setMaxAge(MainConstants.DURATION_MILLISECONDS_IN_ONE_HOUR);
-//            cookieUsername.setPath("/");
-//            response.addCookie(cookieUsername);
-//
-//
-//        } else {
-//            throw new UsernameNotFoundException("Username not found");
-//        }
-//    }
 
     @PostMapping("/addNewUser")
     public String addNewUser(@RequestBody APMUser apmUser) {
@@ -96,15 +73,25 @@ public class APMUserController {
     }
 
     @GetMapping("/logout")
-    public String logout(HttpServletResponse response) {
+    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
 
-        Cookie cookie = new Cookie(MainConstants.COOKIE_HEADER_AUTHORIZATION, MainConstants.STRING_EMPTY);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
+        String methodNameForLogs = "logout()";
+        APMLogger.logMethodEntry(methodNameForLogs);
+        try{
+            Cookie[] cookies = request.getCookies();
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    cookie.setValue("");
+                    cookie.setPath("/");
+                    cookie.setMaxAge(0);
+                    response.addCookie(cookie);
+                }
+            }
+            APMLogger.logInfo(methodNameForLogs + " cleared all cookies");
 
-        return "Logout successful";
-    }
+        } catch (Exception exception) {
+            APMLogger.logError(methodNameForLogs, exception);
+        }
+        return ResponseEntity.status(HttpStatus.FOUND).header("Location", "/").body("");    }
 
 }

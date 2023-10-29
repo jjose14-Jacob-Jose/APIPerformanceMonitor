@@ -7,28 +7,22 @@
         <script src="/js/Constants.js"></script>
         <script src="/js/Login.js"></script>
         <link rel="stylesheet" type="text/css" href="/css/LoginStyles.css">
+        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    </head>
     <body>
-
         <main>
             <div id="divMain">
                 <h1>API Performance Monitor </h1>
                 <h2>Login </h2>
-                <form action="/auth/processLogin" method="POST" id="formLogin" >
+                <form action="/auth/processLogin" method="POST" id="formLogin" onsubmit="formSubmitLogin(event)">
                     <label for="username">Username:</label>
                     <input type="text" id="username" name="username" required><br>
-
                     <label for="password">Password:</label>
                     <input type="password" id="password" name="password" required><br>
-
-                    <input type="hidden" id="googleReCaptcha" name="googleReCaptcha">
-
-                    <div class="g-recaptcha" data-sitekey="" id="divRecaptcha"></div>
-                    <input type="submit" value="Login" onclick="formSubmitLogin(event)">
+                    <div class="g-recaptcha" data-sitekey="6Lem19coAAAAAO_KYfqveUbJpHgRqJkwM9Za1elb"></div>
+                    <button type="submit">Submit</button>
                 </form>
             </div>
         </main>
-        <footer>
-
-        </footer>
     </body>
 </html>

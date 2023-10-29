@@ -1,11 +1,22 @@
 // Submit login form.
 function formSubmitLogin(event) {
     event.preventDefault();
+
+    const recaptchaToken = grecaptcha.getResponse();
+    // Check if the token is empty
+    if (!recaptchaToken) {
+        alert("Please complete the reCAPTCHA challenge.");
+        return;
+    }
+
     const formData = new FormData(document.getElementById("formLogin"));
+    formData.append("googleReCaptcha", recaptchaToken);
     const formDataJson = {};
     formData.forEach((value, key) => {
         formDataJson[key] = value;
     });
+
+
     fetch("/auth/generateToken", {
         method: "POST",
         headers: {

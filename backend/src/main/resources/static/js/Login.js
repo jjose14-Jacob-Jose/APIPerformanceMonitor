@@ -1,6 +1,6 @@
 // Submit login form.
 function formSubmitLogin(event) {
-    event.preventDefault();
+    // event.preventDefault();
 
     const recaptchaToken = grecaptcha.getResponse();
     // Check if the token is empty

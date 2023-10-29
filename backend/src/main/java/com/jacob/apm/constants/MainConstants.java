@@ -17,7 +17,7 @@ public class MainConstants {
 
     public static String URL_GOOGLE_RECAPTCHA_VERIFICATION = "https://www.google.com/recaptcha/api/siteverify";
 
-    public static String KEY_GOOGLE_RECAPTCHA_SERVER = "6Lem19coAAAAADla8XpdljLxq-uTl73CC6rNajKy";
+    public static String KEY_GOOGLE_RECAPTCHA_SERVER = "6LcBzNYoAAAAAGpbkM0UzHd0HENtDSFFVZBqZyir";
 
     public static int JWT_TOKEN_VALIDITY_IN_HOURS = 24;
 

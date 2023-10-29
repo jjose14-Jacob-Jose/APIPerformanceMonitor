@@ -1,5 +1,5 @@
 // Specify machine specify properties here.
-const KEY_GOOGLE_RECAPTCHA_V2_SITE = "6Lem19coAAAAAO_KYfqveUbJpHgRqJkwM9Za1elb";
+const KEY_GOOGLE_RECAPTCHA_V2_SITE = "6LcBzNYoAAAAAEfEaqpohyGQCT3iRYO8NegFrsAY";
 
 // Constant for methods.
 const DELAY_REDIRECTION_TO_HOME_FROM_ERROR_IN_MILLISECONDS = 5000;

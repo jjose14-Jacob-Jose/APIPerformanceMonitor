@@ -41,7 +41,7 @@ input[type="password"] {
     color: #fff;
 }
 
-input[type="submit"] {
+.g-recaptcha {
     background: #007BFF;
     color: #fff;
     padding: 10px 15px;
@@ -50,6 +50,6 @@ input[type="submit"] {
     cursor: pointer;
 }
 
-input[type="submit"]:hover {
+.g-recaptcha:hover {
     background: #0056b3;
 }

@@ -15,7 +15,7 @@ public class RecaptchaUtil {
 
     /**
      * Method to validate Google reCaptcha.
-     * @param userResponse: Google reCaptcha secret from client.
+     * @param userResponse: Google reCaptcha token from Google.
      * @return: MainConstants.FLAG_SUCCESS: If human users; MainConstants.FLAG_FAILURE: if a bot. 
      */
     public static boolean validateRecaptcha(String userResponse) {

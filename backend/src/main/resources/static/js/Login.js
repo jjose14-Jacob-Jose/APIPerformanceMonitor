@@ -2,15 +2,15 @@
 function formSubmitLogin(event) {
     // event.preventDefault();
 
-    const recaptchaToken = grecaptcha.getResponse();
-    // Check if the token is empty
-    if (!recaptchaToken) {
-        alert("Please complete the reCAPTCHA challenge.");
+    const formData = new FormData(document.getElementById("formLogin"));
+
+    // Adding Google reCaptcha token.
+    let recaptchaToken = getReCaptchaToken();
+    if (recaptchaToken === MSG_FAIL) {
         return;
     }
-
-    const formData = new FormData(document.getElementById("formLogin"));
     formData.append("googleReCaptcha", recaptchaToken);
+
     const formDataJson = {};
     formData.forEach((value, key) => {
         formDataJson[key] = value;
@@ -49,19 +49,3 @@ async function postToMain() {
         // Handle the error.
     }
 }
-
-/**
- * Sets site-key to Google reCaptcha.
- */
-function setRecaptchaSiteKey() {
-    var googleReCaptcha = document.getElementById("googleReCaptcha");
-    googleReCaptcha.value = KEY_GOOGLE_RECAPTCHA_V2_SITE;
-}
-
-/**
- * The methods inside are executed after the page has finished execution.
- */
-document.addEventListener('DOMContentLoaded', function() {
-    setRecaptchaSiteKey();
-});
-

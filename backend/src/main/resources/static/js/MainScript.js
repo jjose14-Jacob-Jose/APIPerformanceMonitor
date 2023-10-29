@@ -40,6 +40,13 @@ function makeAPILog() {
         requestData[JSON_REQUEST_API_CALL_PARAMETER_TIMESTAMP] = timestamp;
     }
 
+    // Adding Google reCaptcha token.
+    let recaptchaToken = getReCaptchaToken();
+    if (recaptchaToken === MSG_FAIL) {
+        return;
+    }
+    requestData['googleReCaptcha'] = recaptchaToken;
+
     fetch(URL_POST_API_CALL, {
         method: 'POST',
         headers: {

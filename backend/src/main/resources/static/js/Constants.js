@@ -1,10 +1,6 @@
-// Specify machine specify properties here.
-const KEY_GOOGLE_RECAPTCHA_V2_SITE = "6LcBzNYoAAAAAEfEaqpohyGQCT3iRYO8NegFrsAY";
-
 // Constant for methods.
 const DELAY_REDIRECTION_TO_HOME_FROM_ERROR_IN_MILLISECONDS = 5000;
 const URL_GET_API_CALLS_ALL = "/apiCall/getAll";
-const URL_GET_API_CALLS_ALL_HTTP_METHOD = "POST";
 const URL_GET_API_CALLS_WITHIN_DATE_TIME_RANGE  = "/apiCall/getAll/range";
 const URL_POST_API_CALL = "/apiCall/save";
 const HTML_ID_DIV_RESPONSE_FROM_ALL_API_CALLS = "divBodyResponsesAllAPICallsTable";

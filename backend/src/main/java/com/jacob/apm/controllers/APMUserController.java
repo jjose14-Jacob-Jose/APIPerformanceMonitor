@@ -8,6 +8,7 @@ package com.jacob.apm.controllers;
 import com.jacob.apm.constants.MainConstants;
 import com.jacob.apm.models.APMUser;
 import com.jacob.apm.models.AuthenticationRequest;
+import com.jacob.apm.models.UserSignUpRequest;
 import com.jacob.apm.services.APMUserService;
 import com.jacob.apm.services.JwtService;
 import com.jacob.apm.utilities.APMLogger;
@@ -40,7 +41,7 @@ public class APMUserController {
     private AuthenticationManager authenticationManager;
 
     @PostMapping("/addNewUser")
-    public String addNewUser(@RequestBody APMUser apmUser) {
+    public String addNewUser(@RequestBody UserSignUpRequest userSignUpRequest) {
         return apmUserService.saveUserToDatabase(apmUser);
     }
 

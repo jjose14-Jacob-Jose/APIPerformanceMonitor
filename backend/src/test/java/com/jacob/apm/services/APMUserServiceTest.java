@@ -41,20 +41,20 @@ class APMUserServiceTest {
 
         // Create a user instance
         APMUser apmUser1 = new APMUser();
-        apmUser1.setUserName("username");
+        apmUser1.setUsername("username");
         apmUser1.setNameFirst("First");
         apmUser1.setNameLast("Last");
-        apmUser1.setEmailID("first.last@email.com");
+        apmUser1.setEmailId("first.last@email.com");
         apmUser1.setPassword("passwordHash");
         apmUser1.setTimestampRegistration(APISystemTime.getInstantTimeAsString());
         apmUser1.setLoginAttemptsFailed(0);
         listAPMUsers.add(apmUser1);
 
         APMUser apmUser2 = new APMUser();
-        apmUser2.setUserName("username2");
+        apmUser2.setUsername("username2");
         apmUser2.setNameFirst("First2");
         apmUser2.setNameLast("Last2");
-        apmUser2.setEmailID("first.last2@email.com");
+        apmUser2.setEmailId("first.last2@email.com");
         apmUser2.setPassword("passwordHash2");
         apmUser2.setTimestampRegistration(APISystemTime.getInstantTimeAsString());
         apmUser2.setLoginAttemptsFailed(1);
@@ -85,17 +85,17 @@ class APMUserServiceTest {
     void testSaveUserWithDuplicateEmail() {
         // Create a new user with a duplicate email ID
         APMUser newUser = new APMUser();
-        newUser.setEmailID("existing.email@example.com");
+        newUser.setEmailId("existing.email@example.com");
 
         // Mock the behavior of apmUserRepository.findAPMUserByEmailID to return an existing user
-        Mockito.when(apmUserRepository.findAPMUserByEmailID(newUser.getEmailID()))
+        Mockito.when(apmUserRepository.findAPMUserByEmailId(newUser.getEmailId()))
                 .thenReturn(newUser);
 
         // Perform the action you're testing
         String result = apmUserService.saveUserToDatabase(newUser);
 
         // Verify that the repository's findAPMUserByEmailID method was called
-        Mockito.verify(apmUserRepository).findAPMUserByEmailID(newUser.getEmailID());
+        Mockito.verify(apmUserRepository).findAPMUserByEmailId(newUser.getEmailId());
 
         // Assert the expected outcome of the test
         assertEquals(MainConstants.MSG_DUPLICATE_EMAIL_ID, result);
@@ -104,17 +104,17 @@ class APMUserServiceTest {
     @Test
     void testSaveUserWithDuplicateUsername() {
         APMUser newUser = new APMUser();
-        newUser.setUserName("usernameForTest");
+        newUser.setUsername("usernameForTest");
 
         // Mock the behavior of apmUserRepository.findAPMUserByUserName to return an existing user
-        Mockito.when(apmUserRepository.findAPMUserByUserName(newUser.getUserName()))
+        Mockito.when(apmUserRepository.findAPMUserByUsername(newUser.getUsername()))
                 .thenReturn(newUser);
 
         // Perform the action you're testing
         String result = apmUserService.saveUserToDatabase(newUser);
 
         // Verify that the repository's findAPMUserByEmailID method was called
-        Mockito.verify(apmUserRepository).findAPMUserByUserName(newUser.getUserName());
+        Mockito.verify(apmUserRepository).findAPMUserByUsername(newUser.getUsername());
 
         // Assert the expected outcome of the test
         assertEquals(MainConstants.MSG_DUPLICATE_USERNAME, result);
@@ -125,16 +125,16 @@ class APMUserServiceTest {
 
         APMUser apmUser = getAPMUserList().get(0);
         String username = "testUsernameForMockito";
-        apmUser.setUserName(username);
+        apmUser.setUsername(username);
 
 //        Specifying what repository should when it receives a call to 'findAPMUserByUser' with 'username' as variable.
-        Mockito.when(apmUserRepository.findAPMUserByUserName(username)).thenReturn(apmUser);
+        Mockito.when(apmUserRepository.findAPMUserByUsername(username)).thenReturn(apmUser);
 
 //        Calling service this, this will invoking the Mockito method.
-        APMUser apmUserWithUsernameFromDB = apmUserService.getAPMUserByUserName(username);
+        APMUser apmUserWithUsernameFromDB = apmUserService.getAPMUserByUsername(username);
 
 //        Ensuring the service class in previous line has called the mocked repository method.
-        Mockito.verify(apmUserRepository).findAPMUserByUserName(username);
+        Mockito.verify(apmUserRepository).findAPMUserByUsername(username);
 
         assertNotNull(apmUserWithUsernameFromDB);
         assertEquals(apmUserWithUsernameFromDB, apmUser);
@@ -146,18 +146,18 @@ class APMUserServiceTest {
 
         APMUser apmUser1 = getAPMUserList().get(0);
         String username = "testUsernameForMockito";
-        apmUser1.setUserName(username);
+        apmUser1.setUsername(username);
 
         APMUser apmUser2 = getAPMUserList().get(1);
 
 //        Specifying what repository should when it receives a call to 'findAPMUserByUser' with 'username' as variable.
-        Mockito.when(apmUserRepository.findAPMUserByUserName(username)).thenReturn(apmUser2);
+        Mockito.when(apmUserRepository.findAPMUserByUsername(username)).thenReturn(apmUser2);
 
 //        Calling service this, this will invoking the Mockito method.
-        APMUser apmUserWithUsernameFromDB = apmUserService.getAPMUserByUserName(username);
+        APMUser apmUserWithUsernameFromDB = apmUserService.getAPMUserByUsername(username);
 
 //        Ensuring the service class in previous line has called the mocked repository method.
-        Mockito.verify(apmUserRepository).findAPMUserByUserName(username);
+        Mockito.verify(apmUserRepository).findAPMUserByUsername(username);
 
         assertNotNull(apmUserWithUsernameFromDB);
         assertNotEquals(apmUserWithUsernameFromDB, apmUser1);
@@ -169,16 +169,16 @@ class APMUserServiceTest {
 
         APMUser apmUser = getAPMUserList().get(0);
         String emailID = "testEmail@email.com";
-        apmUser.setEmailID(emailID);
+        apmUser.setEmailId(emailID);
 
 //        Specifying what repository should when it receives a call to 'findAPMUserByUser' with 'username' as variable.
-        Mockito.when(apmUserRepository.findAPMUserByEmailID(emailID)).thenReturn(apmUser);
+        Mockito.when(apmUserRepository.findAPMUserByEmailId(emailID)).thenReturn(apmUser);
 
 //        Calling service this, this will invoking the Mockito method.
         APMUser apmUserWithEmailIDFromDB = apmUserService.getAPMUserByEmailID(emailID);
 
 //        Ensuring the service class in previous line has called the mocked repository method.
-        Mockito.verify(apmUserRepository).findAPMUserByEmailID(emailID);
+        Mockito.verify(apmUserRepository).findAPMUserByEmailId(emailID);
 
         assertNotNull(apmUserWithEmailIDFromDB);
         assertEquals(apmUserWithEmailIDFromDB, apmUser);
@@ -190,18 +190,18 @@ class APMUserServiceTest {
 
         APMUser apmUser = getAPMUserList().get(0);
         String emailID = "testEmail@email.com";
-        apmUser.setEmailID(emailID);
+        apmUser.setEmailId(emailID);
 
         APMUser apmUser2 = getAPMUserList().get(1);
 
 //        Specifying what repository should when it receives a call to 'findAPMUserByUser' with 'username' as variable.
-        Mockito.when(apmUserRepository.findAPMUserByEmailID(emailID)).thenReturn(apmUser2);
+        Mockito.when(apmUserRepository.findAPMUserByEmailId(emailID)).thenReturn(apmUser2);
 
 //        Calling service this, this will invoking the Mockito method.
         APMUser apmUserWithEmailIDFromDB = apmUserService.getAPMUserByEmailID(emailID);
 
 //        Ensuring the service class in previous line has called the mocked repository method.
-        Mockito.verify(apmUserRepository).findAPMUserByEmailID(emailID);
+        Mockito.verify(apmUserRepository).findAPMUserByEmailId(emailID);
 
         assertNotNull(apmUserWithEmailIDFromDB);
         assertNotEquals(apmUserWithEmailIDFromDB, apmUser);

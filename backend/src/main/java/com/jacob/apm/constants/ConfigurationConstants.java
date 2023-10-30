@@ -1,0 +1,8 @@
+package com.jacob.apm.constants;
+
+public class ConfigurationConstants {
+    public static final String REGEX_FOR_VALIDATION_USERNAME = "^[A-Za-z0-9]{6,30}$";
+    public static final String REGEX_FOR_VALIDATION_PASSWORD = "^[A-Za-z0-9.!@#$%^&*()_+-=;:.,]{6,30}$";
+    public static final String REGEX_FOR_VALIDATION_EMAIL = "^[A-Za-z0-9+_.-]+@(.+)$";
+
+}

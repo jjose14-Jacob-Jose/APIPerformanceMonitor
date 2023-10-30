@@ -3,14 +3,15 @@ package com.jacob.apm.services;
 import com.jacob.apm.constants.MainConstants;
 import com.jacob.apm.models.APMUser;
 import com.jacob.apm.models.UserInfoDetails;
+import com.jacob.apm.models.UserSignUpRequest;
 import com.jacob.apm.repositories.APMUserRepository;
 import com.jacob.apm.utilities.APISystemTime;
 import com.jacob.apm.utilities.APMLogger;
+import com.jacob.apm.utilities.RequestValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -30,27 +31,37 @@ public class APMUserService implements UserDetailsService {
 
     /**
      * Save user to database.
-     * @param apmUser : object to be saved to database.
+     * @param userSignUpRequest : object to be saved to database.
      * @return 'MainConstants.MSG_SUCCESS' or 'MainConstants.MSG_FAILURE'
      */
-    public String saveUserToDatabase(APMUser apmUser) {
+    public String saveUserToDatabase(UserSignUpRequest userSignUpRequest) {
         String methodNameForLogger = "saveUserToDatabase()";
         APMLogger.logMethodEntry(methodNameForLogger);
 
-        if (apmUser == null)
+        if (userSignUpRequest == null){
+            APMLogger.logError(methodNameForLogger + " object is null");
             return MainConstants.MSG_FAILURE;
-        else if (getAPMUserByEmailID(apmUser.getEmailID()) != null)
-            return MainConstants.MSG_DUPLICATE_EMAIL_ID;
-        else if (getAPMUserByUserName(apmUser.getUserName()) != null)
-            return MainConstants.MSG_DUPLICATE_USERNAME;
+        }
+
+        if(RequestValidator.validateUserSignUpRequest(userSignUpRequest) == MainConstants.FLAG_FAILURE) {
+            APMLogger.logError(methodNameForLogger + " Invalid values");
+            APMLogger.logError("userSignUpRequest: "+userSignUpRequest.toString());
+            return MainConstants.MSG_FAILURE;
+        }
+
+        APMUser apmUser = new APMUser();
+        apmUser.setNameFirst(userSignUpRequest.getNameFirst());
+        apmUser.setNameLast(userSignUpRequest.getNameLast());
+        apmUser.setNameLast(userSignUpRequest.getNameLast());
+
 
 //        Setting user's registration time as UTC.
-        apmUser.setTimestampRegistration(APISystemTime.getInstantTimeAsString());
+        userSignUpRequest.setTimestampRegistration(APISystemTime.getInstantTimeAsString());
 
-        apmUser.setPassword(encoder.encode(apmUser.getPassword()));
+        userSignUpRequest.setPassword(encoder.encode(userSignUpRequest.getPassword()));
 
         try {
-            apmUserRepository.save(apmUser);
+            apmUserRepository.save(userSignUpRequest);
             APMLogger.logMethodExit(methodNameForLogger);
             return MainConstants.MSG_SUCCESS;
         } catch (Exception exception) {
@@ -67,7 +78,7 @@ public class APMUserService implements UserDetailsService {
             return null;
         }
         try {
-            Optional<APMUser> userDetailOptional = apmUserRepository.findByUserName(username);
+            Optional<APMUser> userDetailOptional = apmUserRepository.findByUsername(username);
             if (userDetailOptional.isPresent()) {
                 APMUser apmUser = userDetailOptional.get();
                 // You should create a custom UserDetails implementation, e.g., UserInfoDetails,
@@ -86,7 +97,7 @@ public class APMUserService implements UserDetailsService {
      * @param username : username to be searched in database.
      * @return APMUser object of user with 'username' (if found), 'null' if no entry found.
      */
-    public APMUser getAPMUserByUserName(String username) {
+    public APMUser getAPMUserByUsername(String username) {
         String methodNameForLogger = "getAPMUserWithUserName()";
         APMLogger.logMethodEntry(methodNameForLogger);
 
@@ -97,7 +108,7 @@ public class APMUserService implements UserDetailsService {
 
         APMUser apmUserFromDB = null;
         try {
-            apmUserFromDB = apmUserRepository.findAPMUserByUserName(username);
+            apmUserFromDB = apmUserRepository.findAPMUserByUsername(username);
         } catch (Exception exception) {
             APMLogger.logError(methodNameForLogger, exception);
         }
@@ -120,7 +131,7 @@ public class APMUserService implements UserDetailsService {
 
         APMUser apmUserFromDB = null;
         try {
-            apmUserFromDB = apmUserRepository.findAPMUserByEmailID(emailID);
+            apmUserFromDB = apmUserRepository.findAPMUserByEmailId(emailID);
         } catch (Exception exception) {
             APMLogger.logError(methodNameForLogger, exception);
         }

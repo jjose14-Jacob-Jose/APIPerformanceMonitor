@@ -32,5 +32,4 @@ public class MainConstants {
     public static int LOGIN_ATTEMPTS_FAILED_MAX_COUNT = 5;
     public static int LOGIN_ATTEMPTS_FAILED_RESET_VALUE = 0;
 
-
 }

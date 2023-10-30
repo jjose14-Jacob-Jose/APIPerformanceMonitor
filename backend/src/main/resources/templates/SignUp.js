@@ -2,7 +2,9 @@ const MSG_VALIDATION_ERROR_USERNAME_CHARACTERS = "Username must only only contai
 const MSG_VALIDATION_ERROR_PASSWORD_CHARACTERS = "Your password must be between 6 and 30 characters long. It can contain alphabets, digits, and special characters.";
 const MSG_VALIDATION_ERROR_PASSWORD_SPECIAL_CHARACTERS_ALLOWED = "Special Characters allowed: .!@#$%^&*()_+-=;:.,";
 const MSG_NEW_LINE = "\n";
+const MSG_VALIDATION_ERROR_GOOGLE_RECAPTCHA_FAILED = "Too many requests. Please try again after 15 minutes.";
 const MSG_VALIDATION_ERROR_PASSWORDS_DO_NOT_MATCH = "Passwords do not match.";
+const MSG_REGISTRATION_REQUEST_FAILED = "Could not register user account. Please try again after 1 hour";
 const FLAG_BOOLEAN_SUCCESS = true;
 const FLAG_BOOLEAN_FAILURE = false;
 const HTML_ID_USERNAME = "username";
@@ -10,6 +12,13 @@ const HTML_ID_PASSWORD = "password";
 const HTML_ID_PASSWORD_REPEATED = "passwordRepeated";
 const REGEX_VALIDATION_USERNAME = /^[A-Za-z0-9]{6,30}$/;
 const REGEX_VALIDATION_PASSWORD = /^[A-Za-z0-9.!@#$%^&*()_+-=;:.,]{6,30}$/;
+const JSON_REQUEST_KEY_APM_USER_NAME_FIRST = "nameFirst";
+const JSON_REQUEST_KEY_APM_USER_NAME_LAST = "nameLast";
+const JSON_REQUEST_KEY_APM_USER_USERNAME = "username";
+const JSON_REQUEST_KEY_APM_USER_EMAIL_ID = "emailId";
+const JSON_REQUEST_KEY_APM_USER_PASSWORD = "password";
+const JSON_REQUEST_KEY_APM_USER_PASSWORD_REPEATED = "passwordRepeated";
+const URL_USER_SIGN_UP = "/auth/addNewUser";
 
 /**
  * Print the message as an HTML alert.
@@ -66,6 +75,60 @@ function validateUsername() {
 
 }
 
+/**
+ * Clear values of input fields.
+ */
+function clearInputFields() {
+    document.getElementById(JSON_REQUEST_KEY_APM_USER_NAME_FIRST).value = STRING_EMPTY;
+    document.getElementById(JSON_REQUEST_KEY_APM_USER_NAME_LAST).value = STRING_EMPTY;
+    document.getElementById(JSON_REQUEST_KEY_APM_USER_USERNAME).value = STRING_EMPTY;
+    document.getElementById(JSON_REQUEST_KEY_APM_USER_EMAIL_ID).value = STRING_EMPTY;
+    document.getElementById(JSON_REQUEST_KEY_APM_USER_PASSWORD).value = STRING_EMPTY; 
+    document.getElementById(JSON_REQUEST_KEY_APM_USER_PASSWORD_REPEATED).value = STRING_EMPTY; 
+}
+
+function makeAPILog() {
+
+    // Adding Google reCaptcha token.
+    let recaptchaToken = getReCaptchaToken();
+    if (recaptchaToken === MSG_FAIL) {
+        // Invalid Google reCaptcha.
+        printAsAlert(MSG_VALIDATION_ERROR_GOOGLE_RECAPTCHA_FAILED);
+        return;
+    }
+
+    const apmUserRegistration = {
+        [JSON_REQUEST_KEY_APM_USER_NAME_FIRST]: document.getElementById(JSON_REQUEST_KEY_APM_USER_NAME_FIRST).value,
+        [JSON_REQUEST_KEY_APM_USER_NAME_LAST]: document.getElementById(JSON_REQUEST_KEY_APM_USER_NAME_LAST).value,
+        [JSON_REQUEST_KEY_APM_USER_USERNAME]: document.getElementById(JSON_REQUEST_KEY_APM_USER_USERNAME).value,
+        [JSON_REQUEST_KEY_APM_USER_EMAIL_ID]: document.getElementById(JSON_REQUEST_KEY_APM_USER_EMAIL_ID).value,
+        [JSON_REQUEST_KEY_APM_USER_PASSWORD]: document.getElementById(JSON_REQUEST_KEY_APM_USER_PASSWORD).value,
+    };
+
+
+    fetch(URL_USER_SIGN_UP, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(apmUserRegistration)
+    })
+        .then(response => {
+            if (response.ok) {
+                clearInputFields();
+            } else {
+                alert(MSG_FAIL);
+            }
+        })
+        .catch(error => {
+            console.error('User registration failed:', error);
+            printInAlert(MSG_REGISTRATION_REQUEST_FAILED);
+        });
+}
+
+/**
+ * This function is called after Google issues a token for reCaptcha
+ */
 function signUp() {
     if(validatePassword() == FLAG_BOOLEAN_FAILURE)
         return;

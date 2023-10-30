@@ -5,8 +5,8 @@
     <title>API Performance Monitor</title>
 <!--    Following is for Java Spring Boot.-->
 <!--    <link rel="stylesheet" type="text/css" href="/css/signupStyles.css">-->
-    <link rel="stylesheet" type="text/css" href="signupStyles.css">
-    <script src="SignUp.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/signupStyles.css">
+    <script src="/js/SignUp.js"></script>
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body>
@@ -46,6 +46,11 @@
                     data-callback="signUp"
                     data-action='submit'>Sign Up</button>
         </form>
+        <div id="divLogin">
+            <hr>
+            <h4>Already a registered user?</h4>
+            <a href="/login">Click here to login.</a>
+        </div>
     </main>
 </body>
 </html>

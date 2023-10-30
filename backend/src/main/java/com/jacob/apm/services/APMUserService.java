@@ -7,6 +7,7 @@ import com.jacob.apm.models.UserSignUpRequest;
 import com.jacob.apm.repositories.APMUserRepository;
 import com.jacob.apm.utilities.APISystemTime;
 import com.jacob.apm.utilities.APMLogger;
+import com.jacob.apm.utilities.RecaptchaUtil;
 import com.jacob.apm.utilities.RequestValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -18,6 +19,8 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Optional;
+
+import static com.jacob.apm.constants.ConfigurationConstants.DEFAULT_VALUE_LOGIN_ATTEMPTS_FAILED;
 
 @Service
 public class APMUserService implements UserDetailsService {
@@ -49,19 +52,19 @@ public class APMUserService implements UserDetailsService {
             return MainConstants.MSG_FAILURE;
         }
 
+        if(! (RecaptchaUtil.validateRecaptcha(userSignUpRequest.getGoogleReCaptchaToken())))
+            return MainConstants.MSG_FAILURE;
+
         APMUser apmUser = new APMUser();
         apmUser.setNameFirst(userSignUpRequest.getNameFirst());
         apmUser.setNameLast(userSignUpRequest.getNameLast());
-        apmUser.setNameLast(userSignUpRequest.getNameLast());
-
-
-//        Setting user's registration time as UTC.
-        userSignUpRequest.setTimestampRegistration(APISystemTime.getInstantTimeAsString());
-
-        userSignUpRequest.setPassword(encoder.encode(userSignUpRequest.getPassword()));
+        apmUser.setPassword(encoder.encode(userSignUpRequest.getPassword()));
+        apmUser.setTimestampRegistration(APISystemTime.getInstantTimeAsString());
+        apmUser.setLoginAttemptsFailed(DEFAULT_VALUE_LOGIN_ATTEMPTS_FAILED);
+        apmUser.setTimestampAccountLocked(MainConstants.STRING_EMPTY);
 
         try {
-            apmUserRepository.save(userSignUpRequest);
+            apmUserRepository.save(apmUser);
             APMLogger.logMethodExit(methodNameForLogger);
             return MainConstants.MSG_SUCCESS;
         } catch (Exception exception) {

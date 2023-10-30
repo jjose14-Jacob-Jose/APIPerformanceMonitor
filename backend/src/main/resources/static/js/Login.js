@@ -49,3 +49,7 @@ async function postToMain() {
         // Handle the error.
     }
 }
+
+function redirectToSignup() {
+    window.location.href = "/signup";
+}

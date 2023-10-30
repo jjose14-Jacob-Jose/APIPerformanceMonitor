@@ -48,6 +48,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/status",
                                 "/login",
+                                "/signup",
                                 "/",
                                 "/auth/logout",
                                 "/apiCall/save",

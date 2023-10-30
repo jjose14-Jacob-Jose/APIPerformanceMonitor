@@ -41,8 +41,19 @@ public class APMUserController {
     private AuthenticationManager authenticationManager;
 
     @PostMapping("/addNewUser")
-    public String addNewUser(@RequestBody UserSignUpRequest userSignUpRequest) {
-        return apmUserService.saveUserToDatabase(apmUser);
+    public ResponseEntity<?> addNewUser(@RequestBody UserSignUpRequest userSignUpRequest) {
+        String methodNameForLogging = "addNewUser()";
+        APMLogger.logMethodEntry(methodNameForLogging);
+
+        String operationStatus = apmUserService.saveUserToDatabase(userSignUpRequest);
+
+        if (operationStatus.equalsIgnoreCase(MainConstants.MSG_SUCCESS)) {
+            APMLogger.logMethodExit(methodNameForLogging);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(MainConstants.MSG_SUCCESS);
+        } else {
+            APMLogger.logError(methodNameForLogging);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MainConstants.MSG_FAILURE);
+        }
     }
 
     @PostMapping("/generateToken")

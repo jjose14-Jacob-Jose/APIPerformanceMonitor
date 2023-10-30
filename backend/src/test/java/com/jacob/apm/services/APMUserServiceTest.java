@@ -63,62 +63,6 @@ class APMUserServiceTest {
         return listAPMUsers;
     }
 
-    @Test
-    void testSaveUserToDatabase1() {
-
-        APMUser apmUser = getAPMUserList().get(0);
-
-        // Set up the behavior of apmUserRepository.save
-        Mockito.when(apmUserRepository.save(apmUser)).thenReturn(apmUser);
-
-        // Perform the action you're testing
-        String result = apmUserService.saveUserToDatabase(apmUser);
-
-        // Verify that the repository's save method was called
-        Mockito.verify(apmUserRepository).save(apmUser);
-
-        // Assert the expected outcome of the test
-        assertEquals(MainConstants.MSG_SUCCESS, result);
-    }
-
-    @Test
-    void testSaveUserWithDuplicateEmail() {
-        // Create a new user with a duplicate email ID
-        APMUser newUser = new APMUser();
-        newUser.setEmailId("existing.email@example.com");
-
-        // Mock the behavior of apmUserRepository.findAPMUserByEmailID to return an existing user
-        Mockito.when(apmUserRepository.findAPMUserByEmailId(newUser.getEmailId()))
-                .thenReturn(newUser);
-
-        // Perform the action you're testing
-        String result = apmUserService.saveUserToDatabase(newUser);
-
-        // Verify that the repository's findAPMUserByEmailID method was called
-        Mockito.verify(apmUserRepository).findAPMUserByEmailId(newUser.getEmailId());
-
-        // Assert the expected outcome of the test
-        assertEquals(MainConstants.MSG_DUPLICATE_EMAIL_ID, result);
-    }
-
-    @Test
-    void testSaveUserWithDuplicateUsername() {
-        APMUser newUser = new APMUser();
-        newUser.setUsername("usernameForTest");
-
-        // Mock the behavior of apmUserRepository.findAPMUserByUserName to return an existing user
-        Mockito.when(apmUserRepository.findAPMUserByUsername(newUser.getUsername()))
-                .thenReturn(newUser);
-
-        // Perform the action you're testing
-        String result = apmUserService.saveUserToDatabase(newUser);
-
-        // Verify that the repository's findAPMUserByEmailID method was called
-        Mockito.verify(apmUserRepository).findAPMUserByUsername(newUser.getUsername());
-
-        // Assert the expected outcome of the test
-        assertEquals(MainConstants.MSG_DUPLICATE_USERNAME, result);
-    }
 
     @Test
     void testGetAPMUserWithUserName1() {

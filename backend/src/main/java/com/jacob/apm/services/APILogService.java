@@ -28,11 +28,11 @@ public class APILogService {
         String methodNameForLogger = "saveToDatabaseAPICall()";
         APMLogger.logMethodEntry(methodNameForLogger);
 
-//        Checking Google reCaptcha.
-        if(! (RecaptchaUtil.validateRecaptcha(apmDashboardApiCall.getGoogleReCaptchaToken())))
+        if (apmDashboardApiCall == null || apmDashboardApiCall.getApiCall() == null)
             return MainConstants.MSG_FAILURE;
 
-        if (apmDashboardApiCall == null || apmDashboardApiCall.getApiCall() == null)
+//        Checking Google reCaptcha.
+        if(! (RecaptchaUtil.validateRecaptcha(apmDashboardApiCall.getGoogleReCaptchaToken())))
             return MainConstants.MSG_FAILURE;
 
 //        Adding username to the API caller name.

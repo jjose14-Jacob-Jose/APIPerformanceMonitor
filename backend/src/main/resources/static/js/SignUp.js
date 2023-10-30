@@ -19,6 +19,7 @@ const JSON_REQUEST_KEY_APM_USER_EMAIL_ID = "emailId";
 const JSON_REQUEST_KEY_APM_USER_PASSWORD = "password";
 const JSON_REQUEST_KEY_APM_USER_PASSWORD_REPEATED = "passwordRepeated";
 const URL_USER_SIGN_UP = "/auth/addNewUser";
+const URL_DASHBOARD = "/home"
 
 /**
  * Print the message as an HTML alert.
@@ -87,7 +88,16 @@ function clearInputFields() {
     document.getElementById(JSON_REQUEST_KEY_APM_USER_PASSWORD_REPEATED).value = STRING_EMPTY; 
 }
 
-function makeAPILog() {
+/**
+ * This function is called after Google issues a token for reCaptcha
+ */
+function signUp() {
+
+    if(validatePassword() == FLAG_BOOLEAN_FAILURE)
+        return;
+
+    if(validateUsername() == FLAG_BOOLEAN_FAILURE)
+        return;
 
     // Adding Google reCaptcha token.
     let recaptchaToken = getReCaptchaToken();
@@ -116,24 +126,13 @@ function makeAPILog() {
         .then(response => {
             if (response.ok) {
                 clearInputFields();
+                window.location.href = URL_DASHBOARD;
             } else {
-                alert(MSG_FAIL);
+                alert(MSG_REGISTRATION_REQUEST_FAILED);
             }
         })
         .catch(error => {
             console.error('User registration failed:', error);
             printInAlert(MSG_REGISTRATION_REQUEST_FAILED);
         });
-}
-
-/**
- * This function is called after Google issues a token for reCaptcha
- */
-function signUp() {
-    if(validatePassword() == FLAG_BOOLEAN_FAILURE)
-        return;
-
-    if(validateUsername() == FLAG_BOOLEAN_FAILURE)
-        return;
-
 }

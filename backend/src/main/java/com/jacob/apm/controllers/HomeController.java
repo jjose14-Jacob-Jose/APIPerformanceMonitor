@@ -44,6 +44,19 @@ public class HomeController {
         }
     }
 
+    @GetMapping({"/signup"})
+    public ModelAndView signUp() {
+        try {
+            APMLogger.logMethodEntry("signUp()");
+            ModelAndView modelAndView = new ModelAndView();
+            modelAndView.setViewName("signup"); // Set the view name to your error page (e.g., "error.html")
+            return modelAndView;
+
+        } catch (Exception exception) {
+            APMLogger.logError( "signUp()", exception);
+            return null;
+        }
+    }
 
     @ExceptionHandler(Exception.class)
     public ModelAndView handleException(Exception exception) {

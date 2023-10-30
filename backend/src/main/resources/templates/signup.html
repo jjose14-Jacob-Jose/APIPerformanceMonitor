@@ -3,8 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>API Performance Monitor</title>
-<!--    Following is for Java Spring Boot.-->
-<!--    <link rel="stylesheet" type="text/css" href="/css/signupStyles.css">-->
     <link rel="stylesheet" type="text/css" href="/css/signupStyles.css">
     <script src="/js/SignUp.js"></script>
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
@@ -12,41 +10,41 @@
 <body>
     <main>
         <div class="divBodyHeader" >
-            <h2>Application Performance Monitor</h2>
+            <a href="/home"><h1>API Performance Monitor </h1></a>
             <h2>Sign Up</h2>
         </div>
 
-        <form id="formSignUp">
-            <label for="nameFirst">First Name*:</label>
-            <input type="text" id="nameFirst" name="nameFirst" required>
+        <div class="divFormSignUp">
+            <form id="formSignUp">
+                <label for="nameFirst">First Name*:</label>
+                <input type="text" id="nameFirst" name="nameFirst" required>
 
-            <label for="nameLast">Last Name*:</label>
-            <input type="text" id="nameLast" name="nameLast" required>
+                <label for="nameLast">Last Name*:</label>
+                <input type="text" id="nameLast" name="nameLast" required>
 
-            <label for="userName">Username*:</label>
-            <input type="text" id="username" name="username" required>
+                <label for="userName">Username*:</label>
+                <input type="text" id="username" name="username" required>
 
-            <label for="emailId">Email:</label>
-            <input type="email" id="emailId" name="emailID">
+                <label for="emailId">Email:</label>
+                <input type="email" id="emailId" name="emailID">
 
-            <label for="password">Password*:</label>
-            <input type="password" id="password" name="password" required>
+                <label for="password">Password*:</label>
+                <input type="password" id="password" name="password" required>
 
-            <label for="password">Repeat password*:</label>
-            <input type="password" id="passwordRepeated" name="passwordRepeated" required>
+                <label for="password">Repeat password*:</label>
+                <input type="password" id="passwordRepeated" name="passwordRepeated" required>
 
-            <label for="usagePlan">Usage Plan:</label>
-            <select id="usagePlan" name="usagePlan" disabled>
-                <option value="free" selected>Free</option>
-                <option value="premium">Premium</option>
-            </select>
+                <label for="usagePlan">Usage Plan:</label>
+                <select id="usagePlan" name="usagePlan" disabled>
+                    <option value="free" selected>Free</option>
+                    <option value="premium">Premium</option>
+                </select>
 
-            <button class="g-recaptcha"
-                    data-sitekey="6LcBzNYoAAAAAEfEaqpohyGQCT3iRYO8NegFrsAY"
-                    data-callback="signUp"
-                    data-action='submit'>Sign Up</button>
-        </form>
-        <div id="divLogin">
+                <button class="g-recaptcha"
+                        data-sitekey="6LcBzNYoAAAAAEfEaqpohyGQCT3iRYO8NegFrsAY"
+                        data-callback="signUp"
+                        data-action='submit'>Sign Up</button>
+            </form>
             <hr>
             <h4>Already a registered user?</h4>
             <a href="/login">Click here to login.</a>

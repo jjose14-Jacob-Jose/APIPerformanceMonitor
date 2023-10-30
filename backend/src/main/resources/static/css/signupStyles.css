@@ -8,7 +8,7 @@ h1, h2{
     color: #fff;
 }
 
-form {
+.divFormSignUp {
     max-width: 400px;
     margin: 0 auto;
     background-color: #fff;

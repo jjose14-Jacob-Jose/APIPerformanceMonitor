@@ -13,19 +13,23 @@
     <body>
         <main>
             <div id="divMain">
-                <h1>API Performance Monitor </h1>
+                <a href="/home"><h1>API Performance Monitor </h1></a>
                 <h2>Login </h2>
-                <form action="/auth/processLogin" method="POST" id="formLogin" onsubmit="formSubmitLogin(event)">
-                    <label for="username">Username:</label>
-                    <input type="text" id="username" name="username" required><br>
-                    <label for="password">Password:</label>
-                    <input type="password" id="password" name="password" required><br>
-                    <button class="g-recaptcha"
-                            data-sitekey="6LcBzNYoAAAAAEfEaqpohyGQCT3iRYO8NegFrsAY"
-                            data-callback='formSubmitLogin'
-                            data-action='submit'>Sign in</button>
-                    <button class="buttonSignUp" onclick="redirectToSignup()">Sign Up</button>
-                </form>
+                <div class="divLoginForm">
+                    <form action="/auth/processLogin" method="POST" id="formLogin" onsubmit="formSubmitLogin(event)">
+                        <label for="username">Username:</label>
+                        <input type="text" id="username" name="username" required><br>
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" name="password" required><br>
+                        <button class="g-recaptcha"
+                                data-sitekey="6LcBzNYoAAAAAEfEaqpohyGQCT3iRYO8NegFrsAY"
+                                data-callback='formSubmitLogin'
+                                data-action='submit'>Sign in</button>
+                    </form>
+                    <hr>
+                    <h3>Do not have an account?</h3>
+                    <a href="/signup">Click here to sign up.</a>
+                </div>
             </div>
         </main>
     </body>

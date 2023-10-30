@@ -15,7 +15,7 @@ h1, h2{
     color: #fff;
 }
 
-form {
+.divLoginForm {
     background: #333;
     padding: 20px;
     border-radius: 5px;
@@ -52,4 +52,8 @@ input[type="password"] {
 
 .g-recaptcha:hover {
     background: #0056b3;
+}
+
+a {
+    color: #fff;
 }

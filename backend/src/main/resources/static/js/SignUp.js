@@ -113,6 +113,7 @@ function signUp() {
         [JSON_REQUEST_KEY_APM_USER_USERNAME]: document.getElementById(JSON_REQUEST_KEY_APM_USER_USERNAME).value,
         [JSON_REQUEST_KEY_APM_USER_EMAIL_ID]: document.getElementById(JSON_REQUEST_KEY_APM_USER_EMAIL_ID).value,
         [JSON_REQUEST_KEY_APM_USER_PASSWORD]: document.getElementById(JSON_REQUEST_KEY_APM_USER_PASSWORD).value,
+        [JSON_REQUEST_KEY_GOOGLE_RECAPTCHA_TOKEN]: recaptchaToken
     };
 
 

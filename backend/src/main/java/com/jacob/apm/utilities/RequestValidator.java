@@ -13,8 +13,13 @@ public class RequestValidator {
         boolean isNameFirstValid = isValidField(userSignUpRequest.getNameFirst());
         boolean isNameLastValid = isValidField(userSignUpRequest.getNameLast());
         boolean isUsernameValid = matchStringWithRegex(userSignUpRequest.getUsername(), REGEX_FOR_VALIDATION_USERNAME);
-        boolean isEmailValid = matchStringWithRegex(userSignUpRequest.getEmailId(), REGEX_FOR_VALIDATION_EMAIL);
         boolean isPasswordValid = matchStringWithRegex(userSignUpRequest.getPassword(), REGEX_FOR_VALIDATION_PASSWORD);
+
+        boolean isEmailValid;
+        if(userSignUpRequest.getEmailId().equalsIgnoreCase(MainConstants.STRING_EMPTY))
+            isEmailValid = MainConstants.FLAG_SUCCESS;
+        else
+            isEmailValid = matchStringWithRegex(userSignUpRequest.getEmailId(), REGEX_FOR_VALIDATION_EMAIL);
 
         // Check all validations and return true if all fields are valid
         if (isNameFirstValid && isNameLastValid && isUsernameValid && isEmailValid && isPasswordValid)

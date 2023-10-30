@@ -8,11 +8,17 @@ body {
     align-items: center;
     height: 100vh;
     margin: 0;
+    color: #fff;
+
 }
 
-h1, h2{
+.divPageHeading{
     text-align: center;
-    color: #fff;
+    color: #FFFFFF;
+}
+
+.divPageHeading a{
+    text-decoration: none;
 }
 
 .divLoginForm {
@@ -54,6 +60,3 @@ input[type="password"] {
     background: #0056b3;
 }
 
-a {
-    color: #fff;
-}

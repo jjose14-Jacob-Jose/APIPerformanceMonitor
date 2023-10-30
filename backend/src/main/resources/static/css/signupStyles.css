@@ -4,7 +4,12 @@ body {
     text-decoration: none;
 }
 
-.divPageHeading{
+h1 {
+    text-align: center;
+    color: #FFFFFF;
+}
+
+.divPageHeading {
     text-align: center;
     color: #FFFFFF;
 }

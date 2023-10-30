@@ -21,6 +21,7 @@ import java.time.Instant;
 import java.util.Optional;
 
 import static com.jacob.apm.constants.ConfigurationConstants.DEFAULT_VALUE_LOGIN_ATTEMPTS_FAILED;
+import static com.jacob.apm.constants.ConfigurationConstants.ROLE_USER;
 
 @Service
 public class APMUserService implements UserDetailsService {
@@ -56,12 +57,14 @@ public class APMUserService implements UserDetailsService {
             return MainConstants.MSG_FAILURE;
 
         APMUser apmUser = new APMUser();
+        apmUser.setUsername(userSignUpRequest.getUsername());
         apmUser.setNameFirst(userSignUpRequest.getNameFirst());
         apmUser.setNameLast(userSignUpRequest.getNameLast());
         apmUser.setPassword(encoder.encode(userSignUpRequest.getPassword()));
         apmUser.setTimestampRegistration(APISystemTime.getInstantTimeAsString());
         apmUser.setLoginAttemptsFailed(DEFAULT_VALUE_LOGIN_ATTEMPTS_FAILED);
         apmUser.setTimestampAccountLocked(MainConstants.STRING_EMPTY);
+        apmUser.setRoles(ROLE_USER);
 
         try {
             apmUserRepository.save(apmUser);

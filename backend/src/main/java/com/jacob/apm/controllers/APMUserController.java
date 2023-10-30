@@ -6,27 +6,23 @@ package com.jacob.apm.controllers;
  */
 
 import com.jacob.apm.constants.MainConstants;
-import com.jacob.apm.models.APMUser;
 import com.jacob.apm.models.AuthenticationRequest;
 import com.jacob.apm.models.UserSignUpRequest;
 import com.jacob.apm.services.APMUserService;
 import com.jacob.apm.services.JwtService;
 import com.jacob.apm.utilities.APMLogger;
 import com.jacob.apm.utilities.RecaptchaUtil;
-import com.sun.tools.javac.Main;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 @RestController
 @RequestMapping("/auth")
@@ -73,7 +69,8 @@ public class APMUserController {
             cookieHttpOnly.setPath("/");
             response.addCookie(cookieHttpOnly);
 
-            Cookie cookieUsername = new Cookie(MainConstants.COOKIE_HEADER_USERNAME, authenticationRequest.getUsername());
+            String username = authenticationRequest.getUsername();
+            Cookie cookieUsername = new Cookie(MainConstants.COOKIE_HEADER_PREFIX_USERNAME, authenticationRequest.getUsername());
             cookieUsername.setMaxAge(MainConstants.DURATION_MILLISECONDS_IN_ONE_HOUR);
             cookieUsername.setPath("/");
             response.addCookie(cookieUsername);

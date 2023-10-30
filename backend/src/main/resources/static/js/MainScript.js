@@ -76,21 +76,6 @@ function makeAPILog() {
         });
 }
 
-/**
- * Return value of a specific cookie.
- * @param cookieName header-name of the cookie to be retrieved.
- * @returns {STRING_EMPTY|string}
- */
-function getCookieValue(cookieName) {
-    const cookies = document.cookie.split(';');
-    for (const cookie of cookies) {
-        const [name, value] = cookie.trim().split('=');
-        if (name === cookieName) {
-            return decodeURIComponent(value);
-        }
-    }
-    return STRING_EMPTY;
-}
 
 /**
  * Display JSON as a table on the specified div.
@@ -304,7 +289,7 @@ function printAsAlert(message) {
 /**
  * Clear contents of the input fields to log a new API call.
  */
-function btnPostApiCallClear() {
+function clearFormContents() {
     document.getElementById(HTML_ID_TEXT_API_CALL_ID).value = STRING_EMPTY;
     document.getElementById(HTML_ID_TEXTAREA_API_CALL_MESSAGE).value = STRING_EMPTY;
     document.getElementById(HTML_ID_TEXT_API_CALL_APPLICATION_NAME).value = STRING_EMPTY;
@@ -327,6 +312,9 @@ function btnApplyDateTimeRangeClear() {
 
 // Logout. Clear session.
 function logoutUser() {
+    // Clear all cookies.
+    clearAllCookies();
+
     fetch("/auth/logout", {
         method: "GET"
     })

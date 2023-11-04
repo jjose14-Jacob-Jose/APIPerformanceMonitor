@@ -69,7 +69,6 @@ public class APMUserController {
             cookieHttpOnly.setPath("/");
             response.addCookie(cookieHttpOnly);
 
-            String username = authenticationRequest.getUsername();
             Cookie cookieUsername = new Cookie(MainConstants.COOKIE_HEADER_PREFIX_USERNAME, authenticationRequest.getUsername());
             cookieUsername.setMaxAge(MainConstants.DURATION_MILLISECONDS_IN_ONE_HOUR);
             cookieUsername.setPath("/");

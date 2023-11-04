@@ -8,6 +8,7 @@ import com.jacob.apm.utilities.APISystemTime;
 import com.jacob.apm.utilities.APMLogger;
 import com.jacob.apm.utilities.RecaptchaUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -80,7 +81,7 @@ public class APILogService {
         List<APICall> listAPICallsFromDB = null;
 
         try {
-            listAPICallsFromDB = incomingRequestsRepository.findAll();
+            listAPICallsFromDB = incomingRequestsRepository.findAll(Sort.by(Sort.Order.desc("callerTimestampUTC")));
         } catch (Exception exception) {
             APMLogger.logError(methodNameForLogger, exception);
         }

@@ -65,7 +65,7 @@ public class APILogService {
 
         } catch (Exception exception) {
             APMLogger.logError(methodNameForLogger, exception);
-            return MainConstants.MSG_FAILURE;
+            return exception.toString();
         }
     }
 

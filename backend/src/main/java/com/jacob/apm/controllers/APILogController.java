@@ -44,14 +44,20 @@ public class APILogController {
     /**
      * Receiving and stores incoming API call logs.
      * @param apiCall : Object of APICall containing details of the log.
-     * @return String response from Service clas.
+     * @return HttpStatus.BAD_REQUEST or HttpStatus.ACCEPTED
      */
     @PostMapping(value = "/save", produces = "application/json")
-    public ResponseEntity<String> saveAPICall(@RequestBody APICall apiCall) {
-        APMLogger.logMethodEntry("saveAPICall()");
+    public ResponseEntity<?> saveAPICall(@RequestBody APICall apiCall) {
+        APMLogger.logMethodEntry("Saving API call log to database. ");
+
         String operationStatus = apiLogService.saveToDatabaseAPICall(apiCall);
-        APMLogger.logMethodExit("saveAPICall()");
-        return ResponseEntity.ok(operationStatus);
+        if (operationStatus.equalsIgnoreCase(MainConstants.MSG_SUCCESS)) {
+            APMLogger.logMethodExit("Successfully saved API call. ");
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(operationStatus);
+        }
+
+        APMLogger.logError("Couldn't save API call. Exception: "+operationStatus);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(operationStatus);
     }
 
     /**

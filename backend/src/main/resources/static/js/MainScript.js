@@ -198,15 +198,16 @@ function filterTable(idHtmlTable, columnKey, filterText, keys) { // Pass keys as
     const table = document.getElementById(idHtmlTable);
     const tbody = table.querySelector('tbody');
     const rows = tbody.getElementsByTagName('tr');
+    const filterTextLower = filterText.toLowerCase();
 
     for (let i = 0; i < rows.length; i++) {
         const row = rows[i];
         const cell = row.querySelector(`td:nth-child(${keys.indexOf(columnKey) + 1})`);
 
         if (cell) {
-            const cellText = cell.textContent;
+            const cellText = cell.textContent.toLowerCase();
             try {
-                if (cellText.includes(filterText)) {
+                if (cellText.includes(filterTextLower)) {
                     row.style.display = '';
                 } else {
                     row.style.display = 'none';

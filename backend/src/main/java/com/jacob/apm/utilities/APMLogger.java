@@ -22,4 +22,14 @@ public class APMLogger {
 
         logger.error(message + MainConstants.MSG_DELIMITER_MESSAGE_TO_MESSAGE + MainConstants.MSG_FAILURE, throwable);
     }
+
+    public static void logError(String message) {
+
+        logger.error(message + MainConstants.MSG_DELIMITER_MESSAGE_TO_MESSAGE + MainConstants.MSG_FAILURE);
+    }
+    public static void logInfo(String message) {
+
+        logger.info(message);
+    }
+
 }

@@ -48,6 +48,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/status",
                                 "/login",
+                                "/signup",
                                 "/",
                                 "/auth/logout",
                                 "/apiCall/save",
@@ -61,6 +62,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/apiCall/getAll").authenticated()
                         .requestMatchers(HttpMethod.POST, "/apiCall/getAll/range").authenticated()
                         .requestMatchers(HttpMethod.GET, "/home").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/apiCall/saveFromApmDashBoard").authenticated()
                 )
                 .formLogin((formLogin) ->
                         formLogin

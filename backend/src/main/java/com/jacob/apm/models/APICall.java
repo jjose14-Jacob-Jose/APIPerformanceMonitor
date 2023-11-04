@@ -6,8 +6,6 @@ import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Date;
-
 @Getter
 @Setter
 @ToString
@@ -20,6 +18,6 @@ public class APICall {
     private String callId; //
     private String callerMessage;
     private String callerName;
-    private String callTimestampUTC;
+    private String callerTimestampUTC;
 
 }

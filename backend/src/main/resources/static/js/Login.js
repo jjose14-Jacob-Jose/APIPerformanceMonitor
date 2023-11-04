@@ -1,11 +1,22 @@
 // Submit login form.
 function formSubmitLogin(event) {
-    event.preventDefault();
+    // event.preventDefault();
+
     const formData = new FormData(document.getElementById("formLogin"));
+
+    // Adding Google reCaptcha token.
+    let recaptchaToken = getReCaptchaToken();
+    if (recaptchaToken === MSG_FAIL) {
+        return;
+    }
+    formData.append("googleReCaptcha", recaptchaToken);
+
     const formDataJson = {};
     formData.forEach((value, key) => {
         formDataJson[key] = value;
     });
+
+
     fetch("/auth/generateToken", {
         method: "POST",
         headers: {
@@ -39,3 +50,6 @@ async function postToMain() {
     }
 }
 
+function redirectToSignup() {
+    window.location.href = "/signup";
+}

@@ -1,10 +1,13 @@
 package com.jacob.apm.controllers;
 
+import com.jacob.apm.constants.MainConstants;
 import com.jacob.apm.models.APICall;
+import com.jacob.apm.models.ApmDashboardApiCall;
 import com.jacob.apm.models.RequestForDateRange;
 import com.jacob.apm.services.APILogService;
 import com.jacob.apm.utilities.APMLogger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -19,16 +22,42 @@ public class APILogController {
     APILogService apiLogService;
 
     /**
+     * Storing API calls from APM GUI dashboard.
+     * @param apmDashboardApiCall : Object containing information about API Call, username, and Google reCaptcha token.
+     * @return Response entity specifying operation status.
+     */
+    @PostMapping(value = "/saveFromApmDashBoard", produces = "application/json")
+    public ResponseEntity<?> saveApiCallFromApmDashBoard(@RequestBody ApmDashboardApiCall apmDashboardApiCall) {
+        APMLogger.logMethodEntry("saveApiCallFromApmDashBoard()");
+
+        String operationStatus = apiLogService.saveToDbApiCallFromApmDashboard(apmDashboardApiCall);
+
+        if(operationStatus.equalsIgnoreCase(MainConstants.MSG_FAILURE)) {
+            APMLogger.logError("saveApiCallFromApmDashBoard(): "+operationStatus);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(operationStatus);
+        } else {
+            APMLogger.logMethodExit("saveApiCallFromApmDashBoard()");
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(operationStatus);
+        }
+    }
+
+    /**
      * Receiving and stores incoming API call logs.
      * @param apiCall : Object of APICall containing details of the log.
-     * @return String response from Service clas.
+     * @return HttpStatus.BAD_REQUEST or HttpStatus.ACCEPTED
      */
     @PostMapping(value = "/save", produces = "application/json")
-    public ResponseEntity<String> saveAPICall(@RequestBody APICall apiCall) {
-        APMLogger.logMethodEntry("saveAPICall()");
+    public ResponseEntity<?> saveAPICall(@RequestBody APICall apiCall) {
+        APMLogger.logMethodEntry("Saving API call log to database. ");
+
         String operationStatus = apiLogService.saveToDatabaseAPICall(apiCall);
-        APMLogger.logMethodExit("saveAPICall()");
-        return ResponseEntity.ok(operationStatus);
+        if (operationStatus.equalsIgnoreCase(MainConstants.MSG_SUCCESS)) {
+            APMLogger.logMethodExit("Successfully saved API call. ");
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(operationStatus);
+        }
+
+        APMLogger.logError("Couldn't save API call. Exception: "+operationStatus);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(operationStatus);
     }
 
     /**

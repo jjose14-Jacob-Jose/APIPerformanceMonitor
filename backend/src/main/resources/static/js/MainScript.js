@@ -1,24 +1,5 @@
-const DELAY_REDIRECTION_TO_HOME_FROM_ERROR_IN_MILLISECONDS = 5000;
-const URL_GET_API_CALLS_ALL = "/apiCall/getAll";
-const URL_GET_API_CALLS_ALL_HTTP_METHOD = "POST";
-const URL_GET_API_CALLS_WITHIN_DATE_TIME_RANGE  = "/apiCall/getAll/range";
-const URL_POST_API_CALL = "/apiCall/save";
-const HTML_ID_DIV_RESPONSE_FROM_ALL_API_CALLS = "divBodyResponsesAllAPICallsTable";
-const HTML_ID_TABLE_RESPONSE_FROM_ALL_API_CALLS = "tableResponseAllAPICalls";
-const HTML_CSS_CLASS_TABLE_RESPONSE_FROM_ALL_API_CALLs = "tableResponse";
-const MSG_FAIL = "Failed.";
-const HTML_ID_TEXT_API_CALL_ID = "textCallId";
-const HTML_ID_TEXTAREA_API_CALL_MESSAGE = "textAreaMessage";
-const HTML_ID_TEXT_API_CALL_APPLICATION_NAME = "textApplicationName";
-const HTML_ID_DATETIME_API_CALL_TIMESTAMP = "dateTimeLocalCallTimestamp";
-const STRING_EMPTY = '';
-const JSON_REQUEST_API_CALL_PARAMETER_ID = 'callId';
-const JSON_REQUEST_API_CALL_PARAMETER_MESSAGE = 'callerMessage';
-const JSON_REQUEST_API_CALL_PARAMETER_CALLER = 'callerName';
-const JSON_REQUEST_API_CALL_PARAMETER_TIMESTAMP = 'callTimestampUTC';
-const HTML_ID_DATETIME_RANGE_START = 'dateTimeAPICallsRangeStart';
-const HTML_ID_DATETIME_RANGE_END = 'dateTimeAPICallsRangeEnd';
-
+const INDEX_RESULTS_TABLE_CALL_ID = 0;
+const JAVA_PARAMETER_CALLER_TIME_STAMP = "callerTimestampUTC";
 
 function stringIsEmpty(string) {
     if (string.trim() === STRING_EMPTY) {
@@ -33,47 +14,59 @@ function stringIsEmpty(string) {
  * Event-listener for 'Send POST Request' button.
  */
 function makeAPILog() {
-    const id = document.getElementById(HTML_ID_TEXT_API_CALL_ID).value;
-    const message = document.getElementById(HTML_ID_TEXTAREA_API_CALL_MESSAGE).value;
-    const caller = document.getElementById(HTML_ID_TEXT_API_CALL_APPLICATION_NAME).value;
-    const timestamp = document.getElementById(HTML_ID_DATETIME_API_CALL_TIMESTAMP).value;
 
-    if (stringIsEmpty(message)) {
-        alert("Message is empty. Please enter a message.");
+    // Adding Google reCaptcha token.
+    let recaptchaToken = getReCaptchaToken();
+    if (recaptchaToken === MSG_FAIL) {
+        // Invalid Google reCaptcha.
+        printAsAlert(MSG_TOO_MANY_REQUESTS);
         return;
     }
-    if (stringIsEmpty(caller)) {
-        alert("Caller name is empty. Please enter a caller name.");
+    const callerMessage = document.getElementById(HTML_ID_TEXTAREA_API_CALL_MESSAGE).value;
+    const callerName = document.getElementById(HTML_ID_TEXT_API_CALL_APPLICATION_NAME).value;
+    const callerTimestamp = document.getElementById(HTML_ID_DATETIME_API_CALL_TIMESTAMP).value;
+
+    if (stringIsEmpty(callerMessage)) {
+        printAsAlert(MSG_INPUT_MESSAGE_EMPTY)
+        return;
+    }
+    if (stringIsEmpty(callerName)) {
+        printAsAlert(MSG_INPUT_Name_EMPTY)
         return;
     }
 
-    const requestData = {
-        [JSON_REQUEST_API_CALL_PARAMETER_MESSAGE]: message,
-        [JSON_REQUEST_API_CALL_PARAMETER_CALLER]: caller
+    // Append the APM user's username to the caller-name parameter.
+    let usernameFromCookie = getCookieValue(ID_BACKEND_COOKIE_USERNAME);
+    if (usernameFromCookie === STRING_EMPTY) {
+        usernameFromCookie = MSG_COOKIES_DISABLED_USERNAME;
+        printAsAlert(MSG_COOKIES_DISABLED_ALERT);
+    }
+
+    const apiCall = {
+        [JSON_REQUEST_KEY_API_CALL_CALLER_MESSAGE]: callerMessage,
+        [JSON_REQUEST_KEY_API_CALL_CALLER_NAME]: callerName,
+        [JSON_REQUEST_KEY_API_CALL_CALLER_TIMESTAMP_UTC]: callerTimestamp
     };
 
-    if (!(stringIsEmpty(id)) ) {
-        requestData[JSON_REQUEST_API_CALL_PARAMETER_ID] = id;
-    }
+    const apmUser = {
+        [JSON_REQUEST_KEY_GOOGLE_RECAPTCHA_TOKEN]: recaptchaToken,
+        [JSON_REQUEST_KEY_USERNAME]: usernameFromCookie, // You should replace this with the actual username
+        [JSON_REQUEST_KEY_API_CALL]: apiCall
+    };
 
-    console.log("timestamp: " + timestamp);
 
-    if (!(stringIsEmpty(timestamp)) ) {
-        requestData[JSON_REQUEST_API_CALL_PARAMETER_TIMESTAMP] = timestamp;
-    }
 
-    fetch(URL_POST_API_CALL, {
+    fetch(URL_POST_API_CALL_FROM_APM_DASHBOARD, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(requestData)
+        body: JSON.stringify(apmUser)
     })
         .then(response => {
             if (response.ok) {
-                id.value = STRING_EMPTY; // Clear the textarea
-                message.value = STRING_EMPTY; // Clear the textarea
-                caller.value = STRING_EMPTY; // Clear the textarea
+                callerMessage.value = STRING_EMPTY; // Clear the textarea
+                callerName.value = STRING_EMPTY; // Clear the textarea
                 // Fetching and rendering the table.
                 main();
             } else {
@@ -86,12 +79,6 @@ function makeAPILog() {
         });
 }
 
-// Function to get a cookie value by name
-function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
-}
 
 /**
  * Display JSON as a table on the specified div.
@@ -155,7 +142,17 @@ function displayJSONAsTableOnDiv(jsonData, idDiv, idHtmlTable, cssClassHTMLTable
         const row = document.createElement('tr');
         keys.forEach(key => {
             const cell = document.createElement('td');
-            cell.textContent = item[key] || ''; // Handle undefined values
+
+            // Create a div element to wrap the content
+            const div = document.createElement('div');
+
+            // Format timestamp in ISO to local format.
+            if(key === JAVA_PARAMETER_CALLER_TIME_STAMP)
+                div.textContent = convertTimestampToLocalFormat(item[key]);
+            else
+                div.textContent = item[key] || ''; // Handle undefined values
+
+            cell.appendChild(div);
             row.appendChild(cell);
         });
         tbody.appendChild(row);
@@ -164,6 +161,9 @@ function displayJSONAsTableOnDiv(jsonData, idDiv, idHtmlTable, cssClassHTMLTable
 
     // Append the table to the container
     container.appendChild(table);
+
+    // Id column is hidden using CSS styles.
+
 }
 
 /**
@@ -198,15 +198,16 @@ function filterTable(idHtmlTable, columnKey, filterText, keys) { // Pass keys as
     const table = document.getElementById(idHtmlTable);
     const tbody = table.querySelector('tbody');
     const rows = tbody.getElementsByTagName('tr');
+    const filterTextLower = filterText.toLowerCase();
 
     for (let i = 0; i < rows.length; i++) {
         const row = rows[i];
         const cell = row.querySelector(`td:nth-child(${keys.indexOf(columnKey) + 1})`);
 
         if (cell) {
-            const cellText = cell.textContent;
+            const cellText = cell.textContent.toLowerCase();
             try {
-                if (cellText.includes(filterText)) {
+                if (cellText.includes(filterTextLower)) {
                     row.style.display = '';
                 } else {
                     row.style.display = 'none';
@@ -305,14 +306,13 @@ function printAsAlert(message) {
 /**
  * Clear contents of the input fields to log a new API call.
  */
-function btnPostApiCallClear() {
-    document.getElementById(HTML_ID_TEXT_API_CALL_ID).value = STRING_EMPTY;
+function clearFormContents() {
     document.getElementById(HTML_ID_TEXTAREA_API_CALL_MESSAGE).value = STRING_EMPTY;
     document.getElementById(HTML_ID_TEXT_API_CALL_APPLICATION_NAME).value = STRING_EMPTY;
     document.getElementById(HTML_ID_DATETIME_API_CALL_TIMESTAMP).value = STRING_EMPTY;
 
     // Calling 'main' to display the original table again.
-    main();
+    // main();
 }
 
 /**
@@ -328,6 +328,9 @@ function btnApplyDateTimeRangeClear() {
 
 // Logout. Clear session.
 function logoutUser() {
+    // Clear all cookies.
+    clearAllCookies();
+
     fetch("/auth/logout", {
         method: "GET"
     })
@@ -341,6 +344,27 @@ function logoutUser() {
             }
         })
         .catch(error => console.error(error));
+}
+
+/**
+ * Converts a timestamp in UTC timezone to local time.
+ * @param isoTimestamp timestamp in UTC
+ * @returns {string} local time zone in the format 'dd-MMM-yyyy hh:mm am/pm'
+ */
+function convertTimestampToLocalFormat(isoTimestamp) {
+    const date = new Date(isoTimestamp); // Parse the ISO timestamp
+    const options = {
+        year: 'numeric',
+        month: 'short',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true,
+        weekday: 'short'
+    };
+
+    // Format the date and time
+    return date.toLocaleString(undefined, options);
 }
 
 

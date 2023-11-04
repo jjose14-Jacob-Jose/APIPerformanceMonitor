@@ -4,27 +4,35 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>API Performance Monitor</title>
+        <script src="/js/Constants.js"></script>
+        <script src="/js/Utility.js"></script>
         <script src="/js/Login.js"></script>
         <link rel="stylesheet" type="text/css" href="/css/LoginStyles.css">
+        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    </head>
     <body>
-
         <main>
             <div id="divMain">
-                <h1>API Performance Monitor </h1>
-                <h2>Login </h2>
-                <form action="/auth/processLogin" method="POST" id="formLogin" >
-                    <label for="username">Username:</label>
-                    <input type="text" id="username" name="username" required><br>
-
-                    <label for="password">Password:</label>
-                    <input type="password" id="password" name="password" required><br>
-
-                    <input type="submit" value="Login" onclick="formSubmitLogin(event)">
-                </form>
+                <div id="divPageHeading">
+                    <a href="/home"><h1>API Performance Monitor </h1></a>
+                    <h2>Login </h2>
+                </div>
+                <div class="divLoginForm">
+                    <form action="/auth/processLogin" method="POST" id="formLogin" onsubmit="formSubmitLogin(event)">
+                        <label for="username">Username:</label>
+                        <input type="text" id="username" name="username" required><br>
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" name="password" required><br>
+                        <button class="g-recaptcha"
+                                data-sitekey="6LcBzNYoAAAAAEfEaqpohyGQCT3iRYO8NegFrsAY"
+                                data-callback='formSubmitLogin'
+                                data-action='submit'>Sign in</button>
+                    </form>
+                    <hr>
+                    <h3>Do not have an account?</h3>
+                    <a href="/signup">Click here to sign up.</a>
+                </div>
             </div>
         </main>
-        <footer>
-
-        </footer>
     </body>
 </html>

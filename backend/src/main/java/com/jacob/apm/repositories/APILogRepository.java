@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface APILogRepository extends MongoRepository<APICall, String> {
-    List<APICall> findByCallTimestampUTCBetween(String dateStart, String dateEnd);
+    List<APICall> findByCallerTimestampUTCBetween(String dateStart, String dateEnd);
 }

@@ -8,7 +8,7 @@ import java.util.Optional;
 
 @Repository
 public interface APMUserRepository extends MongoRepository<APMUser, String> {
-    Optional<APMUser> findByUserName(String username);
-    APMUser findAPMUserByUserName(String username);
-    APMUser findAPMUserByEmailID(String emailID);
+    Optional<APMUser> findByUsername(String username);
+    APMUser findAPMUserByUsername(String username);
+    APMUser findAPMUserByEmailId(String emailId);
 }

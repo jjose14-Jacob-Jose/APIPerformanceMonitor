@@ -8,14 +8,24 @@ body {
     align-items: center;
     height: 100vh;
     margin: 0;
-}
-
-h1, h2{
-    text-align: center;
     color: #fff;
+
 }
 
-form {
+.divPageHeading {
+    text-decoration: none;
+}
+
+h1, h2 {
+    text-align: center;
+    color: #FFFFFF;
+}
+
+a {
+    color: #FFFFFF;
+}
+
+.divLoginForm {
     background: #333;
     padding: 20px;
     border-radius: 5px;
@@ -41,7 +51,7 @@ input[type="password"] {
     color: #fff;
 }
 
-input[type="submit"] {
+.g-recaptcha {
     background: #007BFF;
     color: #fff;
     padding: 10px 15px;
@@ -50,6 +60,7 @@ input[type="submit"] {
     cursor: pointer;
 }
 
-input[type="submit"]:hover {
+.g-recaptcha:hover {
     background: #0056b3;
 }
+

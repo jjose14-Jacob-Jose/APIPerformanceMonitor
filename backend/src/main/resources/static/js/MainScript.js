@@ -1,4 +1,5 @@
 const INDEX_RESULTS_TABLE_CALL_ID = 0;
+const JAVA_PARAMETER_CALLER_TIME_STAMP = "callerTimestampUTC";
 
 function stringIsEmpty(string) {
     if (string.trim() === STRING_EMPTY) {
@@ -141,7 +142,17 @@ function displayJSONAsTableOnDiv(jsonData, idDiv, idHtmlTable, cssClassHTMLTable
         const row = document.createElement('tr');
         keys.forEach(key => {
             const cell = document.createElement('td');
-            cell.textContent = item[key] || ''; // Handle undefined values
+
+            // Create a div element to wrap the content
+            const div = document.createElement('div');
+
+            // Format timestamp in ISO to local format.
+            if(key === JAVA_PARAMETER_CALLER_TIME_STAMP)
+                div.textContent = convertTimestampToLocalFormat(item[key]);
+            else
+                div.textContent = item[key] || ''; // Handle undefined values
+
+            cell.appendChild(div);
             row.appendChild(cell);
         });
         tbody.appendChild(row);
@@ -151,8 +162,7 @@ function displayJSONAsTableOnDiv(jsonData, idDiv, idHtmlTable, cssClassHTMLTable
     // Append the table to the container
     container.appendChild(table);
 
-    // Hide the column containing the index.
-    deleteNthColumnOfHtmlTable(idHtmlTable, INDEX_RESULTS_TABLE_CALL_ID);
+    // Id column is hidden using CSS styles.
 
 }
 
@@ -336,15 +346,24 @@ function logoutUser() {
 }
 
 /**
- * Delete a column of an HTML table.
- * @param tableId HTML ID of the table.
- * @param columnNumber Index of column to be removed. (Starts from zero).
+ * Converts a timestamp in UTC timezone to local time.
+ * @param isoTimestamp timestamp in UTC
+ * @returns {string} local time zone in the format 'dd-MMM-yyyy hh:mm am/pm'
  */
-function deleteNthColumnOfHtmlTable(tableId, columnNumber) {
-    const table = document.getElementById(tableId);
-    for (const row of table.rows) {
-        row.deleteCell(columnNumber);
-    }
+function convertTimestampToLocalFormat(isoTimestamp) {
+    const date = new Date(isoTimestamp); // Parse the ISO timestamp
+    const options = {
+        year: 'numeric',
+        month: 'short',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true,
+        weekday: 'short'
+    };
+
+    // Format the date and time
+    return date.toLocaleString(undefined, options);
 }
 
 

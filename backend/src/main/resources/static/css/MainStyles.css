@@ -39,11 +39,14 @@
 }
 
 /*************** START: Response tables.*/
+
 .tableResponse table {
     border-collapse: collapse;
     width: 100%;
+    max-width: 100%;
     border: 1px solid #ddd;
     font-size: 16px;
+    padding-right: 10px;
 }
 
 /* Style table headers */
@@ -52,12 +55,27 @@
     text-align: left;
     padding: 8px;
     border: 1px solid #ddd;
+    resize: horizontal;
 }
 
 /* Style table cells */
 .tableResponse td {
     padding: 8px;
     border: 1px solid #ddd;
+    overflow: auto;
+}
+
+.tableResponse div {
+    resize: both;
+    overflow: auto;
+    margin: 0px;
+    padding: 0px;
+    border: 1px solid black;
+    display:block;
+}
+
+.tableResponse td div {
+    border: 0;
 }
 
 /* Highlight table rows on hover */
@@ -68,7 +86,7 @@
 /* Style the filter input elements */
 .tableResponse input[type="text"] {
     width: 100%;
-    padding: 5px;
+    padding: 1%;
     box-sizing: border-box;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -85,6 +103,24 @@
 /* Hide empty rows */
 .tableResponse tr[style*="display: none;"] {
     display: none;
+}
+
+/* Hide the first column of the table header and body. */
+.tableResponse th:first-child,
+.tableResponse td:first-child {
+    display: none;
+}
+
+/* Setting width of message column.*/
+.tableResponse th:nth-child(2),
+.tableResponse td:nth-child(2) {
+    max-width: 70vw;
+}
+
+/* Setting width of timestamp column.*/
+.tableResponse th:nth-child(4),
+.tableResponse td:nth-child(4) {
+    min-width: 10vw;
 }
 
 /*************** START: Response table headings.*/

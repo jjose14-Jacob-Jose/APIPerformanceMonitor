@@ -1,3 +1,5 @@
+const INDEX_RESULTS_TABLE_CALL_ID = 0;
+
 function stringIsEmpty(string) {
     if (string.trim() === STRING_EMPTY) {
         return true;
@@ -148,6 +150,10 @@ function displayJSONAsTableOnDiv(jsonData, idDiv, idHtmlTable, cssClassHTMLTable
 
     // Append the table to the container
     container.appendChild(table);
+
+    // Hide the column containing the index.
+    deleteNthColumnOfHtmlTable(idHtmlTable, INDEX_RESULTS_TABLE_CALL_ID);
+
 }
 
 /**
@@ -290,7 +296,6 @@ function printAsAlert(message) {
  * Clear contents of the input fields to log a new API call.
  */
 function clearFormContents() {
-    document.getElementById(HTML_ID_TEXT_API_CALL_ID).value = STRING_EMPTY;
     document.getElementById(HTML_ID_TEXTAREA_API_CALL_MESSAGE).value = STRING_EMPTY;
     document.getElementById(HTML_ID_TEXT_API_CALL_APPLICATION_NAME).value = STRING_EMPTY;
     document.getElementById(HTML_ID_DATETIME_API_CALL_TIMESTAMP).value = STRING_EMPTY;
@@ -329,6 +334,19 @@ function logoutUser() {
         })
         .catch(error => console.error(error));
 }
+
+/**
+ * Delete a column of an HTML table.
+ * @param tableId HTML ID of the table.
+ * @param columnNumber Index of column to be removed. (Starts from zero).
+ */
+function deleteNthColumnOfHtmlTable(tableId, columnNumber) {
+    const table = document.getElementById(tableId);
+    for (const row of table.rows) {
+        row.deleteCell(columnNumber);
+    }
+}
+
 
 /**
  * Methods are run when the HTML method is loaded.

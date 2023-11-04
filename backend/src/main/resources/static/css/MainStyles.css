@@ -6,8 +6,8 @@
     align-items: center;
 }
 
-.divBodyHeader h2 {
-    margin-left: 0;
+.divBodyHeader a {
+    text-decoration: none;
 }
 
 .divBodyHeader #btnLogOut {

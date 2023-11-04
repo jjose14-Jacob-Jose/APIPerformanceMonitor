@@ -1,6 +1,8 @@
 const MSG_FAIL = "Failed.";
 const JSON_REQUEST_KEY_GOOGLE_RECAPTCHA_TOKEN = 'googleReCaptchaToken'; //Must be same as class member of AuthenticationRequest.java.
 const STRING_EMPTY = '';
+const VISIBILITY_STATUS_VISIBLE = "block";
+const VISIBILITY_STATUS_HIDDEN = "none"
 
 /**
  * Return Google ReCaptcha Token from Google.
@@ -45,4 +47,14 @@ function clearAllCookies() {
         var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
         document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
     }
+}
+
+/**
+ * Change an HTML elements visibility status.
+ * @param htmlElementId id of the HTML element.
+ * @param visibility 'block' or 'none'
+ */
+function setHtmlElementDisplay(htmlElementId, visibility) {
+    let element = document.getElementById(htmlElementId);
+    element.style.display = visibility;
 }

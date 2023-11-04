@@ -17,6 +17,7 @@
                     <a href="/home"><h1>API Performance Monitor </h1></a>
                     <h2>Login </h2>
                 </div>
+                <div class="divLoader" id="divLoader"></div>
                 <div class="divLoginForm">
                     <form action="/auth/processLogin" method="POST" id="formLogin" onsubmit="formSubmitLogin(event)">
                         <label for="username">Username:</label>
@@ -24,6 +25,7 @@
                         <label for="password">Password:</label>
                         <input type="password" id="password" name="password" required><br>
                         <button class="g-recaptcha"
+                                id="buttonSignIn"
                                 data-sitekey="6LcBzNYoAAAAAEfEaqpohyGQCT3iRYO8NegFrsAY"
                                 data-callback='formSubmitLogin'
                                 data-action='submit'>Sign in</button>

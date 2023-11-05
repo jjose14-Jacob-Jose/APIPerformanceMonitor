@@ -53,6 +53,7 @@ public class SecurityConfig {
                                 "/auth/logout",
                                 "/apiCall/save",
                                 "/auth/addNewUser",
+                                "/auth/isUsernameAvailable",
                                 "/error",
                                 "/js/*",
                                 "/css/*"

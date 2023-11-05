@@ -23,6 +23,7 @@ h1, h2 {
 
 a {
     color: #FFFFFF;
+    text-decoration: none;
 }
 
 .divLoginForm {
@@ -65,7 +66,7 @@ input[type="password"] {
 }
 
 /* Loader*/
-.divLoader {
+.divLoaderUsernameAvailabilityCheck {
     border: 16px solid #f3f3f3;
     border-radius: 50%;
     border-top: 16px solid #3498db;

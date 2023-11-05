@@ -26,6 +26,13 @@
 
                 <label for="userName">Username *:</label>
                 <input type="text" id="username" name="username" required>
+                <button class="g-recaptcha"
+                        data-sitekey="6LcBzNYoAAAAAEfEaqpohyGQCT3iRYO8NegFrsAY"
+                        data-callback="checkIfUsernameIsAvailable"
+                        data-action='submit'>Check username availability</button>
+                <div id="divLoaderUsernameAvailabilityCheck" class="divLoaderUsernameAvailabilityCheck"></div>
+                <div id="divUsernameStatusAvailable">Username is available.</div>
+                <div id="divUsernameStatusNotAvailable">Username not available. Please use another username.</div>
 
                 <label for="emailId">Email :</label>
                 <input type="email" id="emailId" name="emailID">

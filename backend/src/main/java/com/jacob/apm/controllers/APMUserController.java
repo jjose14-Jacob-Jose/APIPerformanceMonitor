@@ -106,4 +106,19 @@ public class APMUserController {
         }
         return ResponseEntity.status(HttpStatus.FOUND).header("Location", "/").body("");    }
 
+    @PostMapping("/isUsernameAvailable")
+    public ResponseEntity<?> isUsernameAvailable(@RequestBody UserSignUpRequest userSignUpRequest) {
+        String methodNameForLogging = "isUserNameAvailable()";
+        APMLogger.logMethodEntry(methodNameForLogging + " check if username is available. ");
+
+        boolean operationStatus = apmUserService.isUsernameIsAvailable(userSignUpRequest);
+
+        if (operationStatus == MainConstants.FLAG_SUCCESS) {
+            APMLogger.logMethodExit(methodNameForLogging + " requested username available.");
+            return ResponseEntity.status(HttpStatus.OK).body(operationStatus);
+        } else {
+            APMLogger.logError(methodNameForLogging + "requested username is not available.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(operationStatus);
+        }
+    }
 }

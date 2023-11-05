@@ -97,7 +97,6 @@ public class APMUserService implements UserDetailsService {
         return null;
     }
 
-
     /**
      * Check if there is a user with specified username.
      * @param username : username to be searched in database.
@@ -173,5 +172,35 @@ public class APMUserService implements UserDetailsService {
 
     }
 
+    /**
+     * Checks if there is a user with the specified username.
+     * @param userSignUpRequest Object container username to be searched.
+     * @return MainConstants.FLAG_SUCCESS if username not found.
+     *  MainConstants.FLAG_FAILURE if username is found.
+     */
+    public boolean isUsernameIsAvailable(UserSignUpRequest userSignUpRequest) {
+        APMLogger.logMethodEntry("Checking if username is available.");
+
+        if (userSignUpRequest == null || userSignUpRequest.getUsername() == null) {
+            APMLogger.logError("Request object from client is null");
+            return MainConstants.FLAG_FAILURE;
+        }
+
+        if(! (RecaptchaUtil.validateRecaptcha(userSignUpRequest.getGoogleReCaptchaToken()))) {
+            APMLogger.logError("Validation of Google reCaptcha token failed.");
+            return MainConstants.FLAG_FAILURE;
+        }
+
+        APMUser apmUserFromDb = getAPMUserByUsername(userSignUpRequest.getUsername());
+
+        if (apmUserFromDb == null)
+        {
+            APMLogger.logInfo("Username not found in DB.");
+            return MainConstants.FLAG_SUCCESS;
+        } else {
+            APMLogger.logInfo("Username  found in DB.");
+            return MainConstants.FLAG_FAILURE;
+        }
+    }
 
 }

@@ -58,3 +58,31 @@ function setHtmlElementDisplay(htmlElementId, visibility) {
     let element = document.getElementById(htmlElementId);
     element.style.display = visibility;
 }
+
+/**
+ *  Make a POST request and return JSON
+ * @param url URL to which POST request is to be made.
+ * @param jsonDataInRequestBodyAsString JSON in the request.
+ * @param successCallback JavaScript method to be called on success status code response.
+ * @param errorCallback  JavaScript method to be called on bad/failed HTTP status code response.
+ */
+function getPostData(url, jsonDataInRequestBodyAsString, successCallback, errorCallback) {
+    fetch(url, {
+        method: 'POST', // Specify the HTTP method as POST
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        // body: JSON.stringify(jsonDataInRequestBodyAsString), // Include the request body if needed
+        body: jsonDataInRequestBodyAsString, // Include the request body if needed
+    })
+        .then(response => response.json())
+        .then(responseJSONData => {
+            // Call the successCallback function with the response data
+            successCallback(responseJSONData);
+        })
+        .catch(error => {
+            // Call the errorCallback function with the error
+            errorCallback(error);
+            console.error('Error while making a POST request to ' + url + ' Error: ', error);
+        });
+}

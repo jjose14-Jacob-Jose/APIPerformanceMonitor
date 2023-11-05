@@ -220,34 +220,6 @@ function filterTable(idHtmlTable, columnKey, filterText, keys) { // Pass keys as
     }
 }
 
-/**
- *  Make a POST request and return JSON
- * @param url
- * @param data
- * @param successCallback
- * @param errorCallback
- */
-function getPostData(url, jsonDataInRequestBodyAsString, successCallback, errorCallback) {
-    fetch(url, {
-        method: 'POST', // Specify the HTTP method as POST
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        // body: JSON.stringify(jsonDataInRequestBodyAsString), // Include the request body if needed
-        body: jsonDataInRequestBodyAsString, // Include the request body if needed
-    })
-        .then(response => response.json())
-        .then(responseJSONData => {
-            // Call the successCallback function with the response data
-            successCallback(responseJSONData);
-        })
-        .catch(error => {
-            // Call the errorCallback function with the error
-            errorCallback(error);
-            console.error('Error while making a POST request to ' + url + ' Error: ', error);
-        });
-}
-
 function fetchDataAndDisplayTableUsingPOST(url, idDiv, idTable, cssClassForTable, jsonDataInRequestBody ) {
     clearDivAndDeleteTables(idDiv);
     // Fetch the JSON data from your REST API using POST.

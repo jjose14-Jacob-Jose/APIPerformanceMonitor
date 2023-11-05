@@ -345,6 +345,7 @@ function convertTimestampToLocalFormat(isoTimestamp) {
  *
  */
 function main() {
+    clearFormContents();
     fetchDataAndDisplayTableUsingPOST(URL_GET_API_CALLS_ALL, HTML_ID_DIV_RESPONSE_FROM_ALL_API_CALLS, HTML_ID_TABLE_RESPONSE_FROM_ALL_API_CALLS, HTML_CSS_CLASS_TABLE_RESPONSE_FROM_ALL_API_CALLs);
 }
 

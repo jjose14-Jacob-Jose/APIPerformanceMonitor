@@ -14,6 +14,7 @@ const HTML_ID_PASSWORD_REPEATED = "passwordRepeated";
 const HTML_ID_DIV_USERNAME_STATUS_AVAILABLE = "divUsernameStatusAvailable";
 const HTML_ID_DIV_USERNAME_STATUS_NOT_AVAILABLE = "divUsernameStatusNotAvailable";
 const HTML_ID_DIV_LOADER_USERNAME_AVAILABILITY_CHECK = "divLoaderUsernameAvailabilityCheck";
+const HTML_ID_DIV_PASSWORD_VALIDATION_STATUS = "divPasswordValidation";
 const REGEX_VALIDATION_USERNAME = /^[A-Za-z0-9]{6,30}$/;
 const REGEX_VALIDATION_PASSWORD = /^[A-Za-z0-9.!@#$%^&*()_+-=;:.,]{6,30}$/;
 const JSON_REQUEST_KEY_APM_USER_NAME_FIRST = "nameFirst";
@@ -27,14 +28,6 @@ const URL_DASHBOARD = "/home"
 const URL_CHECK_USERNAME_AVAILABILITY = "/auth/isUsernameAvailable";
 
 /**
- * Print the message as an HTML alert.
- * @param message String to be shown as alert.
- */
-function printInAlert(message) {
-    alert(message);
-}
-
-/**
  * Check if the passwords match.
  * @returns {boolean}: FLAG_BOOLEAN_SUCCESS or FLAG_BOOLEAN_FAILURE.
  */
@@ -45,7 +38,8 @@ function validatePassword() {
     {
         // Password conforms to regex standard.
     } else {
-        printInAlert(
+        setHtmlElementInnerText(
+            HTML_ID_DIV_PASSWORD_VALIDATION_STATUS,
             MSG_VALIDATION_ERROR_PASSWORD_CHARACTERS +
             MSG_NEW_LINE +
             MSG_VALIDATION_ERROR_PASSWORD_SPECIAL_CHARACTERS_ALLOWED
@@ -55,10 +49,13 @@ function validatePassword() {
 
     const repeatedPassword = document.getElementById(HTML_ID_PASSWORD_REPEATED).value;
     if (password !== repeatedPassword) {
-        printInAlert(MSG_VALIDATION_ERROR_PASSWORDS_DO_NOT_MATCH);
+        setHtmlElementInnerText(
+            HTML_ID_DIV_PASSWORD_VALIDATION_STATUS,
+            MSG_VALIDATION_ERROR_PASSWORDS_DO_NOT_MATCH
+        );
         return FLAG_BOOLEAN_FAILURE;
     }
-
+    setHtmlElementDisplay(HTML_ID_DIV_PASSWORD_VALIDATION_STATUS, VISIBILITY_STATUS_HIDDEN);
     return FLAG_BOOLEAN_SUCCESS;
 
 
@@ -150,6 +147,7 @@ function hideValidationDiv() {
     setHtmlElementDisplay(HTML_ID_DIV_USERNAME_STATUS_AVAILABLE, VISIBILITY_STATUS_HIDDEN);
     setHtmlElementDisplay(HTML_ID_DIV_USERNAME_STATUS_NOT_AVAILABLE, VISIBILITY_STATUS_HIDDEN);
     setHtmlElementDisplay(HTML_ID_DIV_LOADER_USERNAME_AVAILABILITY_CHECK, VISIBILITY_STATUS_HIDDEN);
+    setHtmlElementDisplay(HTML_ID_DIV_PASSWORD_VALIDATION_STATUS, VISIBILITY_STATUS_HIDDEN);
 }
 
 function checkIfUsernameIsAvailable() {
@@ -160,7 +158,7 @@ function checkIfUsernameIsAvailable() {
 
     let googleReCaptchaToken = getReCaptchaToken();
     if(googleReCaptchaToken === MSG_FAIL)
-        return;
+        return FLAG_BOOLEAN_FAILURE;
 
     const requestBody = {
         [JSON_REQUEST_KEY_APM_USER_USERNAME]: document.getElementById(JSON_REQUEST_KEY_APM_USER_USERNAME).value,
@@ -177,13 +175,16 @@ function checkIfUsernameIsAvailable() {
                 // username is available.
                 setHtmlElementDisplay(HTML_ID_DIV_USERNAME_STATUS_AVAILABLE, VISIBILITY_STATUS_VISIBLE);
                 setHtmlElementDisplay(HTML_ID_DIV_USERNAME_STATUS_NOT_AVAILABLE, VISIBILITY_STATUS_HIDDEN);
+                return FLAG_BOOLEAN_SUCCESS;
             } else {
                 setHtmlElementDisplay(HTML_ID_DIV_USERNAME_STATUS_AVAILABLE, VISIBILITY_STATUS_HIDDEN);
                 setHtmlElementDisplay(HTML_ID_DIV_USERNAME_STATUS_NOT_AVAILABLE, VISIBILITY_STATUS_VISIBLE);
+                return FLAG_BOOLEAN_FAILURE;
             }
         },
         error => {
             printInAlert(MSG_ERROR_CONNECTING_TO_SERVER);
+            return FLAG_BOOLEAN_FAILURE;
         }
     );
     setHtmlElementDisplay(HTML_ID_DIV_LOADER_USERNAME_AVAILABILITY_CHECK, VISIBILITY_STATUS_HIDDEN);
@@ -195,6 +196,14 @@ function checkIfUsernameIsAvailable() {
  */
 function mainSignUp() {
     hideValidationDiv();
+
+    // Bind event listener to password text fields.
+    const passwordField = document.getElementById(HTML_ID_PASSWORD);
+    passwordField.addEventListener('input', validatePassword);
+
+    const passwordRepeatedField = document.getElementById(HTML_ID_PASSWORD_REPEATED);
+    passwordRepeatedField.addEventListener('input', validatePassword);
+
 }
 
 /**

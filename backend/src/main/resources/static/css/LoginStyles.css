@@ -12,18 +12,17 @@ body {
 
 }
 
-.divPageHeading {
-    text-decoration: none;
-}
-
 h1, h2 {
     text-align: center;
     color: #FFFFFF;
 }
 
+.urlInHeading {
+    text-decoration: none;
+}
+
 a {
     color: #FFFFFF;
-    text-decoration: none;
 }
 
 .divLoginForm {

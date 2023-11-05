@@ -86,3 +86,22 @@ function getPostData(url, jsonDataInRequestBodyAsString, successCallback, errorC
             console.error('Error while making a POST request to ' + url + ' Error: ', error);
         });
 }
+
+/**
+ * Print the message as an HTML alert.
+ * @param message String to be shown as alert.
+ */
+function printInAlert(message) {
+    alert(message);
+}
+
+/**
+ * Set inner text of an HTML element.
+ * @param htmlElementId HTML element id.
+ * @param text String of text.
+ */
+function setHtmlElementInnerText(htmlElementId, text) {
+    let element = document.getElementById(htmlElementId);
+    element.innerText = text;
+    element.style.display = VISIBILITY_STATUS_VISIBLE;
+}

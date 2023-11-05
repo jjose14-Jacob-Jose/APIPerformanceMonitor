@@ -100,11 +100,11 @@ button:hover {
     100% { transform: rotate(360deg); }
 }
 
-#divUsernameStatusAvailable {
+.divValidationSuccess {
     color: #24ea00;
     font-weight: bold;
 }
 
-#divUsernameStatusNotAvailable {
+.divValidationFailure {
     color: #fd1000;
 }

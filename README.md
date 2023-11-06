@@ -6,7 +6,7 @@ If you have deployed web applications across multiple platforms, and you find di
 APM can receive and stores logs from other services in its database, which you later use for analysis. 
 
 ## Architecture
-Click here, if you want to see the project architecture.  
+[Click here](miscellaneous/documents/APM-Design_Document.pdf), if you want to see the project architecture.  
 
 ## Running the APM Locally
 ### Prerequisites

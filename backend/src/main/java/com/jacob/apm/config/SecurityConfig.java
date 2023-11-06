@@ -56,7 +56,8 @@ public class SecurityConfig {
                                 "/auth/isUsernameAvailable",
                                 "/error",
                                 "/js/*",
-                                "/css/*"
+                                "/css/*",
+                                "/images/*"
                         ).permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/generateToken").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/processLogin").permitAll()

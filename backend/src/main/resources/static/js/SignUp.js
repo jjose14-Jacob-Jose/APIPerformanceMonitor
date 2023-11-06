@@ -95,10 +95,10 @@ function clearInputFields() {
  */
 function signUp() {
 
-    if(validatePassword() == FLAG_BOOLEAN_FAILURE)
+    if(!validatePassword())
         return;
 
-    if(validateUsername() == FLAG_BOOLEAN_FAILURE)
+    if(!validateUsername())
         return;
 
     // Adding Google reCaptcha token.

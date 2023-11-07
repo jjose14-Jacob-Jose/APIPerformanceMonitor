@@ -85,3 +85,31 @@ input[type="password"] {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+.grecaptcha-badge {
+    margin-bottom: 55px;
+}
+
+footer {
+    background-color: #161642;
+    color: white;
+    text-align: center;
+    height: 50px;
+    padding-top: 15px;
+    margin-top: 10px;
+    width: 100vw;
+    bottom: 0;
+    position: fixed;
+}
+
+.divFooterCenter {
+    display: inline-block;
+    text-align: center;
+    margin: 0 auto;
+}
+
+.divFooterRight {
+    display: inline-block;
+    float: right;
+    margin-right: 20px;
+}

@@ -12,8 +12,9 @@
 <body>
     <main>
         <div class="divPageHeading" >
-            <a href="/home"><h1>API Performance Monitor </h1></a>
-            <h2>Sign Up</h2>
+            <a href="/home">
+                <h1>API Performance Monitor</h1>
+            </a>
         </div>
 
         <div class="divFormSignUp">
@@ -44,10 +45,10 @@
                 <input type="password" id="passwordRepeated" name="passwordRepeated" required>
                 <div id="divPasswordValidation" class="divValidationFailure"></div>
 
-                <label for="usagePlan">Usage Plan :</label>
-                <select id="usagePlan" name="usagePlan" disabled>
-                    <option value="free" selected>Free</option>
-                    <option value="premium">Premium</option>
+                <label for="userRole">User Role:</label>
+                <select id="userRole" name="userRole" disabled>
+                    <option value="ROLE_USER" selected>User</option>
+                    <option value="ROLE_ADMIN">Administrator</option>
                 </select>
 
                 <button class="g-recaptcha"
@@ -60,5 +61,13 @@
             <a href="/login">Click here to login.</a>
         </div>
     </main>
+    <footer>
+        <div class="divFooterCenter">
+            &copy; jacobjose.live
+        </div>
+        <div class="divFooterRight">
+            Contact us: apm@jacobjose.live
+        </div>
+    </footer>
 </body>
 </html>

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>API Performance Monitor</title>
+    <link rel="icon" href="images/favicon-clock.ico" type="image/x-icon">
     <script src="/js/Constants.js"></script>
     <script src="/js/Utility.js"></script>
     <script src="/js/MainScript.js"></script>
@@ -23,10 +24,6 @@
             <table class="tableUserInput" id="tableMakeAPILogs" >
                 <tr>
                     <td class="tableHeading">Make API Logs</td>
-                </tr>
-                <tr>
-<!--                    <td><label for="textCallId">Call ID:</label></td>-->
-<!--                    <td><input type="text" id="textCallId" disabled ></td>-->
                     <td><label for="textAreaMessage">Message:</label></td>
                     <td><textarea id="textAreaMessage"></textarea></td>
                     <td><label for="textApplicationName">Name:</label></td>
@@ -38,10 +35,10 @@
                             data-callback='makeAPILog'
                             data-action='submit'>Send POST Request</button>
                     </td>
-<!--                    <td><button id="btnPostApiCall" onclick="makeAPILog()">Send POST Request</button></td>-->
                     <td><button id="btnPostApiCallClear" onclick="clearFormContents()">Clear</button></td>
                 </tr>
                 <tr>
+                    <td class="tableHeading">Filter Logs</td>
                     <td><label for="dateTimeAPICallsRangeStart">Start Date</label></td>
                     <td><input type="datetime-local" id="dateTimeAPICallsRangeStart"></td>
                     <td><label for="dateTimeAPICallsRangeEnd">End Date</label></td>
@@ -62,6 +59,12 @@
         </div>
     </main>
     <footer>
+        <div class="divFooterCenter">
+            &copy; jacobjose.live
+        </div>
+        <div class="divFooterRight">
+            Contact us: apm@jacobjose.live
+        </div>
     </footer>
 </body>
 </html>

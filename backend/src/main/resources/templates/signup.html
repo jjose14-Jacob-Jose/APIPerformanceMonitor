@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>API Performance Monitor</title>
-    <link rel="icon" type="image/png" href="/images/apm_logo.png">
+    <link rel="icon" href="images/favicon-clock.ico" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="/css/signupStyles.css">
     <script src="/js/Utility.js"></script>
     <script src="/js/SignUp.js"></script>
@@ -12,8 +12,9 @@
 <body>
     <main>
         <div class="divPageHeading" >
-            <a href="/home"><h1>API Performance Monitor </h1></a>
-            <h2>Sign Up</h2>
+            <a href="/home">
+                <h1>API Performance Monitor</h1>
+            </a>
         </div>
 
         <div class="divFormSignUp">
@@ -26,20 +27,28 @@
 
                 <label for="userName">Username *:</label>
                 <input type="text" id="username" name="username" required>
+                <button class="g-recaptcha"
+                        data-sitekey="6LcBzNYoAAAAAEfEaqpohyGQCT3iRYO8NegFrsAY"
+                        data-callback="checkIfUsernameIsAvailable"
+                        data-action='submit'>Check username availability</button>
+                <div id="divLoaderUsernameAvailabilityCheck" class="divLoaderUsernameAvailabilityCheck"></div>
+                <div id="divUsernameStatusAvailable" class="divValidationSuccess">Username is available.</div>
+                <div id="divUsernameStatusNotAvailable" class="divValidationFailure">Username not available. Please use another username.</div>
 
                 <label for="emailId">Email :</label>
                 <input type="email" id="emailId" name="emailID">
 
                 <label for="password">Password *:</label>
-                <input type="password" id="password" name="password" required>
+                <input type="password" id="password" name="password" required >
 
                 <label for="password">Password Repeated *:</label>
                 <input type="password" id="passwordRepeated" name="passwordRepeated" required>
+                <div id="divPasswordValidation" class="divValidationFailure"></div>
 
-                <label for="usagePlan">Usage Plan :</label>
-                <select id="usagePlan" name="usagePlan" disabled>
-                    <option value="free" selected>Free</option>
-                    <option value="premium">Premium</option>
+                <label for="userRole">User Role:</label>
+                <select id="userRole" name="userRole" disabled>
+                    <option value="ROLE_USER" selected>User</option>
+                    <option value="ROLE_ADMIN">Administrator</option>
                 </select>
 
                 <button class="g-recaptcha"
@@ -52,5 +61,13 @@
             <a href="/login">Click here to login.</a>
         </div>
     </main>
+    <footer>
+        <div class="divFooterCenter">
+            &copy; jacobjose.live
+        </div>
+        <div class="divFooterRight">
+            Contact us: apm@jacobjose.live
+        </div>
+    </footer>
 </body>
 </html>

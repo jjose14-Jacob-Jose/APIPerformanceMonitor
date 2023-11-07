@@ -53,9 +53,11 @@ public class SecurityConfig {
                                 "/auth/logout",
                                 "/apiCall/save",
                                 "/auth/addNewUser",
+                                "/auth/isUsernameAvailable",
                                 "/error",
                                 "/js/*",
-                                "/css/*"
+                                "/css/*",
+                                "/images/*"
                         ).permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/generateToken").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/processLogin").permitAll()
@@ -75,7 +77,6 @@ public class SecurityConfig {
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
-
 
     // Password Encoding
     @Bean

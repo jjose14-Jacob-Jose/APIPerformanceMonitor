@@ -1,0 +1,25 @@
+# Docker-compose file needs fixing.
+
+version: "3.9"
+
+services:
+  # MongoDB service
+  mongodb:
+    image: mongo:latest
+    hostname: mongo
+    ports:
+      - "27017:27017"
+
+  # Java Spring Boot application service
+  java-spring-boot-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - mongodb
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATA_MONGODB_HOST: mongo
+      SPRING_DATA_MONGODB_PORT: 27017
+      SPRING_DATA_MONGODB_DATABASE: API_Performance_Monitor

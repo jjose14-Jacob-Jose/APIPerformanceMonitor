@@ -53,31 +53,35 @@ public class APMUserController {
     }
 
     @PostMapping("/generateToken")
-    public String authenticateAndGetToken(@RequestBody AuthenticationRequest authenticationRequest, HttpServletResponse response) {
+    public ResponseEntity<?> authenticateAndGetToken(@RequestBody AuthenticationRequest authenticationRequest, HttpServletResponse response) {
 
 //        Validate Google reCaptcha.
         if(! (RecaptchaUtil.validateRecaptcha(authenticationRequest.getGoogleReCaptcha())))
             throw new UsernameNotFoundException("Captcha not complete. ");
 
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword()));
-        if (authentication.isAuthenticated()) {
-            String token = jwtService.generateToken(authenticationRequest.getUsername());
+        try {
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword()));
+            if (authentication.isAuthenticated()) {
+                String token = jwtService.generateToken(authenticationRequest.getUsername());
 
-            // Set the token as an HTTP-only cookie
-            Cookie cookieHttpOnly = new Cookie(MainConstants.COOKIE_HEADER_AUTHORIZATION, token);
-            cookieHttpOnly.setHttpOnly(true);
-            cookieHttpOnly.setPath("/");
-            response.addCookie(cookieHttpOnly);
+                // Set the token as an HTTP-only cookie
+                Cookie cookieHttpOnly = new Cookie(MainConstants.COOKIE_HEADER_AUTHORIZATION, token);
+                cookieHttpOnly.setHttpOnly(true);
+                cookieHttpOnly.setPath("/");
+                response.addCookie(cookieHttpOnly);
 
-            Cookie cookieUsername = new Cookie(MainConstants.COOKIE_HEADER_PREFIX_USERNAME, authenticationRequest.getUsername());
-            cookieUsername.setMaxAge(MainConstants.DURATION_MILLISECONDS_IN_ONE_HOUR);
-            cookieUsername.setPath("/");
-            response.addCookie(cookieUsername);
+                Cookie cookieUsername = new Cookie(MainConstants.COOKIE_HEADER_PREFIX_USERNAME, authenticationRequest.getUsername());
+                cookieUsername.setMaxAge(MainConstants.DURATION_MILLISECONDS_IN_ONE_HOUR);
+                cookieUsername.setPath("/");
+                response.addCookie(cookieUsername);
 
-            return "Token generated successfully!";
-        } else {
-            throw new UsernameNotFoundException("invalid user request !");
+                return ResponseEntity.status(HttpStatus.OK).body(MainConstants.MSG_SUCCESS);
+            }
+        }catch (Exception exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception);
         }
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid credentials");
     }
 
     @GetMapping("/logout")
@@ -102,4 +106,19 @@ public class APMUserController {
         }
         return ResponseEntity.status(HttpStatus.FOUND).header("Location", "/").body("");    }
 
+    @PostMapping("/isUsernameAvailable")
+    public ResponseEntity<?> isUsernameAvailable(@RequestBody UserSignUpRequest userSignUpRequest) {
+        String methodNameForLogging = "isUserNameAvailable()";
+        APMLogger.logMethodEntry(methodNameForLogging + " check if username is available. ");
+
+        boolean operationStatus = apmUserService.isUsernameIsAvailable(userSignUpRequest);
+
+        if (operationStatus == MainConstants.FLAG_SUCCESS) {
+            APMLogger.logMethodExit(methodNameForLogging + " requested username available.");
+            return ResponseEntity.status(HttpStatus.OK).body(operationStatus);
+        } else {
+            APMLogger.logError(methodNameForLogging + "requested username is not available.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(operationStatus);
+        }
+    }
 }

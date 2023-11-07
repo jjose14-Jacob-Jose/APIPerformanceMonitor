@@ -5,11 +5,16 @@ const MSG_NEW_LINE = "\n";
 const MSG_VALIDATION_ERROR_GOOGLE_RECAPTCHA_FAILED = "Too many requests. Please try again after 15 minutes.";
 const MSG_VALIDATION_ERROR_PASSWORDS_DO_NOT_MATCH = "Passwords do not match.";
 const MSG_REGISTRATION_REQUEST_FAILED = "Could not register user account. Please try again after 1 hour";
+const MSG_ERROR_CONNECTING_TO_SERVER = "Error connecting to server. Please try again later."
 const FLAG_BOOLEAN_SUCCESS = true;
 const FLAG_BOOLEAN_FAILURE = false;
 const HTML_ID_USERNAME = "username";
 const HTML_ID_PASSWORD = "password";
 const HTML_ID_PASSWORD_REPEATED = "passwordRepeated";
+const HTML_ID_DIV_USERNAME_STATUS_AVAILABLE = "divUsernameStatusAvailable";
+const HTML_ID_DIV_USERNAME_STATUS_NOT_AVAILABLE = "divUsernameStatusNotAvailable";
+const HTML_ID_DIV_LOADER_USERNAME_AVAILABILITY_CHECK = "divLoaderUsernameAvailabilityCheck";
+const HTML_ID_DIV_PASSWORD_VALIDATION_STATUS = "divPasswordValidation";
 const REGEX_VALIDATION_USERNAME = /^[A-Za-z0-9]{6,30}$/;
 const REGEX_VALIDATION_PASSWORD = /^[A-Za-z0-9.!@#$%^&*()_+-=;:.,]{6,30}$/;
 const JSON_REQUEST_KEY_APM_USER_NAME_FIRST = "nameFirst";
@@ -20,14 +25,7 @@ const JSON_REQUEST_KEY_APM_USER_PASSWORD = "password";
 const JSON_REQUEST_KEY_APM_USER_PASSWORD_REPEATED = "passwordRepeated";
 const URL_USER_SIGN_UP = "/auth/addNewUser";
 const URL_DASHBOARD = "/home"
-
-/**
- * Print the message as an HTML alert.
- * @param message String to be shown as alert.
- */
-function printInAlert(message) {
-    alert(message);
-}
+const URL_CHECK_USERNAME_AVAILABILITY = "/auth/isUsernameAvailable";
 
 /**
  * Check if the passwords match.
@@ -40,7 +38,8 @@ function validatePassword() {
     {
         // Password conforms to regex standard.
     } else {
-        printInAlert(
+        setHtmlElementInnerText(
+            HTML_ID_DIV_PASSWORD_VALIDATION_STATUS,
             MSG_VALIDATION_ERROR_PASSWORD_CHARACTERS +
             MSG_NEW_LINE +
             MSG_VALIDATION_ERROR_PASSWORD_SPECIAL_CHARACTERS_ALLOWED
@@ -50,10 +49,13 @@ function validatePassword() {
 
     const repeatedPassword = document.getElementById(HTML_ID_PASSWORD_REPEATED).value;
     if (password !== repeatedPassword) {
-        printInAlert(MSG_VALIDATION_ERROR_PASSWORDS_DO_NOT_MATCH);
+        setHtmlElementInnerText(
+            HTML_ID_DIV_PASSWORD_VALIDATION_STATUS,
+            MSG_VALIDATION_ERROR_PASSWORDS_DO_NOT_MATCH
+        );
         return FLAG_BOOLEAN_FAILURE;
     }
-
+    setHtmlElementDisplay(HTML_ID_DIV_PASSWORD_VALIDATION_STATUS, VISIBILITY_STATUS_HIDDEN);
     return FLAG_BOOLEAN_SUCCESS;
 
 
@@ -93,10 +95,10 @@ function clearInputFields() {
  */
 function signUp() {
 
-    if(validatePassword() == FLAG_BOOLEAN_FAILURE)
+    if(!validatePassword())
         return;
 
-    if(validateUsername() == FLAG_BOOLEAN_FAILURE)
+    if(!validateUsername())
         return;
 
     // Adding Google reCaptcha token.
@@ -137,3 +139,74 @@ function signUp() {
             printInAlert(MSG_REGISTRATION_REQUEST_FAILED);
         });
 }
+
+/**
+ * Hide the divs that show responses from the server.
+ */
+function hideValidationDiv() {
+    setHtmlElementDisplay(HTML_ID_DIV_USERNAME_STATUS_AVAILABLE, VISIBILITY_STATUS_HIDDEN);
+    setHtmlElementDisplay(HTML_ID_DIV_USERNAME_STATUS_NOT_AVAILABLE, VISIBILITY_STATUS_HIDDEN);
+    setHtmlElementDisplay(HTML_ID_DIV_LOADER_USERNAME_AVAILABILITY_CHECK, VISIBILITY_STATUS_HIDDEN);
+    setHtmlElementDisplay(HTML_ID_DIV_PASSWORD_VALIDATION_STATUS, VISIBILITY_STATUS_HIDDEN);
+}
+
+function checkIfUsernameIsAvailable() {
+    setHtmlElementDisplay(HTML_ID_DIV_LOADER_USERNAME_AVAILABILITY_CHECK, VISIBILITY_STATUS_VISIBLE);
+
+    // if(!validateUsername())
+    //     return;
+
+    let googleReCaptchaToken = getReCaptchaToken();
+    if(googleReCaptchaToken === MSG_FAIL)
+        return FLAG_BOOLEAN_FAILURE;
+
+    const requestBody = {
+        [JSON_REQUEST_KEY_APM_USER_USERNAME]: document.getElementById(JSON_REQUEST_KEY_APM_USER_USERNAME).value,
+        [JSON_REQUEST_KEY_GOOGLE_RECAPTCHA_TOKEN]: googleReCaptchaToken
+    };
+
+    const jsonForRequestBody = JSON.stringify(requestBody);
+
+    getPostData(
+        URL_CHECK_USERNAME_AVAILABILITY,
+        jsonForRequestBody,
+        response => {
+            if (response === FLAG_BOOLEAN_SUCCESS) {
+                // username is available.
+                setHtmlElementDisplay(HTML_ID_DIV_USERNAME_STATUS_AVAILABLE, VISIBILITY_STATUS_VISIBLE);
+                setHtmlElementDisplay(HTML_ID_DIV_USERNAME_STATUS_NOT_AVAILABLE, VISIBILITY_STATUS_HIDDEN);
+                return FLAG_BOOLEAN_SUCCESS;
+            } else {
+                setHtmlElementDisplay(HTML_ID_DIV_USERNAME_STATUS_AVAILABLE, VISIBILITY_STATUS_HIDDEN);
+                setHtmlElementDisplay(HTML_ID_DIV_USERNAME_STATUS_NOT_AVAILABLE, VISIBILITY_STATUS_VISIBLE);
+                return FLAG_BOOLEAN_FAILURE;
+            }
+        },
+        error => {
+            printInAlert(MSG_ERROR_CONNECTING_TO_SERVER);
+            return FLAG_BOOLEAN_FAILURE;
+        }
+    );
+    setHtmlElementDisplay(HTML_ID_DIV_LOADER_USERNAME_AVAILABILITY_CHECK, VISIBILITY_STATUS_HIDDEN);
+}
+
+/**
+ * Methods are run when the HTML method is loaded.
+ *
+ */
+function mainSignUp() {
+    hideValidationDiv();
+
+    // Bind event listener to password text fields.
+    const passwordField = document.getElementById(HTML_ID_PASSWORD);
+    passwordField.addEventListener('input', validatePassword);
+
+    const passwordRepeatedField = document.getElementById(HTML_ID_PASSWORD_REPEATED);
+    passwordRepeatedField.addEventListener('input', validatePassword);
+
+}
+
+/**
+ * Specify functions to be executed when the documented is loaded.
+ */
+document.addEventListener('DOMContentLoaded', mainSignUp);

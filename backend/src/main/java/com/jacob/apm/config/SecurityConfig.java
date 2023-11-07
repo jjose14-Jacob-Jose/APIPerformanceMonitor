@@ -78,7 +78,6 @@ public class SecurityConfig {
                 .build();
     }
 
-
     // Password Encoding
     @Bean
     public PasswordEncoder passwordEncoder() {

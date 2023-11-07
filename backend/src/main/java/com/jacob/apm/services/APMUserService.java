@@ -186,10 +186,12 @@ public class APMUserService implements UserDetailsService {
             return MainConstants.FLAG_FAILURE;
         }
 
-        if(! (RecaptchaUtil.validateRecaptcha(userSignUpRequest.getGoogleReCaptchaToken()))) {
-            APMLogger.logError("Validation of Google reCaptcha token failed.");
-            return MainConstants.FLAG_FAILURE;
-        }
+
+//    Google reCaptcha Server-side validation is paused due to error.
+//        if(! (RecaptchaUtil.validateRecaptcha(userSignUpRequest.getGoogleReCaptchaToken()))) {
+//            APMLogger.logError("Validation of Google reCaptcha token failed.");
+//            return MainConstants.FLAG_FAILURE;
+//        }
 
         APMUser apmUserFromDb = getAPMUserByUsername(userSignUpRequest.getUsername());
 

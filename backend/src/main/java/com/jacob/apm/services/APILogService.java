@@ -8,7 +8,12 @@ import com.jacob.apm.utilities.APISystemTime;
 import com.jacob.apm.utilities.APMLogger;
 import com.jacob.apm.utilities.RecaptchaUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -78,10 +83,26 @@ public class APILogService {
         String methodNameForLogger = "getAPICallsList";
         APMLogger.logMethodEntry(methodNameForLogger);
 
+        int maxRows = 0;
+//        Identify the type of the logged-in user.
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_USER"))) {
+            maxRows = MainConstants.COUNT_SEARCH_RESULTS_ROLE_USER;
+        }
+
         List<APICall> listAPICallsFromDB = null;
 
         try {
-            listAPICallsFromDB = incomingRequestsRepository.findAll(Sort.by(Sort.Order.desc("callerTimestampUTC")));
+            if (maxRows > 0) {
+//                For role ROLE_USER return only 'maxRows' number of rows.
+                Pageable pageable = PageRequest.of(0, maxRows, Sort.by(Sort.Order.desc("callerTimestampUTC")));
+                Page<APICall> paginatedResults = incomingRequestsRepository.findAll(pageable);
+                listAPICallsFromDB = paginatedResults.getContent();
+            } else {
+//                For role ROLE_ADMIN return all rows.
+                listAPICallsFromDB = incomingRequestsRepository.findAll(Sort.by(Sort.Order.desc("callerTimestampUTC")));
+            }
         } catch (Exception exception) {
             APMLogger.logError(methodNameForLogger, exception);
         }

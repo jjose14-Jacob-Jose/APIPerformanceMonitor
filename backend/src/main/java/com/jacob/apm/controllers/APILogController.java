@@ -66,16 +66,18 @@ public class APILogController {
      */
     @PostMapping(value = "/getAll", produces = "application/json")
     public ResponseEntity<List<APICall>> getAll() {
-        APMLogger.logMethodEntry("getAll()");
+        String messageLog = "/getAll from APM DashBoard";
+        APMLogger.logMethodEntry(messageLog);
+
         List<APICall> listAPICalls = apiLogService.getAPICallsList();
 
-        APMLogger.logMethodExit("getAll()");
+        APMLogger.logMethodExit(messageLog);
         return ResponseEntity.ok(listAPICalls);
     }
 
     @PostMapping(value = "/getAll/range", produces = "application/json")
     public ResponseEntity<List<APICall>> getAllInDateRange(@RequestBody RequestForDateRange requestForDateRange) {
-        String methodNameForLogger = "getAllInDateRange()";
+        String methodNameForLogger = "getAllInDateRange() from APM Dashboard";
         APMLogger.logMethodEntry(methodNameForLogger);
 
         List<APICall> listAPICalls = apiLogService.getAPICallsWithinRange(requestForDateRange.getDateTimeRangeStartString(), requestForDateRange.getDateTimeRangeEndString());

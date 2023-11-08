@@ -134,7 +134,6 @@
 
 footer {
     background-color: #161642;
-    color: white;
     text-align: center;
     height: 50px;
     padding-top: 15px;
@@ -153,4 +152,9 @@ footer {
     display: inline-block;
     float: right;
     margin-right: 20px;
+}
+
+footer a {
+    text-decoration: none;
+    color: white;
 }

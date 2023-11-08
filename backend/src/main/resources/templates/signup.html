@@ -25,12 +25,9 @@
                 <label for="nameLast">Last Name *:</label>
                 <input type="text" id="nameLast" name="nameLast" required>
 
-                <label for="userName">Username *:</label>
+                <label for="username">Username *:</label>
                 <input type="text" id="username" name="username" required>
-                <button class="g-recaptcha"
-                        data-sitekey="6LcBzNYoAAAAAEfEaqpohyGQCT3iRYO8NegFrsAY"
-                        data-callback="checkIfUsernameIsAvailable"
-                        data-action='submit'>Check username availability</button>
+                <button type="button" onclick="checkIfUsernameIsAvailable()">Check username availability</button>
                 <div id="divLoaderUsernameAvailabilityCheck" class="divLoaderUsernameAvailabilityCheck"></div>
                 <div id="divUsernameStatusAvailable" class="divValidationSuccess">Username is available.</div>
                 <div id="divUsernameStatusNotAvailable" class="divValidationFailure">Username not available. Please use another username.</div>
@@ -41,7 +38,7 @@
                 <label for="password">Password *:</label>
                 <input type="password" id="password" name="password" required >
 
-                <label for="password">Password Repeated *:</label>
+                <label for="passwordRepeated">Password Repeated *:</label>
                 <input type="password" id="passwordRepeated" name="passwordRepeated" required>
                 <div id="divPasswordValidation" class="divValidationFailure"></div>
 
@@ -63,10 +60,11 @@
     </main>
     <footer>
         <div class="divFooterCenter">
-            &copy; jacobjose.live
+            &copy; <a href="https://jacobjose.live/" target="_blank" >jacobjose.live</a>
         </div>
         <div class="divFooterRight">
-            Contact us: apm@jacobjose.live
+            Contact us:
+            <a href="mailto:apm@jacobjose.live">apm@jacobjose.live</a>
         </div>
     </footer>
 </body>

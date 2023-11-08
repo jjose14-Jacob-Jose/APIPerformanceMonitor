@@ -46,12 +46,9 @@ async function postToMain() {
     const requestForHome = new Request('/home', {
         method: 'GET'
     });
-
     const responseForHome = await fetch(requestForHome);
-
     if (responseForHome.status === 200) {
         window.location.href = "/home";
-
     } else {
         // Handle the error.
     }

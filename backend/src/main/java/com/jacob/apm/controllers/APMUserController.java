@@ -38,7 +38,7 @@ public class APMUserController {
 
     @PostMapping("/addNewUser")
     public ResponseEntity<?> addNewUser(@RequestBody UserSignUpRequest userSignUpRequest) {
-        String methodNameForLogging = "addNewUser()";
+        String methodNameForLogging = "addNewUser(): Adding new user.";
         APMLogger.logMethodEntry(methodNameForLogging);
 
         String operationStatus = apmUserService.saveUserToDatabase(userSignUpRequest);
@@ -48,19 +48,29 @@ public class APMUserController {
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(MainConstants.MSG_SUCCESS);
         } else {
             APMLogger.logError(methodNameForLogging);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MainConstants.MSG_FAILURE);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(operationStatus);
         }
     }
 
     @PostMapping("/generateToken")
     public ResponseEntity<?> authenticateAndGetToken(@RequestBody AuthenticationRequest authenticationRequest, HttpServletResponse response) {
 
+        if (authenticationRequest == null) {
+            String errorMessage = "AuthenticationRequest object is null. ";
+            APMLogger.logError(errorMessage);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
+        }
+
 //        Validate Google reCaptcha.
-        if(! (RecaptchaUtil.validateRecaptcha(authenticationRequest.getGoogleReCaptcha())))
-            throw new UsernameNotFoundException("Captcha not complete. ");
+        if(! (RecaptchaUtil.validateRecaptcha(authenticationRequest.getGoogleReCaptcha()))) {
+            String errorMessage = "Google reCaptcha server-side verification failed. Client token: "+authenticationRequest.getGoogleReCaptcha();
+            APMLogger.logError(errorMessage);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
+        }
 
         try {
-            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword()));
+            authenticationRequest.setUsername(authenticationRequest.getUsername().toLowerCase());
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername().toLowerCase(), authenticationRequest.getPassword()));
             if (authentication.isAuthenticated()) {
                 String token = jwtService.generateToken(authenticationRequest.getUsername());
 
@@ -75,19 +85,25 @@ public class APMUserController {
                 cookieUsername.setPath("/");
                 response.addCookie(cookieUsername);
 
+                String messageForLog = "Successfully generated JWT token and cookie for username: "+authenticationRequest.getUsername();
+                APMLogger.logInfo(messageForLog);
                 return ResponseEntity.status(HttpStatus.OK).body(MainConstants.MSG_SUCCESS);
             }
         }catch (Exception exception) {
+            String messageForLog = "Could not create generate JWT token for username: "+authenticationRequest.getUsername();
+            APMLogger.logInfo(messageForLog);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception);
         }
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid credentials");
+        String errorMessage = "Invalid credentials. " + authenticationRequest.toString();
+        APMLogger.logError(errorMessage);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
     }
 
     @GetMapping("/logout")
     public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
 
-        String methodNameForLogs = "logout()";
+        String methodNameForLogs = "Initiating logout()";
         APMLogger.logMethodEntry(methodNameForLogs);
         try{
             Cookie[] cookies = request.getCookies();
@@ -99,7 +115,7 @@ public class APMUserController {
                     response.addCookie(cookie);
                 }
             }
-            APMLogger.logInfo(methodNameForLogs + " cleared all cookies");
+            APMLogger.logInfo(methodNameForLogs + " cleared all cookies. Logout successful.");
 
         } catch (Exception exception) {
             APMLogger.logError(methodNameForLogs, exception);

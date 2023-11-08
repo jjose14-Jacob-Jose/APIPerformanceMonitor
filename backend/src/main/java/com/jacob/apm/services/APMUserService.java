@@ -43,21 +43,36 @@ public class APMUserService implements UserDetailsService {
         APMLogger.logMethodEntry(methodNameForLogger);
 
         if (userSignUpRequest == null){
-            APMLogger.logError(methodNameForLogger + " object is null");
-            return MainConstants.MSG_FAILURE;
+            String errorMessage = methodNameForLogger + " object is null";
+            APMLogger.logError(errorMessage);
+            return errorMessage;
         }
 
         if(RequestValidator.validateUserSignUpRequest(userSignUpRequest) == MainConstants.FLAG_FAILURE) {
-            APMLogger.logError(methodNameForLogger + " Invalid values");
-            APMLogger.logError("userSignUpRequest: "+userSignUpRequest.toString());
-            return MainConstants.MSG_FAILURE;
+            String errorMessage = methodNameForLogger +
+                    " Invalid values" +
+                    "\n" +
+                    "userSignUpRequest: " +
+                    userSignUpRequest.toString()
+                    ;
+            APMLogger.logError(errorMessage);
+            return errorMessage;
         }
 
-        if(! (RecaptchaUtil.validateRecaptcha(userSignUpRequest.getGoogleReCaptchaToken())))
-            return MainConstants.MSG_FAILURE;
+        if(! (RecaptchaUtil.validateRecaptcha(userSignUpRequest.getGoogleReCaptchaToken()))) {
+            String errorMessage = "Failed validating Google reCaptcha";
+            APMLogger.logError(errorMessage);
+            return errorMessage;
+        }
+
+        if(getAPMUserByUsername(userSignUpRequest.getUsername()) != null) {
+            String errorMessage = "The username is already in use";
+            APMLogger.logError(errorMessage);
+            return errorMessage;
+        }
 
         APMUser apmUser = new APMUser();
-        apmUser.setUsername(userSignUpRequest.getUsername());
+        apmUser.setUsername(userSignUpRequest.getUsername().toLowerCase());
         apmUser.setNameFirst(userSignUpRequest.getNameFirst());
         apmUser.setNameLast(userSignUpRequest.getNameLast());
         apmUser.setPassword(encoder.encode(userSignUpRequest.getPassword()));
@@ -71,8 +86,9 @@ public class APMUserService implements UserDetailsService {
             APMLogger.logMethodExit(methodNameForLogger);
             return MainConstants.MSG_SUCCESS;
         } catch (Exception exception) {
-            APMLogger.logError(methodNameForLogger, exception);
-            return MainConstants.MSG_FAILURE;
+            String errorMessage = "Exception while saving user  to database." + exception;
+            APMLogger.logError(errorMessage);
+            return errorMessage;
         }
     }
 
@@ -84,7 +100,7 @@ public class APMUserService implements UserDetailsService {
             return null;
         }
         try {
-            Optional<APMUser> userDetailOptional = apmUserRepository.findByUsername(username);
+            Optional<APMUser> userDetailOptional = apmUserRepository.findByUsername(username.toLowerCase());
             if (userDetailOptional.isPresent()) {
                 APMUser apmUser = userDetailOptional.get();
                 // You should create a custom UserDetails implementation, e.g., UserInfoDetails,
@@ -111,6 +127,7 @@ public class APMUserService implements UserDetailsService {
             return null;
         }
 
+        username = username.toLowerCase();
         APMUser apmUserFromDB = null;
         try {
             apmUserFromDB = apmUserRepository.findAPMUserByUsername(username);

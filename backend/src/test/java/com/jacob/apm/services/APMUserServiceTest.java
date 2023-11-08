@@ -69,6 +69,7 @@ class APMUserServiceTest {
 
         APMUser apmUser = getAPMUserList().get(0);
         String username = "testUsernameForMockito";
+        username = username.toLowerCase();
         apmUser.setUsername(username);
 
 //        Specifying what repository should when it receives a call to 'findAPMUserByUser' with 'username' as variable.
@@ -90,6 +91,7 @@ class APMUserServiceTest {
 
         APMUser apmUser1 = getAPMUserList().get(0);
         String username = "testUsernameForMockito";
+        username = username.toLowerCase();
         apmUser1.setUsername(username);
 
         APMUser apmUser2 = getAPMUserList().get(1);

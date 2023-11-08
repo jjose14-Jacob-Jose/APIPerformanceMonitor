@@ -1,6 +1,7 @@
 const MSG_VALIDATION_ERROR_USERNAME_CHARACTERS = "Username must only only contain alphabets and digits. It should have a length between 6 to 30 characters.";
 const MSG_VALIDATION_ERROR_PASSWORD_CHARACTERS = "Your password must be between 6 and 30 characters long. It can contain alphabets, digits, and special characters.";
 const MSG_VALIDATION_ERROR_PASSWORD_SPECIAL_CHARACTERS_ALLOWED = "Special Characters allowed: .!@#$%^&*()_+-=;:.,";
+const MSG_VALIDATION_ERROR_USERNAME_NOT_AVAILABLE = "This username is not available. Please choose another username. Thank you.";
 const MSG_NEW_LINE = "\n";
 const MSG_VALIDATION_ERROR_GOOGLE_RECAPTCHA_FAILED = "Too many requests. Please try again after 15 minutes.";
 const MSG_VALIDATION_ERROR_PASSWORDS_DO_NOT_MATCH = "Passwords do not match.";
@@ -26,6 +27,8 @@ const JSON_REQUEST_KEY_APM_USER_PASSWORD_REPEATED = "passwordRepeated";
 const URL_USER_SIGN_UP = "/auth/addNewUser";
 const URL_DASHBOARD = "/home"
 const URL_CHECK_USERNAME_AVAILABILITY = "/auth/isUsernameAvailable";
+
+let globalFlagIsUsernameAvailable = false;
 
 /**
  * Check if the passwords match.
@@ -65,16 +68,16 @@ function validatePassword() {
  * Method to check the username.
  * @returns {boolean}: FLAG_BOOLEAN_SUCCESS or FLAG_BOOLEAN_FAILURE.
  */
-function validateUsername() {
+function validateUsernameWithRegEx() {
     const username = document.getElementById(HTML_ID_USERNAME).value;
 
-    if (REGEX_VALIDATION_USERNAME.test(username))
+    if (! REGEX_VALIDATION_USERNAME.test(username))
     {
-        return FLAG_BOOLEAN_SUCCESS;
-    } else {
         printInAlert(MSG_VALIDATION_ERROR_USERNAME_CHARACTERS)
         return FLAG_BOOLEAN_FAILURE;
     }
+
+    return FLAG_BOOLEAN_SUCCESS;
 
 }
 
@@ -93,51 +96,61 @@ function clearInputFields() {
 /**
  * This function is called after Google issues a token for reCaptcha
  */
-function signUp() {
-
-    if(!validatePassword())
+async function signUp() {
+    if (!validatePassword())
         return;
 
-    if(!validateUsername())
+    if (!validateUsernameWithRegEx())
         return;
 
     // Adding Google reCaptcha token.
     let recaptchaToken = getReCaptchaToken();
     if (recaptchaToken === MSG_FAIL) {
         // Invalid Google reCaptcha.
-        printAsAlert(MSG_VALIDATION_ERROR_GOOGLE_RECAPTCHA_FAILED);
+        printInAlert(MSG_VALIDATION_ERROR_GOOGLE_RECAPTCHA_FAILED);
         return;
     }
 
-    const apmUserRegistration = {
-        [JSON_REQUEST_KEY_APM_USER_NAME_FIRST]: document.getElementById(JSON_REQUEST_KEY_APM_USER_NAME_FIRST).value,
-        [JSON_REQUEST_KEY_APM_USER_NAME_LAST]: document.getElementById(JSON_REQUEST_KEY_APM_USER_NAME_LAST).value,
-        [JSON_REQUEST_KEY_APM_USER_USERNAME]: document.getElementById(JSON_REQUEST_KEY_APM_USER_USERNAME).value,
-        [JSON_REQUEST_KEY_APM_USER_EMAIL_ID]: document.getElementById(JSON_REQUEST_KEY_APM_USER_EMAIL_ID).value,
-        [JSON_REQUEST_KEY_APM_USER_PASSWORD]: document.getElementById(JSON_REQUEST_KEY_APM_USER_PASSWORD).value,
-        [JSON_REQUEST_KEY_GOOGLE_RECAPTCHA_TOKEN]: recaptchaToken
-    };
+    // Use async/await to wait for checkIfUsernameIsAvailable
+    try {
+        const isUsernameAvailable = await checkIfUsernameIsAvailable();
+        if (!isUsernameAvailable) {
+            printInAlert(MSG_VALIDATION_ERROR_USERNAME_NOT_AVAILABLE);
+            return;
+        }
 
+        const apmUserRegistration = {
+            [JSON_REQUEST_KEY_APM_USER_NAME_FIRST]: document.getElementById(JSON_REQUEST_KEY_APM_USER_NAME_FIRST).value,
+            [JSON_REQUEST_KEY_APM_USER_NAME_LAST]: document.getElementById(JSON_REQUEST_KEY_APM_USER_NAME_LAST).value,
+            [JSON_REQUEST_KEY_APM_USER_USERNAME]: document.getElementById(JSON_REQUEST_KEY_APM_USER_USERNAME).value,
+            [JSON_REQUEST_KEY_APM_USER_EMAIL_ID]: document.getElementById(JSON_REQUEST_KEY_APM_USER_EMAIL_ID).value,
+            [JSON_REQUEST_KEY_APM_USER_PASSWORD]: document.getElementById(JSON_REQUEST_KEY_APM_USER_PASSWORD).value,
+            [JSON_REQUEST_KEY_GOOGLE_RECAPTCHA_TOKEN]: recaptchaToken
+        };
 
-    fetch(URL_USER_SIGN_UP, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(apmUserRegistration)
-    })
-        .then(response => {
-            if (response.ok) {
-                clearInputFields();
-                window.location.href = URL_DASHBOARD;
-            } else {
-                alert(MSG_REGISTRATION_REQUEST_FAILED);
-            }
+        fetch(URL_USER_SIGN_UP, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(apmUserRegistration)
         })
-        .catch(error => {
-            console.error('User registration failed:', error);
-            printInAlert(MSG_REGISTRATION_REQUEST_FAILED);
-        });
+            .then(response => {
+                if (response.ok) {
+                    clearInputFields();
+                    window.location.href = URL_DASHBOARD;
+                } else {
+                    alert(MSG_REGISTRATION_REQUEST_FAILED);
+                }
+            })
+            .catch(error => {
+                console.error('User registration failed:', error);
+                printInAlert(MSG_REGISTRATION_REQUEST_FAILED);
+            });
+    } catch (error) {
+        console.error('Error:', error);
+        // Handle the error as needed.
+    }
 }
 
 /**
@@ -150,45 +163,43 @@ function hideValidationDiv() {
     setHtmlElementDisplay(HTML_ID_DIV_PASSWORD_VALIDATION_STATUS, VISIBILITY_STATUS_HIDDEN);
 }
 
-function checkIfUsernameIsAvailable() {
+async function checkIfUsernameIsAvailable() {
     setHtmlElementDisplay(HTML_ID_DIV_LOADER_USERNAME_AVAILABILITY_CHECK, VISIBILITY_STATUS_VISIBLE);
 
-    // if(!validateUsername())
-    //     return;
-
-    let googleReCaptchaToken = getReCaptchaToken();
-    if(googleReCaptchaToken === MSG_FAIL)
-        return FLAG_BOOLEAN_FAILURE;
-
     const requestBody = {
-        [JSON_REQUEST_KEY_APM_USER_USERNAME]: document.getElementById(JSON_REQUEST_KEY_APM_USER_USERNAME).value,
-        [JSON_REQUEST_KEY_GOOGLE_RECAPTCHA_TOKEN]: googleReCaptchaToken
+        [JSON_REQUEST_KEY_APM_USER_USERNAME]: document.getElementById(JSON_REQUEST_KEY_APM_USER_USERNAME).value
     };
 
     const jsonForRequestBody = JSON.stringify(requestBody);
 
-    getPostData(
-        URL_CHECK_USERNAME_AVAILABILITY,
-        jsonForRequestBody,
-        response => {
-            if (response === FLAG_BOOLEAN_SUCCESS) {
-                // username is available.
-                setHtmlElementDisplay(HTML_ID_DIV_USERNAME_STATUS_AVAILABLE, VISIBILITY_STATUS_VISIBLE);
-                setHtmlElementDisplay(HTML_ID_DIV_USERNAME_STATUS_NOT_AVAILABLE, VISIBILITY_STATUS_HIDDEN);
-                return FLAG_BOOLEAN_SUCCESS;
-            } else {
-                setHtmlElementDisplay(HTML_ID_DIV_USERNAME_STATUS_AVAILABLE, VISIBILITY_STATUS_HIDDEN);
-                setHtmlElementDisplay(HTML_ID_DIV_USERNAME_STATUS_NOT_AVAILABLE, VISIBILITY_STATUS_VISIBLE);
-                return FLAG_BOOLEAN_FAILURE;
+    return new Promise((resolve, reject) => {
+        getPostData(
+            URL_CHECK_USERNAME_AVAILABILITY,
+            jsonForRequestBody,
+            response => {
+                if (response === FLAG_BOOLEAN_SUCCESS) {
+                    setHtmlElementDisplay(HTML_ID_DIV_USERNAME_STATUS_AVAILABLE, VISIBILITY_STATUS_VISIBLE);
+                    setHtmlElementDisplay(HTML_ID_DIV_USERNAME_STATUS_NOT_AVAILABLE, VISIBILITY_STATUS_HIDDEN);
+                    globalFlagIsUsernameAvailable = FLAG_BOOLEAN_SUCCESS;
+                    resolve(true);
+                } else {
+                    setHtmlElementDisplay(HTML_ID_DIV_USERNAME_STATUS_AVAILABLE, VISIBILITY_STATUS_HIDDEN);
+                    setHtmlElementDisplay(HTML_ID_DIV_USERNAME_STATUS_NOT_AVAILABLE, VISIBILITY_STATUS_VISIBLE);
+                    globalFlagIsUsernameAvailable = FLAG_BOOLEAN_FAILURE;
+                    resolve(false);
+                }
+            },
+            error => {
+                printInAlert(MSG_ERROR_CONNECTING_TO_SERVER);
+                globalFlagIsUsernameAvailable = FLAG_BOOLEAN_FAILURE;
+                reject(error);
             }
-        },
-        error => {
-            printInAlert(MSG_ERROR_CONNECTING_TO_SERVER);
-            return FLAG_BOOLEAN_FAILURE;
-        }
-    );
-    setHtmlElementDisplay(HTML_ID_DIV_LOADER_USERNAME_AVAILABILITY_CHECK, VISIBILITY_STATUS_HIDDEN);
+        );
+    }).finally(() => {
+        setHtmlElementDisplay(HTML_ID_DIV_LOADER_USERNAME_AVAILABILITY_CHECK, VISIBILITY_STATUS_HIDDEN);
+    });
 }
+
 
 /**
  * Methods are run when the HTML method is loaded.

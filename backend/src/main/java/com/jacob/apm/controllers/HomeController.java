@@ -14,13 +14,13 @@ public class HomeController {
      */
     @GetMapping("/status")
     public String status() {
-        APMLogger.logMethodEntry("status()");
+        APMLogger.logMethodEntry("API endpoint '/status' called.");
         return MainConstants.MSG_SUCCESS;
     }
 
     @GetMapping("/home")
     public ModelAndView home() {
-        APMLogger.logMethodEntry("home()");
+        APMLogger.logMethodEntry("API endpoint '/home' called.");
         try {
             ModelAndView modelAndView = new ModelAndView();
             modelAndView.setViewName("home");
@@ -35,6 +35,7 @@ public class HomeController {
         try {
             APMLogger.logMethodEntry("login()");
             ModelAndView modelAndView = new ModelAndView();
+            APMLogger.logMethodEntry("API endpoint '/login' called.");
             modelAndView.setViewName("login"); // Set the view name to your error page (e.g., "error.html")
             return modelAndView;
 
@@ -47,7 +48,7 @@ public class HomeController {
     @GetMapping({"/signup"})
     public ModelAndView signUp() {
         try {
-            APMLogger.logMethodEntry("signUp()");
+            APMLogger.logMethodEntry("API endpoint '/signup' called.");
             ModelAndView modelAndView = new ModelAndView();
             modelAndView.setViewName("signup"); // Set the view name to your error page (e.g., "error.html")
             return modelAndView;
@@ -61,7 +62,7 @@ public class HomeController {
     @ExceptionHandler(Exception.class)
     public ModelAndView handleException(Exception exception) {
         try {
-            APMLogger.logMethodEntry("handleException() " + exception.toString());
+            APMLogger.logMethodEntry("Exception occurred while calling API endpoints. " + exception);
             ModelAndView modelAndView = new ModelAndView();
             modelAndView.setViewName("error"); // Set the view name to your error page (e.g., "error.html")
             modelAndView.addObject("exceptionMessage", exception.toString()); // Specify attributes you want to pass to the error page.

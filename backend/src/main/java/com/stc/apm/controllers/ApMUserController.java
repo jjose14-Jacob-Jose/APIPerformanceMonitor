@@ -10,6 +10,12 @@ import com.stc.apm.models.AuthenticationRequest;
 import com.stc.apm.models.UserSignUpRequest;
 import com.stc.apm.services.ApmUserService;
 import com.stc.apm.services.JwtService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
+@Tag(name = "User Management", description = "Endpoints for user registration and authentication.")
 public class ApMUserController {
 
     private static final Logger logger = LoggerFactory.getLogger(ApMUserController.class.getName());
@@ -37,6 +44,16 @@ public class ApMUserController {
     private AuthenticationManager authenticationManager;
 
     @PostMapping("/addNewUser")
+    @Operation(
+            summary = "Register a new user",
+            description = "Accepts a user sign-up request and creates a new user account if valid. Returns success or an error message."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "202", description = "User successfully registered",
+                    content = @Content(schema = @Schema(example = "success"))),
+            @ApiResponse(responseCode = "400", description = "Invalid input or user already exists",
+                    content = @Content(schema = @Schema(example = "User already exists"))),
+    })
     public ResponseEntity<?> addNewUser(@RequestBody UserSignUpRequest userSignUpRequest) {
         logger.info("Request received at /addNewUser. userSignUpRequest: " + userSignUpRequest.toLogString());
 
@@ -50,12 +67,32 @@ public class ApMUserController {
     }
 
     @PostMapping("/generateToken")
+    @Operation(
+            summary = "Authenticate user and generate JWT token",
+            description = "Authenticates the user with the provided credentials and generates a JWT token for further requests."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Authentication successful and token generated",
+                    content = @Content(schema = @Schema(example = "Bearer tokenGeneratedHere"))),
+            @ApiResponse(responseCode = "401", description = "Authentication failed - Invalid credentials",
+                    content = @Content(schema = @Schema(example = "Invalid credentials"))),
+    })
     public ResponseEntity<?> authenticateAndGetToken(@RequestBody AuthenticationRequest authenticationRequest, HttpServletResponse response) {
         logger.info("Request at /generateToken.");
         return apmUserService.generateToken(authenticationRequest, response, jwtService, authenticationManager);
     }
 
     @GetMapping("/logout")
+    @Operation(
+            summary = "Logout the user",
+            description = "Logs out the user by clearing their session cookies and redirects them to the home page."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "302", description = "Logout successful and redirected to home",
+                    content = @Content(schema = @Schema(example = "Redirecting to home page"))),
+            @ApiResponse(responseCode = "500", description = "Logout failed",
+                    content = @Content(schema = @Schema(example = "Error during logout"))),
+    })
     public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
 
         logger.info("Calling /logout");
@@ -74,9 +111,20 @@ public class ApMUserController {
         } catch (Exception exception) {
             logger.error("Failed to logout. " + exception.getMessage());
         }
-        return ResponseEntity.status(HttpStatus.FOUND).header("Location", "/").body("");    }
+        return ResponseEntity.status(HttpStatus.FOUND).header("Location", "/").body("");
+    }
 
     @PostMapping("/isUsernameAvailable")
+    @Operation(
+            summary = "Check if the username is available",
+            description = "Checks whether the provided username is available for registration. Returns a boolean indicating availability."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Username is available",
+                    content = @Content(schema = @Schema(example = "true"))),
+            @ApiResponse(responseCode = "409", description = "Username is already taken",
+                    content = @Content(schema = @Schema(example = "false"))),
+    })
     public ResponseEntity<?> isUsernameAvailable(@RequestBody UserSignUpRequest userSignUpRequest) {
         logger.info("Calling /isUsernameAvailable. userSignUpRequest: " + userSignUpRequest.toLogString());
         boolean operationStatus = apmUserService.isUsernameIsAvailable(userSignUpRequest);

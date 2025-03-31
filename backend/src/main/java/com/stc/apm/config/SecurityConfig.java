@@ -56,7 +56,9 @@ public class SecurityConfig {
                                 "/error",
                                 "/js/*",
                                 "/css/*",
-                                "/images/*"
+                                "/images/*",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**"
                         ).permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/generateToken").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/processLogin").permitAll()

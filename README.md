@@ -35,3 +35,7 @@ You can also run the project by building and running the Dockerfile. Your comput
 4. `docker build -t apm_image:latest .`
 5. `docker run -p 8080:8080 --name apm_container apm_image:latest`
 6. Access Project at [http://localhost:8080/login](http://localhost:8080/login).
+
+### Swagger
+http://localhost:8080/swagger-ui/index.html
+![img.png](miscellaneous/documents/images/swagger_ui.png)
